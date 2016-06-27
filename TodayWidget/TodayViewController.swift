@@ -8,9 +8,7 @@
 
 import UIKit
 import NotificationCenter
-import PotatsoModel
 import PotatsoBase
-import RealmSwift
 import Cartography
 import SwiftColor
 import PotatsoLibrary

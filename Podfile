@@ -9,10 +9,10 @@ def fabric
 end
 
 def library
-   pod 'KissXML'
-   pod 'KissXML/libxml_module'
-   pod 'ICSMainFramework', :path => "./Library/ICSMainFramework/"
-   pod 'MMWormhole', '~> 2.0.0'
+    pod 'KissXML'
+    pod 'KissXML/libxml_module'
+    pod 'ICSMainFramework', :path => "./Library/ICSMainFramework/"
+    pod 'MMWormhole', '~> 2.0.0'
 end
 
 def tunnel
@@ -21,6 +21,10 @@ end
 
 def socket
     pod 'CocoaAsyncSocket', '~> 7.4.3'
+end
+
+def model
+    pod 'RealmSwift'
 end
 
 target "Potatso" do
@@ -43,6 +47,7 @@ target "Potatso" do
     library
     fabric
     socket
+    model
 end
 
 target "PacketTunnel" do
@@ -59,10 +64,16 @@ target "TodayWidget" do
     pod 'SwiftColor'
     library
     socket
+    model
 end
 
 target "PotatsoLibrary" do
     library
+    model
+end
+
+target "PotatsoModel" do
+    model
 end
 
 target "PotatsoLibraryTests" do

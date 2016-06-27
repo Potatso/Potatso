@@ -10,13 +10,13 @@
 #import "ProxyManager.h"
 #import "TunnelInterface.h"
 #import "dns.h"
-#import <MMWormhole/MMWormhole.h>
 #import "PotatsoBase.h"
 #import <sys/syslog.h>
 #import <ShadowPath/ShadowPath.h>
 #import <sys/socket.h>
 #import <arpa/inet.h>
-#import <CocoaAsyncSocket/GCDAsyncSocket.h>
+@import MMWormhole;
+@import CocoaAsyncSocket;
 
 @interface PacketTunnelProvider () <GCDAsyncSocketDelegate>
 @property (nonatomic) MMWormhole *wormhole;

@@ -9,11 +9,11 @@
 #ifndef Potatso_Bridge_Header_h
 #define Potatso_Bridge_Header_h
 
-#import <Appirater/Appirater.h>
 #import <asl.h>
 #import "HMScannerViewController.h"
 @import CocoaLumberjack;
 @import PotatsoLibrary;
 @import PotatsoModel;
+@import Appirater;
 
 #endif /* Potatso_Bridge_Header_h */
