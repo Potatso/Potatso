@@ -4,14 +4,16 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : 0,
     "3C6F92914DC600539B41847959CED54915F302B0" : 0,
+    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : 0,
+    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : 0,
     "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "357ADE20-F4A3-4BE0-875B-8B12FC4B6C73",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : "iOS\/Library\/ShadowPath\/ShadowPath\/shadowsocks-libev\/",
     "3C6F92914DC600539B41847959CED54915F302B0" : "iOS\/",
+    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : "iOS\/Library\/ShadowPath\/ShadowPath\/shadowsocks-libev\/",
+    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : "iOS\/Library\/ShadowPath\/ShadowPath\/libmaxminddb\/",
     "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : "..\/..\/iOS\/Library\/plcrashreporter"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Potatso",
@@ -32,6 +34,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/opensource.plausible.coop\/src\/scm\/plcr\/plcrashreporter.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:maxmind\/libmaxminddb.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CAC6E1011EE7E5B3F791C48870F55187391185DB"
     }
   ]
 }

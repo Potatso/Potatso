@@ -342,6 +342,10 @@
 		B8DEFEFA1CEA1D4C003FC706 /* jcc.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEF81CEA1D4C003FC706 /* jcc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8DEFEFC1CEA1DCE003FC706 /* sp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEFB1CEA1DCE003FC706 /* sp_config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8DEFEFE1CEA1EB7003FC706 /* project.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEFD1CEA1EB7003FC706 /* project.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC6501D40D01C0046963C /* maxminddb.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5C61D40D01C0046963C /* maxminddb.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC6511D40D01C0046963C /* maxminddb_config.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5C71D40D01C0046963C /* maxminddb_config.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC67F1D40D01C0046963C /* maxminddb-compat-util.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */; };
+		B8EAC6801D40D01C0046963C /* maxminddb.c in Sources */ = {isa = PBXBuildFile; fileRef = B8EAC5FB1D40D01C0046963C /* maxminddb.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -709,6 +713,10 @@
 		B8DEFEF81CEA1D4C003FC706 /* jcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jcc.h; sourceTree = "<group>"; };
 		B8DEFEFB1CEA1DCE003FC706 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
 		B8DEFEFD1CEA1EB7003FC706 /* project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = project.h; sourceTree = "<group>"; };
+		B8EAC5C61D40D01C0046963C /* maxminddb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxminddb.h; sourceTree = "<group>"; };
+		B8EAC5C71D40D01C0046963C /* maxminddb_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxminddb_config.h; sourceTree = "<group>"; };
+		B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "maxminddb-compat-util.h"; sourceTree = "<group>"; };
+		B8EAC5FB1D40D01C0046963C /* maxminddb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = maxminddb.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1352,6 +1360,7 @@
 			children = (
 				B81888221D2C09DA00E41C89 /* libsodium-ios */,
 				B81887071D2BFC1B00E41C89 /* libopenssl */,
+				B8EAC5971D40D01C0046963C /* libmaxminddb */,
 				B86BFFF61D17DABA00613014 /* shadowsocks-libev */,
 				B82D7D471CEC6BCE00357F5F /* Antinat */,
 				B82D7D461CEC6B6300357F5F /* Privoxy */,
@@ -1359,6 +1368,33 @@
 				B8DEFD7E1CE9C923003FC706 /* ShadowPath.h */,
 			);
 			path = ShadowPath;
+			sourceTree = "<group>";
+		};
+		B8EAC5971D40D01C0046963C /* libmaxminddb */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5C51D40D01C0046963C /* include */,
+				B8EAC5F21D40D01C0046963C /* src */,
+			);
+			path = libmaxminddb;
+			sourceTree = "<group>";
+		};
+		B8EAC5C51D40D01C0046963C /* include */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5C61D40D01C0046963C /* maxminddb.h */,
+				B8EAC5C71D40D01C0046963C /* maxminddb_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		B8EAC5F21D40D01C0046963C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */,
+				B8EAC5FB1D40D01C0046963C /* maxminddb.c */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1410,6 +1446,7 @@
 				B86B08441D17DABB00613014 /* acl.h in Headers */,
 				B818877A1D2BFC1B00E41C89 /* krb5_asn.h in Headers */,
 				B818876F1D2BFC1B00E41C89 /* dtls1.h in Headers */,
+				B8EAC6511D40D01C0046963C /* maxminddb_config.h in Headers */,
 				B82847711CEB105B00820456 /* parsers.h in Headers */,
 				B86B085F1D17DABB00613014 /* socks5.h in Headers */,
 				B82847651CEB0E6400820456 /* internal.h in Headers */,
@@ -1498,6 +1535,7 @@
 				B818887C1D2C09DA00E41C89 /* crypto_secretbox.h in Headers */,
 				B818888D1D2C09DA00E41C89 /* crypto_uint8.h in Headers */,
 				B86B08471D17DABB00613014 /* cache.h in Headers */,
+				B8EAC67F1D40D01C0046963C /* maxminddb-compat-util.h in Headers */,
 				B81888701D2C09DA00E41C89 /* crypto_hash.h in Headers */,
 				B81888871D2C09DA00E41C89 /* crypto_stream_salsa2012.h in Headers */,
 				B81887641D2BFC1B00E41C89 /* cmac.h in Headers */,
@@ -1544,6 +1582,7 @@
 				B86B04B11D17DABB00613014 /* config.h in Headers */,
 				B81888831D2C09DA00E41C89 /* crypto_stream.h in Headers */,
 				B81888851D2C09DA00E41C89 /* crypto_stream_chacha20.h in Headers */,
+				B8EAC6501D40D01C0046963C /* maxminddb.h in Headers */,
 				B818878A1D2BFC1B00E41C89 /* pkcs7.h in Headers */,
 				B81887811D2BFC1B00E41C89 /* obj_mac.h in Headers */,
 				B81887671D2BFC1B00E41C89 /* conf.h in Headers */,
@@ -1766,6 +1805,7 @@
 				B86B07EA1D17DABB00613014 /* udns_rr_naptr.c in Sources */,
 				B86B05361D17DABB00613014 /* files.c in Sources */,
 				B86B057B1D17DABB00613014 /* inspection.c in Sources */,
+				B8EAC6801D40D01C0046963C /* maxminddb.c in Sources */,
 				B82847681CEB103800820456 /* list.c in Sources */,
 				B86B08461D17DABB00613014 /* cache.c in Sources */,
 				B86B04F51D17DABB00613014 /* buffer.c in Sources */,

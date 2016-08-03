@@ -127,17 +127,15 @@ public class Manager {
     }
     
     func copyGEOIPData() throws {
-        for country in ["CN"] {
-            guard let fromURL = NSBundle.mainBundle().URLForResource("geoip-\(country)", withExtension: "data") else {
-                return
-            }
-            let toURL = Potatso.sharedUrl().URLByAppendingPathComponent("httpconf/geoip-\(country).data")
-            if NSFileManager.defaultManager().fileExistsAtPath(fromURL.path!) {
-                if NSFileManager.defaultManager().fileExistsAtPath(toURL.path!) {
-                    try NSFileManager.defaultManager().removeItemAtURL(toURL)
-                }
-                try NSFileManager.defaultManager().copyItemAtURL(fromURL, toURL: toURL)
-            }
+        guard let fromURL = NSBundle.mainBundle().URLForResource("GeoLite2-Country", withExtension: "mmdb") else {
+            return
+        }
+        let toURL = Potatso.sharedUrl().URLByAppendingPathComponent("GeoLite2-Country.mmdb")
+        if NSFileManager.defaultManager().fileExistsAtPath(fromURL.path!) {
+//            if NSFileManager.defaultManager().fileExistsAtPath(toURL.path!) {
+//                try NSFileManager.defaultManager().removeItemAtURL(toURL)
+//            }
+            try NSFileManager.defaultManager().copyItemAtURL(fromURL, toURL: toURL)
         }
     }
 
@@ -286,6 +284,8 @@ extension Manager {
         let templateDirPath = rootUrl.URLByAppendingPathComponent("httptemplate").path!
         let temporaryDirPath = rootUrl.URLByAppendingPathComponent("httptemporary").path!
         let logDir = rootUrl.URLByAppendingPathComponent("log").path!
+        let maxminddbPath = Potatso.sharedUrl().URLByAppendingPathComponent("GeoLite2-Country.mmdb").path!
+        let userActionUrl = confDirUrl.URLByAppendingPathComponent("potatso.action")
         for p in [confDirUrl.path!, templateDirPath, temporaryDirPath, logDir] {
             if !NSFileManager.defaultManager().fileExistsAtPath(p) {
                 _ = try? NSFileManager.defaultManager().createDirectoryAtPath(p, withIntermediateDirectories: true, attributes: nil)
@@ -298,45 +298,52 @@ extension Manager {
         mainConf["confdir"] = confDirUrl.path!
         mainConf["templdir"] = templateDirPath
         mainConf["logdir"] = logDir
+        mainConf["mmdbpath"] = maxminddbPath
         mainConf["global-mode"] = defaultToProxy
 //        mainConf["debug"] = 1024+65536+1
 //        mainConf["debug"] = 131071
         mainConf["debug"] = mainConf["debug"] as! Int + 4096
+        mainConf["actionsfile"] = userActionUrl.path!
 
         let mainContent = mainConf.map { "\($0) \($1)"}.joinWithSeparator("\n")
         try mainContent.writeToURL(Potatso.sharedHttpProxyConfUrl(), atomically: true, encoding: NSUTF8StringEncoding)
 
         var actionContent: [String] = []
-        var forwardRules: [String] = []
+        var forwardURLRules: [String] = []
+        var forwardIPRules: [String] = []
+        var forwardGEOIPRules: [String] = []
         let rules = defaultConfigGroup.ruleSets.map({ $0.rules }).flatMap({ $0 })
-        var hasGEOIPRule = false
         for rule in rules {
             switch rule.type {
-            case .GeoIP, .IPCIDR:
-                if rule.type == .GeoIP {
-                    if hasGEOIPRule {
-                        continue
-                    }
-                    hasGEOIPRule = true
-                }
-                actionContent.append("{+forward-rule}")
-                actionContent.append(rule.description)
+            case .GeoIP:
+                forwardGEOIPRules.append(rule.description)
+            case .IPCIDR:
+                forwardIPRules.append(rule.description)
             default:
-                forwardRules.append(rule.description)
+                forwardURLRules.append(rule.description)
             }
         }
 
-        actionContent.append("{+forward-rule}")
-        actionContent.appendContentsOf(forwardRules)
-
-        // DNS pollution
-        if let _ = upstreamProxy {
+        if forwardURLRules.count > 0 {
             actionContent.append("{+forward-rule}")
-            actionContent.appendContentsOf(Pollution.dnsList.map({ "IP-CIDR, \($0)/32, PROXY" }))
+            actionContent.appendContentsOf(forwardURLRules)
         }
 
+        if forwardIPRules.count > 0 {
+            actionContent.append("{+forward-rule}")
+            actionContent.appendContentsOf(forwardIPRules)
+        }
+
+        if forwardGEOIPRules.count > 0 {
+            actionContent.append("{+forward-rule}")
+            actionContent.appendContentsOf(forwardGEOIPRules)
+        }
+
+        // DNS pollution
+        actionContent.append("{+forward-rule}")
+        actionContent.appendContentsOf(Pollution.dnsList.map({ "DNS-IP-CIDR, \($0)/32, PROXY" }))
+
         let userActionString = actionContent.joinWithSeparator("\n")
-        let userActionUrl = confDirUrl.URLByAppendingPathComponent("potatso.action")
         try userActionString.writeToFile(userActionUrl.path!, atomically: true, encoding: NSUTF8StringEncoding)
     }
 

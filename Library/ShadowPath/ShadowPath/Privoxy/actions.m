@@ -66,6 +66,9 @@ struct url_actions *po_url_rules_tail = NULL;
 struct url_actions *po_ip_rules = NULL;
 struct url_actions *po_ip_rules_tail = NULL;
 
+struct url_actions *po_dns_ip_rules = NULL;
+struct url_actions *po_dns_ip_rules_tail = NULL;
+
 /*
  * We need the main list of options.
  *
@@ -1166,44 +1169,6 @@ static int action_spec_is_valid(struct client_state *csp, const struct action_sp
 
 }
 
-static void loadGEOIP(char *file_path, radix_tree_t *tree) {
-    FILE *geo_fp;
-    if ((geo_fp = fopen(file_path, "r")) == NULL)
-    {
-        log_error(LOG_LEVEL_ERROR, "can't load geoip data file '%s': error opening file: %E",
-                  file_path);
-        freez(file_path);
-        return;
-    }
-    unsigned long geo_linenum = 0;
-    char *geo_buf;
-    while (read_config_line(geo_fp, &geo_linenum, &geo_buf) != NULL)
-    {
-        struct access_control_addr addr;
-        if (acl_addr(geo_buf, &addr) < 0) {
-            log_error(LOG_LEVEL_ERROR, "Invalid ip cidr address, port or netmask "
-                      "for geo-ip data in file: \"%s\"", file_path);
-            freez(geo_buf);
-            fclose(geo_fp);
-            freez(file_path);
-            return ;
-        }
-        if (addr.addr.ss_family != AF_INET && addr.mask.ss_family != AF_INET) {
-            log_error(LOG_LEVEL_ERROR, "Invalid ip cidr address, ipv6 not supported in file: \"%s\"", file_path);
-            freez(geo_buf);
-            fclose(geo_fp);
-            freez(file_path);
-            return ;
-        }
-        struct sockaddr_in *sin = (struct sockaddr_in *)&addr.addr;
-        struct sockaddr_in *mask = (struct sockaddr_in *)&addr.mask;
-        radix32tree_insert(tree, ntohl(sin->sin_addr.s_addr), ntohl(mask->sin_addr.s_addr), 1);
-        freez(geo_buf);
-    }
-    fclose(geo_fp);
-    freez(file_path);
-}
-
 static void loadIPCIDR(char *ipcidr, radix_tree_t *tree) {
     struct access_control_addr addr;
     if (acl_addr(ipcidr, &addr) < 0) {
@@ -1660,41 +1625,59 @@ static int load_one_actions_file(struct client_state *csp, int fileid)
                         csp->config->actions_file[fileid], linenum, buf);
               continue;
           }
-          if (!strcmpic(vec[0], "GEOIP") || !strcmpic(vec[0], "IP-CIDR")) {
-              if (!perm->tree) {
-                  radix_tree_t *tree;
-                  if ((tree = radix_tree_create()) == NULL)
-                  {
-                      fclose(fp);
-                      log_error(LOG_LEVEL_FATAL,
-                                "can't load actions file '%s': out of memory!",
-                                csp->config->actions_file[fileid]);
-                      return 1; /* never get here */
-                  }
-                  perm->tree = tree;
-              }
+          if (!strcmpic(vec[0], "GEOIP") || !strcmpic(vec[0], "IP-CIDR") || !strcmpic(vec[0], "DNS-IP-CIDR")) {
               if (!strcmpic(vec[0], "GEOIP")) {
-                  char file_name[100];
-                  sprintf(file_name, "geoip-%s.data", vec[1]);
-                  char *file_path = make_path(csp->config->confdir, file_name);
+                  perm->geoip = strdup_or_die(vec[1]);
+                  MMDB_open(csp->config->mmdbpath, 0, &mmdb);
+                  if (po_ip_rules_tail) {
+                      po_ip_rules_tail->next = perm;
+                      po_ip_rules_tail = perm;
+                  }else {
+                      po_ip_rules = perm;
+                      po_ip_rules_tail = po_ip_rules;
+                  }
+              } else {
+                  if (!perm->tree) {
+                      radix_tree_t *tree;
+                      if ((tree = radix_tree_create()) == NULL)
+                      {
+                          fclose(fp);
+                          log_error(LOG_LEVEL_FATAL,
+                                    "can't load actions file '%s': out of memory!",
+                                    csp->config->actions_file[fileid]);
+                          return 1; /* never get here */
+                      }
+                      perm->tree = tree;
+                  }
+                  if (!strcmpic(vec[0], "IP-CIDR")) {
+                      // CIDR
+                      char *ipcidr = strdup_or_die(vec[1]);
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          loadIPCIDR(ipcidr, perm->tree);
+                      });
+                      if (po_ip_rules_tail) {
+                          po_ip_rules_tail->next = perm;
+                          po_ip_rules_tail = perm;
+                      }else {
+                          po_ip_rules = perm;
+                          po_ip_rules_tail = po_ip_rules;
+                      }
+                  } else if (!strcmpic(vec[0], "DNS-IP-CIDR")) {
+                      // DNS CIDR
+                      char *ipcidr = strdup_or_die(vec[1]);
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          loadIPCIDR(ipcidr, perm->tree);
+                      });
+                      if (po_dns_ip_rules_tail) {
+                          po_dns_ip_rules_tail->next = perm;
+                          po_dns_ip_rules_tail = perm;
+                      }else {
+                          po_dns_ip_rules = perm;
+                          po_dns_ip_rules_tail = po_dns_ip_rules;
+                      }
+                  }
+              }
 
-                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                      loadGEOIP(file_path, perm->tree);
-                  });
-              } else if (!strcmpic(vec[0], "IP-CIDR")) {
-                  // CIDR
-                  char *ipcidr = strdup_or_die(vec[1]);
-                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                      loadIPCIDR(ipcidr, perm->tree);
-                  });
-              }
-              if (po_ip_rules_tail) {
-                  po_ip_rules_tail->next = perm;
-                  po_ip_rules_tail = perm;
-              }else {
-                  po_ip_rules = perm;
-                  po_ip_rules_tail = po_ip_rules;
-              }
           }else if (!strcmpic(vec[0], "DOMAIN") || !strcmpic(vec[0], "DOMAIN-MATCH") || !strcmpic(vec[0], "URL") || !strcmpic(vec[0], "DOMAIN-SUFFIX")){
               char pattern[500];
               if (!strcmpic(vec[0], "DOMAIN-MATCH")) {

@@ -79,6 +79,8 @@ class RuleConfigurationViewController: FormViewController {
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
                     cell.textField.keyboardType = .URL
+                    cell.textField.autocorrectionType = .No
+                    cell.textField.autocapitalizationType = .None
                 })
             <<< PushRow<RuleAction>(kRuleFormAction) {
                 $0.title = "Action".localized()

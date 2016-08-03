@@ -16,7 +16,7 @@ import PotatsoBase
 private let kRecentRequestCellIdentifier = "recentRequests"
 private let kRecentRequestCachedIdentifier = "requestsCached"
 
-class RecentRequestsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class RecentRequestsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var requests: [Request] = []
     let wormhole = Manager.sharedManager.wormhole
@@ -31,13 +31,13 @@ class RecentRequestsViewController: UIViewController, UITableViewDataSource, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onVPNStatusChanged), name: kProxyServiceVPNStatusNotification, object: nil)
         wormhole.listenForMessageWithIdentifier("tunnelConnectionRecords") { [unowned self](response) in
             self.updateUI(response as? String)
-            NSUserDefaults.standardUserDefaults().setObject(response as? String, forKey: kRecentRequestCachedIdentifier)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            Potatso.sharedUserDefaults().setObject(response as? String, forKey: kRecentRequestCachedIdentifier)
+            Potatso.sharedUserDefaults().synchronize()
             return
         }
+        self.updateUI(Potatso.sharedUserDefaults().stringForKey(kRecentRequestCachedIdentifier))
         if Manager.sharedManager.vpnStatus == .Off {
             showingCache = true
-            self.updateUI(NSUserDefaults.standardUserDefaults().stringForKey(kRecentRequestCachedIdentifier))
         }
     }
     
@@ -88,7 +88,7 @@ class RecentRequestsViewController: UIViewController, UITableViewDataSource, UIT
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        navigationController?.pushViewController(RequestDetailViewController(request: requests[indexPath.row]), animated: true)
+        navigationController?.pushViewController(RequestDetailVC(request: requests[indexPath.row]), animated: true)
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

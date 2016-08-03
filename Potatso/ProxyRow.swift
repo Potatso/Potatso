@@ -11,25 +11,25 @@ import PotatsoModel
 import Eureka
 import Cartography
 
-public final class ProxyRow: Row<Proxy, ProxyRowCell>, RowType {
+class ProxyRow: Row<Proxy, ProxyRowCell>, RowType {
 
-    required public init(tag: String?) {
+    required init(tag: String?) {
         super.init(tag: tag)
         displayValueFor = nil
     }
 }
 
 
-public class ProxyRowCell: Cell<Proxy>, CellType {
+class ProxyRowCell: Cell<Proxy>, CellType {
 
     let group = ConstraintGroup()
 
-    required public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    required init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
     }
 
-    public override func setup() {
+    override func setup() {
         super.setup()
         preservesSuperviewLayoutMargins = false
         layoutMargins = UIEdgeInsetsZero
@@ -38,7 +38,7 @@ public class ProxyRowCell: Cell<Proxy>, CellType {
         contentView.addSubview(iconImageView)
     }
 
-    public override func update() {
+    override func update() {
         super.update()
         if let proxy = row.value {
             titleLabel.text = proxy.name

@@ -121,6 +121,7 @@ int global_mode = 0;
 #define hash_client_header_order         2701453514U /* "client-header-order" */
 #define hash_compression_level           2464423563U /* "compression-level" */
 #define hash_confdir                        1978389U /* "confdir" */
+#define hash_mmdbpath                      10609609U /* "mmdbpath" */
 #define hash_connection_sharing          1348841265U /* "connection-sharing" */
 #define hash_debug                            78263U /* "debug" */
 #define hash_default_server_timeout      2530089913U /* "default-server-timeout" */
@@ -223,6 +224,7 @@ static void unload_configfile (void * data)
    freez(config->logdir);
    freez(config->templdir);
    freez(config->hostname);
+    freez(config->mmdbpath);
 #ifdef FEATURE_EXTERNAL_FILTERS
    freez(config->temporary_directory);
 #endif
@@ -687,6 +689,14 @@ struct configuration_spec * load_config(void)
             freez(config->confdir);
             config->confdir = make_path(NULL, arg);
             break;
+
+/* *************************************************************************
+* mmdb path
+* *************************************************************************/
+        case hash_mmdbpath :
+          freez(config->mmdbpath);
+          config->mmdbpath = make_path(NULL, arg);
+          break;
 
 /* *************************************************************************
  * compression-level 0-9

@@ -13,6 +13,7 @@ def library
     pod 'KissXML/libxml_module'
     pod 'ICSMainFramework', :path => "./Library/ICSMainFramework/"
     pod 'MMWormhole', '~> 2.0.0'
+    pod 'KeychainAccess'
 end
 
 def tunnel
@@ -43,6 +44,7 @@ target "Potatso" do
     pod 'Alamofire'
     pod 'ObjectMapper'
     pod 'CocoaLumberjack/Swift'
+    pod 'Helpshift', '5.6.1'
     tunnel
     library
     fabric
@@ -84,6 +86,9 @@ post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
             config.build_settings['ENABLE_BITCODE'] = 'NO'
+            if target.name == "HelpShift"
+                config.build_settings["OTHER_LDFLAGS"] = '$(inherited) "-ObjC"'
+            end
         end
     end
 end

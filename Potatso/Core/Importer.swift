@@ -36,8 +36,14 @@ struct Importer {
     }
     
     func importConfigFromQRCode() {
-        let vc = HMScannerViewController { (result) in
+        let vc = QRCodeScannerVC()
+        vc.resultBlock = { [weak vc] result in
+            vc?.navigationController?.popViewControllerAnimated(true)
             self.onImportInput(result)
+        }
+        vc.errorBlock = { [weak vc] error in
+            vc?.navigationController?.popViewControllerAnimated(true)
+            self.viewController?.showTextHUD("\(error)", dismissAfterDelay: 1.5)
         }
         viewController?.navigationController?.pushViewController(vc, animated: true)
     }

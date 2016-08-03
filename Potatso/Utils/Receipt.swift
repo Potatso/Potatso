@@ -7,22 +7,47 @@
 //
 
 import Foundation
+import ICSMainFramework
+import KeychainAccess
 
 class Receipt: NSObject, SKRequestDelegate {
 
     static let shared = Receipt()
 
+    private let keychain = Keychain(service: "com.touchingapp.potatso")
+
     private override init() {}
 
     func validate() {
-        #if !DEBUG
-            logEvent(.ReceiptValidation, attributes: nil)
-            guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
+        if AppEnv.isTestFlight {
+            if !validateKeychainAppStore() {
                 failAndTerminate()
-                return
             }
-            validateReceipt(receiptPath, tryAgain: true)
-        #endif
+        } else if AppEnv.isAppStore {
+            if isStoreReceiptValidate() {
+                markKeychainAppStore()
+            } else {
+                failAndTerminate()
+            }
+        }
+    }
+
+    private func markKeychainAppStore() {
+        keychain["appstore"] = "true"
+    }
+
+    private func validateKeychainAppStore() -> Bool {
+        if let value = keychain["appstore"] {
+            return value == "true"
+        }
+        return false
+    }
+
+    private func isStoreReceiptValidate() -> Bool {
+        guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
+            return false
+        }
+        return ReceiptUtils.verifyReceiptAtPath(receiptPath)
     }
 
     private func requestNewReceipt() {

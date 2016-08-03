@@ -80,9 +80,11 @@ class ProxyConfigurationViewController: FormViewController {
             <<< TextRow(kProxyFormHost) {
                 $0.title = "Host".localized()
                 $0.value = self.upstreamProxy.host
-                }.cellSetup { cell, row in
-                    cell.textField.placeholder = "Proxy Server Host".localized()
-                    cell.textField.keyboardType = .URL
+            }.cellSetup { cell, row in
+                cell.textField.placeholder = "Proxy Server Host".localized()
+                cell.textField.keyboardType = .URL
+                cell.textField.autocorrectionType = .No
+                cell.textField.autocapitalizationType = .None
             }
             <<< IntRow(kProxyFormPort) {
                 $0.title = "Port".localized()
@@ -99,25 +101,8 @@ class ProxyConfigurationViewController: FormViewController {
             }
             <<< PushRow<String>(kProxyFormEncryption) {
                 $0.title = "Encryption".localized()
-                $0.options = ["table",
-                              "rc4",
-                              "rc4-md5",
-                              "aes-128-cfb",
-                              "aes-192-cfb",
-                              "aes-256-cfb",
-                              "bf-cfb",
-                              "camellia-128-cfb",
-                              "camellia-192-cfb",
-                              "camellia-256-cfb",
-                              "cast5-cfb",
-                              "des-cfb",
-                              "idea-cfb",
-                              "rc2-cfb",
-                              "seed-cfb",
-                              "salsa20",
-                              "chacha20",
-                              "chacha20-ietf"]
-                $0.value = self.upstreamProxy.authscheme ?? $0.options[0]
+                $0.options = Proxy.ssSupportedEncryption
+                $0.value = self.upstreamProxy.authscheme ?? $0.options[2]
                 $0.selectorTitle = "Choose encryption method".localized()
                 $0.hidden = Condition.Function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType), isSS = r1.value?.isShadowsocks {
@@ -145,11 +130,7 @@ class ProxyConfigurationViewController: FormViewController {
             <<< PushRow<String>(kProxyFormProtocol) {
                 $0.title = "Protocol".localized()
                 $0.value = self.upstreamProxy.ssrProtocol
-                $0.options = ["origin",
-                              "verify_simple",
-                              "auth_simple",
-                              "auth_sha1",
-                              "auth_sha1_v2"]
+                $0.options = Proxy.ssrSupportedProtocol
                 $0.selectorTitle = "Choose SSR protocol".localized()
                 $0.hidden = Condition.Function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
@@ -161,10 +142,7 @@ class ProxyConfigurationViewController: FormViewController {
             <<< PushRow<String>(kProxyFormObfs) {
                 $0.title = "Obfs".localized()
                 $0.value = self.upstreamProxy.ssrObfs
-                $0.options = ["plain",
-                              "http_simple",
-                              "tls1.0_session_auth",
-                              "tls1.2_ticket_auth"]
+                $0.options = Proxy.ssrSupportedObfs
                 $0.selectorTitle = "Choose SSR obfs".localized()
                 $0.hidden = Condition.Function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
@@ -184,6 +162,8 @@ class ProxyConfigurationViewController: FormViewController {
                 }
             }.cellSetup { cell, row in
                 cell.textField.placeholder = "SSR Obfs Param".localized()
+                cell.textField.autocorrectionType = .No
+                cell.textField.autocapitalizationType = .None
             }
 
     }

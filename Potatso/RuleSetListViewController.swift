@@ -9,6 +9,7 @@
 import Foundation
 import PotatsoModel
 import Cartography
+import Realm
 
 private let rowHeight: CGFloat = 54
 private let kRuleSetCellIdentifier = "ruleset"
@@ -17,6 +18,8 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
 
     var ruleSets: [RuleSet] = []
     var chooseCallback: (RuleSet? -> Void)?
+    // Observe Realm Notifications
+    var token: RLMNotificationToken?
 
     init(chooseCallback: (RuleSet? -> Void)? = nil) {
         self.chooseCallback = chooseCallback
@@ -32,6 +35,14 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
         navigationItem.title = "Rule Set".localized()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(add))
         reloadData()
+        token = defaultRealm.addNotificationBlock { [unowned self] notification, realm in
+            self.reloadData()
+        }
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        token?.stop()
     }
 
     func add() {

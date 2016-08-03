@@ -134,6 +134,10 @@ class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        let group = groups[indexPath.row]
+        if group.isDefault && Manager.sharedManager.vpnStatus != .Off {
+            return false
+        }
         return groups.count > 1
     }
 

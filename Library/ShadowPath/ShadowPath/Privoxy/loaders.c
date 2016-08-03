@@ -127,7 +127,7 @@ unsigned int sweep(void)
    {
       csp = &client_list->csp;
        if (!(csp->flags & CSP_FLAG_ACTIVE)) {
-           logRequestStatus(csp, CONN_STATUS_CLOSED);
+           log_time_stage(csp, TIME_STAGE_CLOSED);
        }
       if (csp->flags & (CSP_FLAG_ACTIVE | CSP_FLAG_LOG_REQUEST))
       {
@@ -188,6 +188,7 @@ unsigned int sweep(void)
          freez(csp->client_iob->buf);
          freez(csp->iob->buf);
          freez(csp->error_message);
+         freez(csp->rule);
 
          if (csp->action->flags & ACTION_FORWARD_OVERRIDE &&
              NULL != csp->fwd)

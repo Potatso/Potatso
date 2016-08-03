@@ -38,6 +38,16 @@ class SettingsViewController: FormViewController, MFMailComposeViewControllerDel
     func generateForm() {
         form +++ Section()
             <<< LabelRow() {
+                $0.title = "Feedback".localized()
+                }.cellSetup({ (cell, row) -> () in
+                    cell.selectionStyle = .Default
+                    cell.accessoryType = .DisclosureIndicator
+                }).onCellSelection({ [unowned self] (cell, row) -> () in
+                    cell.setSelected(false, animated: true)
+                    self.feedback()
+                    })
+        +++ Section()
+            <<< LabelRow() {
                 $0.title = "Import From URL".localized()
                 }.cellSetup({ (cell, row) -> () in
                     cell.selectionStyle = .Default
@@ -84,57 +94,29 @@ class SettingsViewController: FormViewController, MFMailComposeViewControllerDel
 //                    self.showTextHUD("暂时不起作用", dismissAfterDelay: 1.0)
 //                }
 //            })
-        let feedbackSection = Section()
-        if MFMailComposeViewController.canSendMail() {
-            feedbackSection <<< ActionSheetRow<FeedBackType>() {
-                $0.title = "Feedback".localized()
-                $0.options = [.Email, .Forum]
-                $0.value = .None
-                }.cellUpdate({ (cell, row) -> () in
-                    cell.accessoryType = .DisclosureIndicator
-                }).onChange({ [unowned self] (row) -> () in
-                    if row.value == .Email {
-                        self.showEmail()
-                    }else if row.value == .Forum {
-                        self.showForum()
-                    }
-                    row.value = .None
-                })
-        }else {
-           feedbackSection <<< LabelRow() {
-                $0.title = "Feedback".localized()
-                }.cellSetup({ (cell, row) -> () in
-                    cell.selectionStyle = .Default
-                    cell.accessoryType = .DisclosureIndicator
-                }).onCellSelection({ [unowned self] (cell, row) -> () in
-                    cell.setSelected(false, animated: true)
-                    self.showForum()
-                })
-        }
-        
-        feedbackSection <<< LabelRow() {
-                $0.title = "Rate on App Store".localized()
-            }.cellSetup({ (cell, row) -> () in
-                cell.selectionStyle = .Default
-                cell.accessoryType = .DisclosureIndicator
-            }).onCellSelection({ (cell, row) -> () in
-                cell.setSelected(false, animated: true)
-                Appirater.rateApp()
-            })
-            <<< LabelRow() {
-                $0.title = "Share with friends".localized()
-            }.cellSetup({ (cell, row) -> () in
-                cell.selectionStyle = .Default
-                cell.accessoryType = .DisclosureIndicator
-            }).onCellSelection({ [unowned self] (cell, row) -> () in
-                cell.setSelected(false, animated: true)
-                var shareItems: [AnyObject] = []
-                shareItems.append("Potatso [https://itunes.apple.com/us/app/id1070901416]")
-                shareItems.append(UIImage(named: "AppIcon60x60")!)
-                let shareVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)
-                self.presentViewController(shareVC, animated: true, completion: nil)
-            })
-        form +++ feedbackSection
+        +++ Section()
+        <<< LabelRow() {
+            $0.title = "Rate on App Store".localized()
+        }.cellSetup({ (cell, row) -> () in
+            cell.selectionStyle = .Default
+            cell.accessoryType = .DisclosureIndicator
+        }).onCellSelection({ (cell, row) -> () in
+            cell.setSelected(false, animated: true)
+            Appirater.rateApp()
+        })
+        <<< LabelRow() {
+            $0.title = "Share with friends".localized()
+        }.cellSetup({ (cell, row) -> () in
+            cell.selectionStyle = .Default
+            cell.accessoryType = .DisclosureIndicator
+        }).onCellSelection({ [unowned self] (cell, row) -> () in
+            cell.setSelected(false, animated: true)
+            var shareItems: [AnyObject] = []
+            shareItems.append("Potatso [https://itunes.apple.com/us/app/id1070901416]")
+            shareItems.append(UIImage(named: "AppIcon60x60")!)
+            let shareVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)
+            self.presentViewController(shareVC, animated: true, completion: nil)
+        })
         form +++ Section()
             <<< LabelRow() {
                 $0.title = "Follow on Twitter".localized()
@@ -183,27 +165,29 @@ class SettingsViewController: FormViewController, MFMailComposeViewControllerDel
 
     }
     
-    func showForum() {
-        UIApplication.sharedApplication().openURL(NSURL(string: "http://forum.potatso.com/t/feedback")!)
+    func feedback() {
+        let options = [
+            "gotoConversationAfterContactUs": "YES"
+        ]
+        let rulesets = Manager.sharedManager.defaultConfigGroup.ruleSets.map({ $0.name }).joinWithSeparator(", ")
+        let defaultToProxy = Manager.sharedManager.defaultConfigGroup.defaultToProxy
+        var tags: [String] = []
+        if AppEnv.isTestFlight {
+            tags.append("testflight")
+        } else if AppEnv.isAppStore {
+            tags.append("store")
+        }
+        HelpshiftSupport.setMetadataBlock { () -> [NSObject : AnyObject]! in
+            return [
+                "Full Version": AppEnv.fullVersion,
+                "Default To Proxy": defaultToProxy ? "true": "false",
+                "Rulesets": rulesets,
+                HelpshiftSupportTagsKey: tags
+            ]
+        }
+        HelpshiftSupport.showConversation(self, withOptions: options)
     }
-    
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func showEmail() {
-        let vc = MFMailComposeViewController()
-        vc.mailComposeDelegate = self
-        let to = ["potatso.com@gmail.com"]
-        vc.setToRecipients(to)
-        let subject = "Potatso Feedback".localized()
-        vc.setSubject(subject)
-        let hint = "PLEASE DO NOT DELETE INFO BELOW".localized()
-        let emailBody = "\n\n===\(hint)===\nVersion: \(AppEnv.version)\nBuild: \(AppEnv.build)\nCountry:\(AppEnv.countryCode)"
-        vc.setMessageBody(emailBody, isHTML: false)
-        presentViewController(vc, animated: true, completion: nil)
-    }
-    
+
     @objc func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }

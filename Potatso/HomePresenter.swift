@@ -164,6 +164,27 @@ class HomePresenter: NSObject {
         self.delegate?.handleRefreshUI()
     }
 
+    func changeGroupName() {
+        var urlTextField: UITextField?
+        let alert = UIAlertController(title: "Change Name".localized(), message: nil, preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler { (textField) in
+            textField.placeholder = "Input New Name".localized()
+            urlTextField = textField
+        }
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default, handler: { [unowned self] (action) in
+            if let input = urlTextField?.text {
+                do {
+                    try self.group.changeName(input)
+                }catch {
+                    Alert.show(self.vc, title: "Failed to change name", message: "\(error)")
+                }
+                self.delegate?.handleRefreshUI()
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel, handler: nil))
+        vc.presentViewController(alert, animated: true, completion: nil)
+    }
+
 }
 
 class CurrentGroupManager {

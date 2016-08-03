@@ -64,21 +64,25 @@ class DashboardVC: FormViewController {
         let section = Section("Connection".localized())
         section <<< LabelRow() {
             $0.title = "Start".localized()
-            if let time = manager?.connection.connectedDate {
-                $0.value = startTimeFormatter.stringFromDate(time)
-            }else {
-                $0.value = "-"
+            if Manager.sharedManager.vpnStatus == .On {
+                if let time = Settings.shared().startTime {
+                    $0.value = startTimeFormatter.stringFromDate(time)
+                    return
+                }
             }
+            $0.value = "-"
         }
         <<< LabelRow() {
             $0.title = "Up Time".localized()
-            if let time = manager?.connection.connectedDate {
-                let flags = NSCalendarUnit(rawValue: UInt.max)
-                let difference = NSCalendar.currentCalendar().components(flags, fromDate: time, toDate: NSDate(), options: NSCalendarOptions.MatchFirst)
-                $0.value = durationFormatter.stringFromDateComponents(difference)
-            }else {
-                $0.value = "-"
+            if Manager.sharedManager.vpnStatus == .On {
+                if let time = Settings.shared().startTime {
+                    let flags = NSCalendarUnit(rawValue: UInt.max)
+                    let difference = NSCalendar.currentCalendar().components(flags, fromDate: time, toDate: NSDate(), options: NSCalendarOptions.MatchFirst)
+                    $0.value = durationFormatter.stringFromDateComponents(difference)
+                    return
+                }
             }
+            $0.value = "-"
         }
         return section
     }
@@ -107,7 +111,7 @@ class DashboardVC: FormViewController {
     }
 
     func showRecentRequests() {
-        let vc = RecentRequestsViewController()
+        let vc = RecentRequestsVC()
         navigationController?.pushViewController(vc, animated: true)
     }
 

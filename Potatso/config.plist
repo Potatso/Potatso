@@ -32,11 +32,11 @@
 				<string>Potatso.DataInitializer</string>
 			</dict>
 		</array>
-		<key>didReceiveRemoteNotificationFetchCompletionHandler</key>
+		<key>remoteNotification</key>
 		<array>
 			<dict>
 				<key>object</key>
-				<string>Potatso.AppInitializer</string>
+				<string>Potatso.NotificationHandler</string>
 			</dict>
 		</array>
 		<key>didBecomeActive</key>
@@ -49,12 +49,9 @@
 				<key>object</key>
 				<string>Potatso.DataInitializer</string>
 			</dict>
-		</array>
-		<key>didRegisterForRemoteNotificationsWithDeviceToken</key>
-		<array>
 			<dict>
 				<key>object</key>
-				<string>Potatso.AppInitializer</string>
+				<string>Potatso.NotificationHandler</string>
 			</dict>
 		</array>
 		<key>didFinishLaunchingWithOptions</key>
@@ -65,15 +62,19 @@
 			</dict>
 			<dict>
 				<key>object</key>
-				<string>Potatso.UrlHandler</string>
-			</dict>
-			<dict>
-				<key>object</key>
 				<string>Potatso.DataInitializer</string>
 			</dict>
 			<dict>
 				<key>object</key>
 				<string>Potatso.UIManager</string>
+			</dict>
+			<dict>
+				<key>object</key>
+				<string>Potatso.UrlHandler</string>
+			</dict>
+			<dict>
+				<key>object</key>
+				<string>Potatso.NotificationHandler</string>
 			</dict>
 		</array>
 	</dict>

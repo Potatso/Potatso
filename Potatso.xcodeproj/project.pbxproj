@@ -44,15 +44,11 @@
 		9B8193ED1CBE4DCA00BE320D /* UrlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8193EC1CBE4DCA00BE320D /* UrlHandler.swift */; };
 		9B8285471CE20DE40027D15C /* HMScanner.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9B82853B1CE20DE40027D15C /* HMScanner.bundle */; };
 		9B8285481CE20DE40027D15C /* HMScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B82853D1CE20DE40027D15C /* HMScanner.m */; };
-		9B8285491CE20DE40027D15C /* HMScannerBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B82853F1CE20DE40027D15C /* HMScannerBorder.m */; };
-		9B82854B1CE20DE40027D15C /* HMScannerMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8285431CE20DE40027D15C /* HMScannerMaskView.m */; };
-		9B82854C1CE20DE40027D15C /* HMScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8285451CE20DE40027D15C /* HMScannerViewController.m */; };
 		9B8706001C1D788F00651424 /* PacketTunnelProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8705FF1C1D788F00651424 /* PacketTunnelProvider.m */; };
 		9B8706041C1D788F00651424 /* PacketTunnel.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9B8705FA1C1D788F00651424 /* PacketTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9B87060B1C1DBCCD00651424 /* dns.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B87060A1C1DBCCD00651424 /* dns.m */; };
 		9B87060D1C1DBDD400651424 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B87060C1C1DBDD400651424 /* libresolv.tbd */; };
 		9B8750551CC761D000A11715 /* RequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8750541CC761D000A11715 /* RequestModel.swift */; };
-		9B88109E1CCF58820033EA20 /* RequestDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B88109D1CCF58820033EA20 /* RequestDetailViewController.swift */; };
 		9B9B15C01C21595B000B6541 /* PotatsoLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B9B15BF1C21595B000B6541 /* PotatsoLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9B9B15C41C21595B000B6541 /* PotatsoLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9B15BD1C21595B000B6541 /* PotatsoLibrary.framework */; };
 		9B9B15C51C21595B000B6541 /* PotatsoLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9B15BD1C21595B000B6541 /* PotatsoLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -61,7 +57,7 @@
 		9BB3F7421CC60B5300C2DD05 /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB3F73F1CC60B5300C2DD05 /* Localized.swift */; };
 		9BB3F7441CC60B6F00C2DD05 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB3F7431CC60B6F00C2DD05 /* Error.swift */; };
 		9BB3F7471CC60CBE00C2DD05 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BB3F7491CC60CBE00C2DD05 /* Localizable.strings */; };
-		9BB3F74F1CC6308000C2DD05 /* RecentRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB3F74E1CC6308000C2DD05 /* RecentRequestsViewController.swift */; };
+		9BB3F74F1CC6308000C2DD05 /* RecentRequestsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB3F74E1CC6308000C2DD05 /* RecentRequestsVC.swift */; };
 		9BB62FA31C8FFC1D002ADC54 /* RuleSetConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB62FA21C8FFC1D002ADC54 /* RuleSetConfigurationViewController.swift */; };
 		9BC215B91CB4DA9E002AADD1 /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC215B81CB4DA9E002AADD1 /* Proxy.swift */; };
 		9BC215BB1CB4DAE6002AADD1 /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC215BA1CB4DAE6002AADD1 /* BaseModel.swift */; };
@@ -154,16 +150,19 @@
 		9BF303461CC8A1F60096588E /* LogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF303451CC8A1F60096588E /* LogDetailViewController.swift */; };
 		9BF3034B1CCA1B060096588E /* BaseEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF3034A1CCA1B060096588E /* BaseEmptyView.swift */; };
 		9BF3034D1CCA20D80096588E /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF3034C1CCA20D80096588E /* Logging.swift */; };
-		9BFE21C21CD0E35D001AB019 /* DetailRawTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BFE21C11CD0E35D001AB019 /* DetailRawTextCell.swift */; };
 		A4564DF27925368D6CA67F7D /* Pods_PacketTunnel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B03E5F0D3FAB0B3302CA1A4E /* Pods_PacketTunnel.framework */; };
 		A5E749DA2197E384CBCBA84B /* Pods_PacketProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 310645853592796E08924EB3 /* Pods_PacketProcessor.framework */; };
 		B344F7C30FF7755C7EA32B8C /* Pods_PotatsoLibraryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27A0B817AADB557908316E3 /* Pods_PotatsoLibraryTests.framework */; };
 		B803A6961D0165EA003EA9AA /* CloudViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B803A6951D0165EA003EA9AA /* CloudViewController.swift */; };
 		B803A6981D02B768003EA9AA /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = B803A6971D02B768003EA9AA /* API.swift */; };
 		B82574A91D1D98CF007BAF40 /* Pollution.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82574A81D1D98CF007BAF40 /* Pollution.swift */; };
+		B829C1721D4395BC00C17B82 /* QRCodeScannerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = B829C1711D4395BC00C17B82 /* QRCodeScannerVC.m */; };
 		B8319A0A1D1B975C001E50C2 /* RegexUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8319A091D1B975C001E50C2 /* RegexUtils.swift */; };
 		B8319A0D1D1BD696001E50C2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B8319A0F1D1BD696001E50C2 /* Localizable.strings */; };
 		B8367A811D1B6D5400D50C25 /* BaseButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8367A801D1B6D5400D50C25 /* BaseButtonRow.swift */; };
+		B83AA5701D38E6F7007905B4 /* RequestDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83AA56F1D38E6F7007905B4 /* RequestDetailVC.swift */; };
+		B83AA5741D38E728007905B4 /* SegmentPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83AA5731D38E728007905B4 /* SegmentPageVC.swift */; };
+		B83AA5761D38E98A007905B4 /* RequestOverviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83AA5751D38E98A007905B4 /* RequestOverviewVC.swift */; };
 		B83D3E791D2BA689007655CE /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83D3E781D2BA689007655CE /* Event.swift */; };
 		B83D3E7D1D2BA8C8007655CE /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83D3E7C1D2BA8C8007655CE /* Receipt.swift */; };
 		B84551401CF83D07005779CD /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B845513F1CF83D07005779CD /* HomeVC.swift */; };
@@ -171,6 +170,9 @@
 		B86B08EC1D17F85800613014 /* ShadowPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B86B08E91D17F84900613014 /* ShadowPath.framework */; };
 		B86B08ED1D17FB9B00613014 /* ShadowPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B86B08E91D17F84900613014 /* ShadowPath.framework */; };
 		B87A043A1D193ABC001132F2 /* LoggerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87A04391D193ABC001132F2 /* LoggerUtils.swift */; };
+		B87A72B41D433ACA006C2A1B /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87A72B31D433ACA006C2A1B /* NotificationHandler.swift */; };
+		B87B98041D3B423B00FA66BF /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87B98031D3B423B00FA66BF /* PaddingLabel.swift */; };
+		B87B980A1D3B64BE00FA66BF /* RequestEventRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87B98091D3B64BE00FA66BF /* RequestEventRow.swift */; };
 		B88096B01D0579F5008BEB87 /* CloudDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88096AF1D0579F5008BEB87 /* CloudDetailViewController.swift */; };
 		B88096B21D0652F0008BEB87 /* RuleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88096B11D0652F0008BEB87 /* RuleCell.swift */; };
 		B8822CCD1D2AA70A00AD252C /* Receipt.m in Sources */ = {isa = PBXBuildFile; fileRef = B8822CCC1D2AA70A00AD252C /* Receipt.m */; };
@@ -181,6 +183,7 @@
 		B88559EC1D21319D00B1243E /* YAML.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B88559EA1D21319D00B1243E /* YAML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B88559F01D21371A00B1243E /* PotatsoModel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BC6FFEA1CB28B4B00E5EA61 /* PotatsoModel.framework */; };
 		B88874491D18186100AEF002 /* ShadowPath.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B86B08E91D17F84900613014 /* ShadowPath.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B8AD81681D4AF9FB00C12FC1 /* YAML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B88559EA1D21319D00B1243E /* YAML.framework */; };
 		B8C256AE1D1A93DA0074D3B1 /* FlatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C256AD1D1A93DA0074D3B1 /* FlatButton.swift */; };
 		B8C256B01D1A957A0074D3B1 /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C256AF1D1A957A0074D3B1 /* HomePresenter.swift */; };
 		B8CCC6DD1CFD5D5D000E7E2E /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CCC6DC1CFD5D5D000E7E2E /* CollectionViewController.swift */; };
@@ -188,6 +191,7 @@
 		B8CCC6E51CFDCFD8000E7E2E /* RuleSetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CCC6E41CFDCFD8000E7E2E /* RuleSetCell.swift */; };
 		B8CCC6E71CFDD99E000E7E2E /* ProxyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CCC6E61CFDD99E000E7E2E /* ProxyListViewController.swift */; };
 		B8CCC6EB1CFF1501000E7E2E /* ProxyRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CCC6EA1CFF1501000E7E2E /* ProxyRow.swift */; };
+		B8EAC5941D40BF310046963C /* TunnelError.m in Sources */ = {isa = PBXBuildFile; fileRef = B8EAC5931D40BF310046963C /* TunnelError.m */; };
 		B8F7845C1D36760D00F02FF5 /* DashboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F7845B1D36760D00F02FF5 /* DashboardVC.swift */; };
 		B8F784671D3678B400F02FF5 /* Settings.h in Headers */ = {isa = PBXBuildFile; fileRef = B8F784651D3678B400F02FF5 /* Settings.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8F784681D3678B400F02FF5 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F784661D3678B400F02FF5 /* Settings.m */; };
@@ -360,12 +364,6 @@
 		9B82853B1CE20DE40027D15C /* HMScanner.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HMScanner.bundle; sourceTree = "<group>"; };
 		9B82853C1CE20DE40027D15C /* HMScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMScanner.h; sourceTree = "<group>"; };
 		9B82853D1CE20DE40027D15C /* HMScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMScanner.m; sourceTree = "<group>"; };
-		9B82853E1CE20DE40027D15C /* HMScannerBorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMScannerBorder.h; sourceTree = "<group>"; };
-		9B82853F1CE20DE40027D15C /* HMScannerBorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMScannerBorder.m; sourceTree = "<group>"; };
-		9B8285421CE20DE40027D15C /* HMScannerMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMScannerMaskView.h; sourceTree = "<group>"; };
-		9B8285431CE20DE40027D15C /* HMScannerMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMScannerMaskView.m; sourceTree = "<group>"; };
-		9B8285441CE20DE40027D15C /* HMScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMScannerViewController.h; sourceTree = "<group>"; };
-		9B8285451CE20DE40027D15C /* HMScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMScannerViewController.m; sourceTree = "<group>"; };
 		9B8705F51C1D77CE00651424 /* Potatso.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Potatso.entitlements; sourceTree = "<group>"; };
 		9B8705FA1C1D788F00651424 /* PacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B8705FD1C1D788F00651424 /* PacketTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PacketTunnel.entitlements; sourceTree = "<group>"; };
@@ -376,7 +374,6 @@
 		9B87060A1C1DBCCD00651424 /* dns.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dns.m; sourceTree = "<group>"; };
 		9B87060C1C1DBDD400651424 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		9B8750541CC761D000A11715 /* RequestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestModel.swift; sourceTree = "<group>"; };
-		9B88109D1CCF58820033EA20 /* RequestDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDetailViewController.swift; sourceTree = "<group>"; };
 		9B9B15BD1C21595B000B6541 /* PotatsoLibrary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PotatsoLibrary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B9B15BF1C21595B000B6541 /* PotatsoLibrary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PotatsoLibrary.h; sourceTree = "<group>"; };
 		9B9B15C11C21595B000B6541 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -386,7 +383,7 @@
 		9BB3F7431CC60B6F00C2DD05 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		9BB3F7481CC60CBE00C2DD05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9BB3F74A1CC60CBF00C2DD05 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		9BB3F74E1CC6308000C2DD05 /* RecentRequestsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentRequestsViewController.swift; sourceTree = "<group>"; };
+		9BB3F74E1CC6308000C2DD05 /* RecentRequestsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentRequestsVC.swift; sourceTree = "<group>"; };
 		9BB62FA21C8FFC1D002ADC54 /* RuleSetConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RuleSetConfigurationViewController.swift; path = Advance/RuleSetConfigurationViewController.swift; sourceTree = "<group>"; };
 		9BC215B81CB4DA9E002AADD1 /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
 		9BC215BA1CB4DAE6002AADD1 /* BaseModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
@@ -831,7 +828,6 @@
 		9BF303451CC8A1F60096588E /* LogDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogDetailViewController.swift; sourceTree = "<group>"; };
 		9BF3034A1CCA1B060096588E /* BaseEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseEmptyView.swift; sourceTree = "<group>"; };
 		9BF3034C1CCA20D80096588E /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		9BFE21C11CD0E35D001AB019 /* DetailRawTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailRawTextCell.swift; sourceTree = "<group>"; };
 		9E603B577575916EC652D04D /* Pods-PotatsoLibrary.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PotatsoLibrary.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PotatsoLibrary/Pods-PotatsoLibrary.debug.xcconfig"; sourceTree = "<group>"; };
 		A27A0B817AADB557908316E3 /* Pods_PotatsoLibraryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PotatsoLibraryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A77B9512684E7D83890CCE80 /* Pods-PotatsoLibraryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PotatsoLibraryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PotatsoLibraryTests/Pods-PotatsoLibraryTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -841,16 +837,24 @@
 		B803A6951D0165EA003EA9AA /* CloudViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudViewController.swift; sourceTree = "<group>"; };
 		B803A6971D02B768003EA9AA /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		B82574A81D1D98CF007BAF40 /* Pollution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pollution.swift; sourceTree = "<group>"; };
+		B829C1701D4395BC00C17B82 /* QRCodeScannerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeScannerVC.h; sourceTree = "<group>"; };
+		B829C1711D4395BC00C17B82 /* QRCodeScannerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeScannerVC.m; sourceTree = "<group>"; };
 		B8319A091D1B975C001E50C2 /* RegexUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexUtils.swift; sourceTree = "<group>"; };
 		B8319A0E1D1BD696001E50C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B8319A101D1BD699001E50C2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B8367A801D1B6D5400D50C25 /* BaseButtonRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseButtonRow.swift; sourceTree = "<group>"; };
+		B83AA56F1D38E6F7007905B4 /* RequestDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDetailVC.swift; sourceTree = "<group>"; };
+		B83AA5731D38E728007905B4 /* SegmentPageVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentPageVC.swift; sourceTree = "<group>"; };
+		B83AA5751D38E98A007905B4 /* RequestOverviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestOverviewVC.swift; sourceTree = "<group>"; };
 		B83D3E781D2BA689007655CE /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B83D3E7C1D2BA8C8007655CE /* Receipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
 		B845513F1CF83D07005779CD /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		B84551411CF878BD005779CD /* ConfigGroupChooseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigGroupChooseVC.swift; sourceTree = "<group>"; };
 		B86B08E31D17F84900613014 /* ShadowPath.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ShadowPath.xcodeproj; path = Library/ShadowPath/ShadowPath.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B87A04391D193ABC001132F2 /* LoggerUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerUtils.swift; sourceTree = "<group>"; };
+		B87A72B31D433ACA006C2A1B /* NotificationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
+		B87B98031D3B423B00FA66BF /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		B87B98091D3B64BE00FA66BF /* RequestEventRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestEventRow.swift; sourceTree = "<group>"; };
 		B88096AF1D0579F5008BEB87 /* CloudDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudDetailViewController.swift; sourceTree = "<group>"; };
 		B88096B11D0652F0008BEB87 /* RuleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleCell.swift; sourceTree = "<group>"; };
 		B8822CCB1D2AA70A00AD252C /* Receipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Receipt.h; sourceTree = "<group>"; };
@@ -866,6 +870,9 @@
 		B8CCC6E41CFDCFD8000E7E2E /* RuleSetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleSetCell.swift; sourceTree = "<group>"; };
 		B8CCC6E61CFDD99E000E7E2E /* ProxyListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyListViewController.swift; sourceTree = "<group>"; };
 		B8CCC6EA1CFF1501000E7E2E /* ProxyRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyRow.swift; path = ../ProxyRow.swift; sourceTree = "<group>"; };
+		B8CF2F991D3DF69E009C9FF3 /* Confidential.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Confidential.h; sourceTree = "<group>"; };
+		B8EAC5921D40BF310046963C /* TunnelError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TunnelError.h; sourceTree = "<group>"; };
+		B8EAC5931D40BF310046963C /* TunnelError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TunnelError.m; sourceTree = "<group>"; };
 		B8F7845B1D36760D00F02FF5 /* DashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardVC.swift; sourceTree = "<group>"; };
 		B8F784651D3678B400F02FF5 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		B8F784661D3678B400F02FF5 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
@@ -938,6 +945,7 @@
 			files = (
 				9BC600351CB29AEE00E5EA61 /* PotatsoBase.framework in Frameworks */,
 				9BC6FFF61CB28C4500E5EA61 /* PotatsoModel.framework in Frameworks */,
+				B8AD81681D4AF9FB00C12FC1 /* YAML.framework in Frameworks */,
 				FE9B3692D19B03821360B886 /* Pods_PotatsoLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1040,6 +1048,7 @@
 				9BC8589F1C33B00200992032 /* Potatso-Bridge-Header.h */,
 				9B0CFA0E1C1C0B1B007BD7C6 /* AppDelegate.swift */,
 				9B1F745F1C2F84250028C1A6 /* AppInitializer.swift */,
+				B87A72B31D433ACA006C2A1B /* NotificationHandler.swift */,
 				9B2290FE1C8E5B9600EEC901 /* DataInitializer.swift */,
 				9B8193EC1CBE4DCA00BE320D /* UrlHandler.swift */,
 				9B1F74611C2F85540028C1A6 /* UIManager.swift */,
@@ -1054,6 +1063,7 @@
 				9B17F8EC1C53392D00679FCB /* Utils */,
 				9B8705F51C1D77CE00651424 /* Potatso.entitlements */,
 				9B1F745D1C2F83AD0028C1A6 /* config.plist */,
+				B8CF2F991D3DF69E009C9FF3 /* Confidential.h */,
 				9B0CFA151C1C0B1B007BD7C6 /* Assets.xcassets */,
 				9B0CFA171C1C0B1B007BD7C6 /* LaunchScreen.storyboard */,
 				9B0CFA1A1C1C0B1B007BD7C6 /* Info.plist */,
@@ -1138,12 +1148,8 @@
 				9B82853B1CE20DE40027D15C /* HMScanner.bundle */,
 				9B82853C1CE20DE40027D15C /* HMScanner.h */,
 				9B82853D1CE20DE40027D15C /* HMScanner.m */,
-				9B82853E1CE20DE40027D15C /* HMScannerBorder.h */,
-				9B82853F1CE20DE40027D15C /* HMScannerBorder.m */,
-				9B8285421CE20DE40027D15C /* HMScannerMaskView.h */,
-				9B8285431CE20DE40027D15C /* HMScannerMaskView.m */,
-				9B8285441CE20DE40027D15C /* HMScannerViewController.h */,
-				9B8285451CE20DE40027D15C /* HMScannerViewController.m */,
+				B829C1701D4395BC00C17B82 /* QRCodeScannerVC.h */,
+				B829C1711D4395BC00C17B82 /* QRCodeScannerVC.m */,
 			);
 			path = QRCode;
 			sourceTree = "<group>";
@@ -1157,6 +1163,8 @@
 				9B2D8C8A1C7C3F5B00CC65B3 /* ProxyManager.m */,
 				9B8706091C1DBCCD00651424 /* dns.h */,
 				9B87060A1C1DBCCD00651424 /* dns.m */,
+				B8EAC5921D40BF310046963C /* TunnelError.h */,
+				B8EAC5931D40BF310046963C /* TunnelError.m */,
 				B86B08E31D17F84900613014 /* ShadowPath.xcodeproj */,
 				9B8706011C1D788F00651424 /* Info.plist */,
 				9B8705FC1C1D788F00651424 /* Supporting Files */,
@@ -1205,10 +1213,10 @@
 			isa = PBXGroup;
 			children = (
 				B8F7845B1D36760D00F02FF5 /* DashboardVC.swift */,
-				9BB3F74E1CC6308000C2DD05 /* RecentRequestsViewController.swift */,
+				9BB3F74E1CC6308000C2DD05 /* RecentRequestsVC.swift */,
+				B83AA56F1D38E6F7007905B4 /* RequestDetailVC.swift */,
+				B83AA5751D38E98A007905B4 /* RequestOverviewVC.swift */,
 				9BB3F73B1CC3D3DE00C2DD05 /* RecentRequestsCell.swift */,
-				9B88109D1CCF58820033EA20 /* RequestDetailViewController.swift */,
-				9BFE21C11CD0E35D001AB019 /* DetailRawTextCell.swift */,
 				9B8750541CC761D000A11715 /* RequestModel.swift */,
 				9BF303451CC8A1F60096588E /* LogDetailViewController.swift */,
 			);
@@ -1254,6 +1262,7 @@
 				9BC858A41C33D30100992032 /* BaseSafariViewController.swift */,
 				9BF3034A1CCA1B060096588E /* BaseEmptyView.swift */,
 				B8367A841D1B6D6800D50C25 /* Row */,
+				B83AA5731D38E728007905B4 /* SegmentPageVC.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -1936,6 +1945,7 @@
 			isa = PBXGroup;
 			children = (
 				B8CCC6EA1CFF1501000E7E2E /* ProxyRow.swift */,
+				B87B98091D3B64BE00FA66BF /* RequestEventRow.swift */,
 				B8367A801D1B6D5400D50C25 /* BaseButtonRow.swift */,
 			);
 			name = Row;
@@ -1954,6 +1964,7 @@
 			isa = PBXGroup;
 			children = (
 				B8C256AD1D1A93DA0074D3B1 /* FlatButton.swift */,
+				B87B98031D3B423B00FA66BF /* PaddingLabel.swift */,
 			);
 			name = View;
 			path = ..;
@@ -2049,10 +2060,11 @@
 			buildConfigurationList = 9B0CFA281C1C0B1B007BD7C6 /* Build configuration list for PBXNativeTarget "Potatso" */;
 			buildPhases = (
 				D693559CB9C3A77E754FCAC3 /* [CP] Check Pods Manifest.lock */,
+				B8CF2F9A1D3DF6C7009C9FF3 /* Confidential */,
 				9B0CFA071C1C0B1A007BD7C6 /* Sources */,
 				9B0CFA081C1C0B1A007BD7C6 /* Frameworks */,
 				9B0CFA091C1C0B1A007BD7C6 /* Resources */,
-				B830CC631D2CF55A00FA8E37 /* Confidential */,
+				B830CC631D2CF55A00FA8E37 /* Custom Data */,
 				9B8706081C1D788F00651424 /* Embed App Extensions */,
 				9B9B15821C1ECADF000B6541 /* Embed Frameworks */,
 				9B9E946C1CBA6F0A003FBC47 /* Cartahge */,
@@ -2160,8 +2172,8 @@
 			buildConfigurationList = 9BC600281CB2921D00E5EA61 /* Build configuration list for PBXNativeTarget "PotatsoBase" */;
 			buildPhases = (
 				9BC600181CB2921C00E5EA61 /* Sources */,
-				9BC600191CB2921C00E5EA61 /* Frameworks */,
 				9BC6001A1CB2921C00E5EA61 /* Headers */,
+				9BC600191CB2921C00E5EA61 /* Frameworks */,
 				9BC6001B1CB2921C00E5EA61 /* Resources */,
 			);
 			buildRules = (
@@ -2647,19 +2659,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B830CC631D2CF55A00FA8E37 /* Confidential */ = {
+		B830CC631D2CF55A00FA8E37 /* Custom Data */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = Confidential;
+			name = "Custom Data";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "src=\"${PROJECT_DIR}/Confidential/\"\nif [ -d $src ]\nthen\n    echo \"Confidential found.\"\n    fabric=\"env.plist\"\n    BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\n    rsync -av --exclude .DS_Store --exclude $fabric $src $BUILD_APP_DIR\nelse\n    echo \"Confidential not found.\"\nfi";
+			shellScript = "src=\"${PROJECT_DIR}/Confidential/\"\nif [ -d $src ]\nthen\n    echo \"Confidential found.\"\n    fabric=\"env.plist\"\n    thirdKeys=\"ThirdKeys.h\"\n    BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\n    rsync -av --exclude .DS_Store --exclude $fabric --exclude $thirdKeys $src $BUILD_APP_DIR\nelse\n    echo \"Confidential not found.\"\nfi";
 		};
 		B84B4E341D2176D6002B946A /* Framework Hack */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2674,6 +2686,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [[ -d \"Frameworks\" ]]; then\nrm -fr Frameworks\nfi";
+		};
+		B8CF2F9A1D3DF6C7009C9FF3 /* Confidential */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Confidential;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "file=\"${PROJECT_DIR}/Potatso/Confidential.h\"\nif [ -f $file ]\nthen\n    echo \"Confidential.h found.\"\nelse\n    echo \"Confidential.h not found.\"\n    src=\"${PROJECT_DIR}/Potatso/DefaultConfidential.h\"\n    rsync -av $src $file\nfi";
 		};
 		BA4C15DFC5B5BB3A0133C8EF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2780,10 +2806,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B83AA5701D38E6F7007905B4 /* RequestDetailVC.swift in Sources */,
 				B83D3E7D1D2BA8C8007655CE /* Receipt.swift in Sources */,
 				B8CCC6DD1CFD5D5D000E7E2E /* CollectionViewController.swift in Sources */,
 				B88096B21D0652F0008BEB87 /* RuleCell.swift in Sources */,
 				9B17F8F01C533BBF00679FCB /* Color.swift in Sources */,
+				B83AA5761D38E98A007905B4 /* RequestOverviewVC.swift in Sources */,
 				9B5C00261CBFB35C008DDE7A /* ConfigGroupCell.swift in Sources */,
 				B8C256AE1D1A93DA0074D3B1 /* FlatButton.swift in Sources */,
 				9B8193ED1CBE4DCA00BE320D /* UrlHandler.swift in Sources */,
@@ -2799,18 +2827,17 @@
 				9B0CFA0F1C1C0B1B007BD7C6 /* AppDelegate.swift in Sources */,
 				9BB3F73C1CC3D3DE00C2DD05 /* RecentRequestsCell.swift in Sources */,
 				9BD4CACA1CB9600D00F99BF9 /* AlertUtils.swift in Sources */,
+				B829C1721D4395BC00C17B82 /* QRCodeScannerVC.m in Sources */,
+				B87B98041D3B423B00FA66BF /* PaddingLabel.swift in Sources */,
 				B8CCC6E51CFDCFD8000E7E2E /* RuleSetCell.swift in Sources */,
-				9B82854C1CE20DE40027D15C /* HMScannerViewController.m in Sources */,
 				B803A6961D0165EA003EA9AA /* CloudViewController.swift in Sources */,
 				9BC858A51C33D30100992032 /* BaseSafariViewController.swift in Sources */,
 				B84551421CF878BD005779CD /* ConfigGroupChooseVC.swift in Sources */,
-				9B88109E1CCF58820033EA20 /* RequestDetailViewController.swift in Sources */,
 				B88096B01D0579F5008BEB87 /* CloudDetailViewController.swift in Sources */,
 				B8319A0A1D1B975C001E50C2 /* RegexUtils.swift in Sources */,
 				B84551401CF83D07005779CD /* HomeVC.swift in Sources */,
 				B8CCC6E71CFDD99E000E7E2E /* ProxyListViewController.swift in Sources */,
 				9B76EEB91C911CBF002BF5D1 /* ProxySelectionViewController.swift in Sources */,
-				9BFE21C21CD0E35D001AB019 /* DetailRawTextCell.swift in Sources */,
 				9BF303461CC8A1F60096588E /* LogDetailViewController.swift in Sources */,
 				9B1D9B7B1CA4C45F0078D814 /* HUDUtils.swift in Sources */,
 				B8822CCD1D2AA70A00AD252C /* Receipt.m in Sources */,
@@ -2820,14 +2847,15 @@
 				9BF3034B1CCA1B060096588E /* BaseEmptyView.swift in Sources */,
 				9B5E13BA1C897870007DFE0A /* ProxyConfigurationViewController.swift in Sources */,
 				B8367A811D1B6D5400D50C25 /* BaseButtonRow.swift in Sources */,
-				9B82854B1CE20DE40027D15C /* HMScannerMaskView.m in Sources */,
+				B87B980A1D3B64BE00FA66BF /* RequestEventRow.swift in Sources */,
 				B83D3E791D2BA689007655CE /* Event.swift in Sources */,
 				9B17F8EB1C53379700679FCB /* SettingsViewController.swift in Sources */,
 				B8F7845C1D36760D00F02FF5 /* DashboardVC.swift in Sources */,
 				B803A6981D02B768003EA9AA /* API.swift in Sources */,
-				9B8285491CE20DE40027D15C /* HMScannerBorder.m in Sources */,
+				B87A72B41D433ACA006C2A1B /* NotificationHandler.swift in Sources */,
 				9B76EEB71C90740C002BF5D1 /* RuleSetsSelectionViewController.swift in Sources */,
-				9BB3F74F1CC6308000C2DD05 /* RecentRequestsViewController.swift in Sources */,
+				B83AA5741D38E728007905B4 /* SegmentPageVC.swift in Sources */,
+				9BB3F74F1CC6308000C2DD05 /* RecentRequestsVC.swift in Sources */,
 				9B8285481CE20DE40027D15C /* HMScanner.m in Sources */,
 				9BB3F7441CC60B6F00C2DD05 /* Error.swift in Sources */,
 				9B76EEAD1C9005D2002BF5D1 /* RuleConfigurationViewController.swift in Sources */,
@@ -2855,6 +2883,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8EAC5941D40BF310046963C /* TunnelError.m in Sources */,
 				9B2D8C8B1C7C3F5B00CC65B3 /* ProxyManager.m in Sources */,
 				9B8706001C1D788F00651424 /* PacketTunnelProvider.m in Sources */,
 				9B87060B1C1DBCCD00651424 /* dns.m in Sources */,
@@ -3199,7 +3228,10 @@
 				INFOPLIST_FILE = Potatso/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @rpath/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/ShadowPath/ShadowPath/libopenssl/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/ShadowPath/ShadowPath/libopenssl/lib",
+					"$(PODS_ROOT)/Helpshift/helpshift-sdk-ios-v5.6.1",
+				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.potatso;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3240,7 +3272,10 @@
 				INFOPLIST_FILE = Potatso/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @rpath/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/ShadowPath/ShadowPath/libopenssl/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/ShadowPath/ShadowPath/libopenssl/lib",
+					"$(PODS_ROOT)/Helpshift/helpshift-sdk-ios-v5.6.1",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.potatso;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -3408,10 +3443,10 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3440,10 +3475,10 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3472,11 +3507,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PotatsoBase/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3499,10 +3534,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PotatsoBase/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3525,11 +3560,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3558,10 +3593,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3588,11 +3623,11 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3629,10 +3664,10 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 114;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 104;
+				DYLIB_CURRENT_VERSION = 114;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (

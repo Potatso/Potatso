@@ -77,11 +77,7 @@
 )
 
 // for BYTE_ORDER
-#if defined(BADVPN_USE_WINAPI) && !defined(_MSC_VER)
-    #include <sys/param.h>
-#elif defined(BADVPN_LINUX)
-    #include <endian.h>
-#elif defined(BADVPN_FREEBSD)
+#if defined(BADVPN_FREEBSD)
     #include <machine/endian.h>
 #else
     #define LITTLE_ENDIAN 1234
