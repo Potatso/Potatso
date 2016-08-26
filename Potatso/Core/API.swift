@@ -60,9 +60,11 @@ extension RuleSet: Mappable {
         guard let rulesJSON = map.JSONDictionary["rules"] as? [AnyObject] else {
             return
         }
+        var rules: [Rule] = []
         if let parsedObject = Mapper<Rule>().mapArray(rulesJSON){
             rules.appendContentsOf(parsedObject)
         }
+        self.rules = rules
     }
 
     // Mappable
@@ -70,7 +72,7 @@ extension RuleSet: Mappable {
         uuid      <- map["id"]
         name      <- map["name"]
         createAt  <- (map["created_at"], DateTransform())
-        updateAt  <- (map["updated_at"], DateTransform())
+        remoteUpdatedAt  <- (map["updated_at"], DateTransform())
         desc      <- map["description"]
         ruleCount <- map["rule_count"]
         isOfficial <- map["is_official"]
@@ -81,15 +83,22 @@ extension RuleSet {
 
     static func addRemoteObject(ruleset: RuleSet, update: Bool = true) throws {
         ruleset.isSubscribe = true
-        try defaultRealm.write {
-            defaultRealm.add(ruleset, update: true)
+        ruleset.deleted = false
+        ruleset.editable = false
+        let id = ruleset.uuid
+        guard let local = DBUtils.get(id, type: RuleSet.self) else {
+            try DBUtils.add(ruleset)
+            return
         }
+        if local.remoteUpdatedAt == ruleset.remoteUpdatedAt && local.deleted == ruleset.deleted {
+            return
+        }
+        try DBUtils.add(ruleset)
     }
 
     static func addRemoteArray(rulesets: [RuleSet], update: Bool = true) throws {
-        rulesets.forEach({ $0.isSubscribe = true })
-        try defaultRealm.write {
-            defaultRealm.add(rulesets, update: true)
+        for ruleset in rulesets {
+            try addRemoteObject(ruleset, update: update)
         }
     }
 
@@ -98,22 +107,20 @@ extension RuleSet {
 extension Rule: Mappable {
 
     public convenience init?(_ map: Map) {
-        self.init()
         guard let pattern = map.JSONDictionary["pattern"] as? String else {
-            return
+            return nil
         }
         guard let actionStr = map.JSONDictionary["action"] as? String, action = RuleAction(rawValue: actionStr) else {
-            return
+            return nil
         }
         guard let typeStr = map.JSONDictionary["type"] as? String, type = RuleType(rawValue: typeStr) else {
-            return
+            return nil
         }
-        update(type, action: action, value: pattern)
+        self.init(type: type, action: action, value: pattern)
     }
 
     // Mappable
     public func mapping(map: Map) {
-        order <- map["order"]
     }
 }
 
@@ -256,6 +263,6 @@ extension Alamofire.Request {
     }
 
     private static func logError(error: NSError, request: NSURLRequest?, response: NSURLResponse?) {
-        DDLogError("ObjectMapperSerializer failure: \(error.localizedDescription), request: \(request?.debugDescription), response: \(response.debugDescription)")
+        DDLogError("ObjectMapperSerializer failure: \(error), request: \(request?.debugDescription), response: \(response.debugDescription)")
     }
 }

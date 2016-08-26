@@ -601,51 +601,16 @@ jb_socket forwarded_connect(const struct forward_spec * fwd,
 #endif /* def FEATURE_CONNECTION_SHARING */
 
    /* Figure out if we need to connect to the web server or a HTTP proxy. */
-   if (fwd->forward_host)
-   {
-      /* HTTP proxy */
-      dest_host = fwd->forward_host;
-      dest_port = fwd->forward_port;
-   }
-   else
-   {
-      /* Web server */
-      dest_host = http->host;
-      dest_port = http->port;
-   }
+    sfd = connect_to_forward(csp, fwd, 0);
 
-   /* Connect, maybe using a SOCKS proxy */
-    if (fwd->type != SOCKS_NONE) {
-        logRequestStatus(csp, CONN_STATUS_REMOTE);
-    }
-   switch (fwd->type)
-   {
-      case SOCKS_NONE:
-      case FORWARD_WEBSERVER:
-         sfd = connect_to(dest_host, dest_port, csp);
-         break;
-      case SOCKS_4:
-      case SOCKS_4A:
-         sfd = socks4_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
-         break;
-      case SOCKS_5:
-      case SOCKS_5T:
-         sfd = socks5_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
-         break;
-      default:
-         /* Should never get here */
-         log_error(LOG_LEVEL_FATAL,
-            "Internal error in forwarded_connect(). Bad proxy type: %d", fwd->type);
-   }
-
-   if (JB_INVALID_SOCKET != sfd)
-   {
-      log_error(LOG_LEVEL_CONNECT,
+    if (JB_INVALID_SOCKET != sfd)
+    {
+        log_error(LOG_LEVEL_CONNECT,
          "Created new connection to %s:%d on socket %d.",
          http->host, http->port, sfd);
-   }
+    }
 
-   return sfd;
+    return sfd;
 
 }
 
@@ -783,7 +748,7 @@ jb_socket socks4_connect(char *gateway_host,
    c->dstip[3]    = (unsigned char)((web_server_addr        ) & 0xff);
 
    /* pass the request to the socks server */
-   sfd = connect_to(gateway_host, gateway_port, csp);
+   sfd = connect_to(gateway_host, gateway_port, csp, 1);
 
    if (sfd == JB_INVALID_SOCKET)
    {
@@ -977,7 +942,7 @@ jb_socket socks5_connect(char *gateway_host,
    }
 
    /* pass the request to the socks server */
-   sfd = connect_to(gateway_host, gateway_port, csp);
+   sfd = connect_to(gateway_host, gateway_port, csp, 1);
 
    if (sfd == JB_INVALID_SOCKET)
    {

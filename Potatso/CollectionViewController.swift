@@ -11,33 +11,29 @@ import Cartography
 
 private let rowHeight: CGFloat = 135
 
-class CollectionViewController: UIViewController {
+class CollectionViewController: SegmentPageVC {
 
-    var pageViewControllers: [UIViewController] = []
+    let pageVCs = [
+        RuleSetListViewController(),
+        ProxyListViewController(),
+        CloudViewController(),
+    ]
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationItem.titleView = segmentedControl
-        pageViewControllers.append(RuleSetListViewController())
-        pageViewControllers.append(ProxyListViewController())
-        pageViewControllers.append(CloudViewController())
-        showCollection(0)
+    override func pageViewControllersForSegmentPageVC() -> [UIViewController] {
+        return pageVCs
     }
 
-    func onSegmentedChanged(seg: UISegmentedControl) {
-        showCollection(seg.selectedSegmentIndex)
+    override func segmentsForSegmentPageVC() -> [String] {
+        return ["Rule Set".localized(), "Proxy".localized(), "Cloud Set".localized()]
     }
 
-    func showCollection(index: Int) {
+    override func showPage(index: Int) {
         if index < 2 {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(add))
         }else {
             navigationItem.rightBarButtonItem = nil
         }
-        segmentedControl.selectedSegmentIndex = index
-        if index < pageViewControllers.count {
-            pageVC.setViewControllers([pageViewControllers[index]], direction: .Forward, animated: false, completion: nil)
-        }
+        super.showPage(index)
     }
 
     func add() {
@@ -52,30 +48,6 @@ class CollectionViewController: UIViewController {
             break
         }
     }
-
-    override func loadView() {
-        super.loadView()
-        view.backgroundColor = Color.Background
-        addChildVC(pageVC)
-        setupAutoLayout()
-    }
-
-    func setupAutoLayout() {
-        constrain(pageVC.view, view) { pageView, superview in
-            pageView.edges == superview.edges
-        }
-    }
-
-
-    lazy var pageVC: UIPageViewController = {
-        let p = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        return p
-    }()
-
-    lazy var segmentedControl: UISegmentedControl = {
-        let v = UISegmentedControl(items: ["Rule Set".localized(), "Proxy".localized(), "Cloud Set".localized()])
-        v.addTarget(self, action: #selector(CollectionViewController.onSegmentedChanged(_:)), forControlEvents: .ValueChanged)
-        return v
-    }()
-
+    
 }
+

@@ -1268,8 +1268,6 @@ config_isallowed (config_t * conf, conn_t * conn, chain_t ** chain)
         char *addrtmp = conn->dest.address;
         memcpy (&ip, addrtmp, 4);
 
-        struct forward_spec *fwd = NULL;
-
         if (conn->dest.address_type != AF_INET)
         {
             // IPV6
@@ -1281,24 +1279,18 @@ config_isallowed (config_t * conf, conn_t * conn, chain_t ** chain)
         sin.sin_port = htons(conn->dest.port);
         sin.sin_addr.s_addr = ip;
 
-        char *address = strdup(inet_ntoa(sin.sin_addr));
+        struct url_actions *action = forward_ip_routing(&sin);
 
-        struct url_actions *action = po_ip_rules;
-        while (action != NULL) {
-            if (action->tree && radix32tree_find(action->tree, ntohl(sin.sin_addr.s_addr)) != RADIX_NO_VALUE) {
-                fwd = get_forward_rule_settings_by_action(action);
-                break;
-            }
-            action = action->next;
-        }
-        if (fwd && fwd->type == SOCKS_5 && proxy_list) {
+        enum forward_routing routing = action ? action->routing : ROUTE_NONE;
+
+        if (routing == ROUTE_PROXY && proxy_list) {
             ret = 3;
             *chain = conf->chains;
         }else {
-            if (action && action->routing == ROUTE_BLOCK) {
+            if (action && routing == ROUTE_BLOCK) {
                 ret = 2;
             }else {
-                if (fwd && fwd->type == SOCKS_NONE) {
+                if (routing == ROUTE_DIRECT) {
                     ret = 1;
                 }else if (global_mode && proxy_list) {
                     ret = 3;

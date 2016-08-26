@@ -112,7 +112,7 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
         if status {
             wormhole.passMessageObject("", identifier: "stopTunnel")
         }else {
-            NSURLSession.sharedSession().dataTaskWithURL(NSURL(string: "https://on-demand.potatso.com/start/")!).resume()
+            NSURLSession.sharedSession().dataTaskWithURL(NSURL(string: "https://on-demand.connect.potatso.com/start/")!).resume()
         }
     }
     

@@ -13,6 +13,7 @@ def library
     pod 'KissXML/libxml_module'
     pod 'ICSMainFramework', :path => "./Library/ICSMainFramework/"
     pod 'MMWormhole', '~> 2.0.0'
+    pod 'KeychainAccess'
 end
 
 def tunnel
@@ -36,13 +37,16 @@ target "Potatso" do
     pod 'Eureka', '~> 1.6.0'
     pod 'MBProgressHUD'
     pod 'CallbackURLKit'
-    pod 'ICDMaterialActivityIndicatorView'
+    pod 'ICDMaterialActivityIndicatorView', '~> 0.1.0'
     pod 'Reveal-iOS-SDK', '~> 1.6.2', :configurations => ['Debug']
     pod 'ICSPullToRefresh', '~> 0.4'
     pod 'ISO8601DateFormatter', '~> 0.8'
     pod 'Alamofire'
     pod 'ObjectMapper'
     pod 'CocoaLumberjack/Swift'
+    pod 'Helpshift', '5.6.1'
+    pod 'PSOperations', '~> 2.3'
+    pod 'LogglyLogger-CocoaLumberjack', '~> 2.0'
     tunnel
     library
     fabric
@@ -84,6 +88,9 @@ post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
             config.build_settings['ENABLE_BITCODE'] = 'NO'
+            if target.name == "HelpShift"
+                config.build_settings["OTHER_LDFLAGS"] = '$(inherited) "-ObjC"'
+            end
         end
     end
 end

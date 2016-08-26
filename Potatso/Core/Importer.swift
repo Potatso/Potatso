@@ -36,14 +36,20 @@ struct Importer {
     }
     
     func importConfigFromQRCode() {
-        let vc = HMScannerViewController { (result) in
+        let vc = QRCodeScannerVC()
+        vc.resultBlock = { [weak vc] result in
+            vc?.navigationController?.popViewControllerAnimated(true)
             self.onImportInput(result)
+        }
+        vc.errorBlock = { [weak vc] error in
+            vc?.navigationController?.popViewControllerAnimated(true)
+            self.viewController?.showTextHUD("\(error)", dismissAfterDelay: 1.5)
         }
         viewController?.navigationController?.pushViewController(vc, animated: true)
     }
     
     func onImportInput(result: String) {
-        if result.lowercaseString.hasPrefix("ss://") {
+        if Proxy.uriIsShadowsocks(result) {
             importSS(result)
         }else {
             importConfig(result, isURL: true)
@@ -51,39 +57,37 @@ struct Importer {
     }
     
     func importSS(source: String) {
-        let base64String = source.substringFromIndex(source.startIndex.advancedBy(5))
-        let padding = base64String.characters.count + (base64String.characters.count % 4 != 0 ? (4 - base64String.characters.count % 4) : 0)
-        if let decodedData = NSData(base64EncodedString: base64String.stringByPaddingToLength(padding, withString: "=", startingAtIndex: 0), options:   NSDataBase64DecodingOptions(rawValue: 0)), decodedString = NSString(data: decodedData, encoding: NSUTF8StringEncoding) {
-            do {
-                let proxy = try Proxy(dictionary: ["name": "___scanresult", "uri": "ss://\(decodedString)"], inRealm: defaultRealm)
-                var urlTextField: UITextField?
-                let alert = UIAlertController(title: "Add a new proxy".localized(), message: "Please set name for the new proxy".localized(), preferredStyle: .Alert)
-                alert.addTextFieldWithConfigurationHandler { (textField) in
-                    textField.placeholder = "Input name".localized()
-                    urlTextField = textField
+        do {
+            let defaultName = "___scanresult"
+            let proxy = try Proxy(dictionary: ["name": defaultName, "uri": source], inRealm: defaultRealm)
+            var urlTextField: UITextField?
+            let alert = UIAlertController(title: "Add a new proxy".localized(), message: "Please set name for the new proxy".localized(), preferredStyle: .Alert)
+            alert.addTextFieldWithConfigurationHandler { (textField) in
+                textField.placeholder = "Input name".localized()
+                if proxy.name != defaultName {
+                    textField.text = proxy.name
                 }
-                alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default){ (action) in
-                    guard let text = urlTextField?.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) else {
-                        self.onConfigSaveCallback(false, error: "Name can't be empty".localized())
-                        return
-                    }
-                    proxy.name = text
-                    do {
-                        try proxy.validate(inRealm: defaultRealm)
-                        try defaultRealm.write {
-                            defaultRealm.add(proxy)
-                        }
-                        self.onConfigSaveCallback(true, error: nil)
-                    }catch {
-                        self.onConfigSaveCallback(false, error: error)
-                    }
-                    })
-                alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel) { action in
-                    })
-                viewController?.presentViewController(alert, animated: true, completion: nil)
-            }catch {
-                self.onConfigSaveCallback(false, error: error)
+                urlTextField = textField
             }
+            alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default){ (action) in
+                guard let text = urlTextField?.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) else {
+                    self.onConfigSaveCallback(false, error: "Name can't be empty".localized())
+                    return
+                }
+                proxy.name = text
+                do {
+                    try proxy.validate(inRealm: defaultRealm)
+                    try DBUtils.add(proxy)
+                    self.onConfigSaveCallback(true, error: nil)
+                }catch {
+                    self.onConfigSaveCallback(false, error: error)
+                }
+                })
+            alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel) { action in
+                })
+            viewController?.presentViewController(alert, animated: true, completion: nil)
+        }catch {
+            self.onConfigSaveCallback(false, error: error)
         }
         if let vc = viewController {
             Alert.show(vc, message: "Fail to parse proxy config".localized())

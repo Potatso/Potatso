@@ -90,56 +90,59 @@ public enum RuleError: ErrorType {
     case InvalidRule(String)
 }
 
-extension RuleError: CustomStringConvertible {
-    
-    public var description: String {
-        switch self {
-        case .InvalidRule(let rule):
-            return "Invalid rule - \(rule)"
-        }
-    }
-    
-}
+//extension RuleError: CustomStringConvertible {
+//    
+//    public var description: String {
+//        switch self {
+//        case .InvalidRule(let rule):
+//            return "Invalid rule - \(rule)"
+//        }
+//    }
+//    
+//}
+//
+//public final class Rule: BaseModel {
+//    
+//    public dynamic var typeRaw = ""
+//    public dynamic var content = ""
+//    public dynamic var order = 0
+//    public let rulesets = LinkingObjects(fromType: RuleSet.self, property: "rules")
+//
+//}
+//
+//extension Rule {
+//    
+//    public var type : RuleType {
+//        get {
+//            return RuleType(rawValue: typeRaw) ?? .DomainSuffix
+//        }
+//        set(v) {
+//            typeRaw = v.rawValue
+//        }
+//    }
+//    
+//    public var action : RuleAction {
+//        let json = content.jsonDictionary()
+//        if let raw = json?[ruleActionKey] as? String {
+//            return RuleAction(rawValue: raw) ?? .Proxy
+//        }
+//        return .Proxy
+//    }
+//    
+//    public var value : String {
+//        let json = content.jsonDictionary()
+//        return json?[ruleValueKey] as? String ?? ""
+//    }
+//
+//}
+//
+public final class Rule {
 
-public final class Rule: BaseModel {
-    
-    public dynamic var typeRaw = ""
-    public dynamic var content = ""
-    public dynamic var order = 0
-    public let rulesets = LinkingObjects(fromType: RuleSet.self, property: "rules")
-
-}
-
-extension Rule {
-    
-    public var type : RuleType {
-        get {
-            return RuleType(rawValue: typeRaw) ?? .URL
-        }
-        set(v) {
-            typeRaw = v.rawValue
-        }
-    }
-    
-    public var action : RuleAction {
-        let json = content.jsonDictionary()
-        if let raw = json?[ruleActionKey] as? String {
-            return RuleAction(rawValue: raw) ?? .Proxy
-        }
-        return .Proxy
-    }
-    
-    public var value : String {
-        let json = content.jsonDictionary()
-        return json?[ruleValueKey] as? String ?? ""
-    }
-
-}
-
-extension Rule {
+    public var type: RuleType
+    public var value: String
+    public var action: RuleAction
     
     public convenience init(str: String) throws {
-        self.init()
         var ruleStr = str.stringByReplacingOccurrencesOfString("\t", withString: "")
         ruleStr = ruleStr.stringByReplacingOccurrencesOfString(" ", withString: "")
         let parts = ruleStr.componentsSeparatedByString(",")
@@ -152,25 +155,38 @@ extension Rule {
         guard let type = RuleType(rawValue: typeStr), action = RuleAction(rawValue: actionStr) where value.characters.count > 0 else {
             throw RuleError.InvalidRule(str)
         }
-        update(type, action: action, value: value)
+        self.init(type: type, action: action, value: value)
     }
     
-    public convenience init(type: RuleType, action: RuleAction, value: String) {
-        self.init()
-        update(type, action: action, value: value)
-    }
-    
-    public func update(type: RuleType, action: RuleAction, value: String) {
+    public init(type: RuleType, action: RuleAction, value: String) {
         self.type = type
-        self.content = [ruleActionKey: action.rawValue, ruleValueKey: value].jsonString() ?? ""
+        self.value = value
+        self.action = action
     }
 
-    public override var description: String {
+    public convenience init?(json: [String: AnyObject]) {
+        guard let typeRaw = json["type"] as? String, type = RuleType(rawValue: typeRaw) else {
+            return nil
+        }
+        guard let actionRaw = json["action"] as? String, action = RuleAction(rawValue: actionRaw) else {
+            return nil
+        }
+        guard let value = json["value"] as? String else {
+            return nil
+        }
+        self.init(type: type, action: action, value: value)
+    }
+
+    public var description: String {
         return "\(type), \(value), \(action)"
     }
-}
 
-
-public func ==(lhs: Rule, rhs: Rule) -> Bool {
-    return lhs.uuid == rhs.uuid
+    public var json: [String: AnyObject] {
+        return ["type": type.rawValue, "value": value, "action": action.rawValue]
+    }
 }
+//
+//
+//public func ==(lhs: Rule, rhs: Rule) -> Bool {
+//    return lhs.uuid == rhs.uuid
+//}

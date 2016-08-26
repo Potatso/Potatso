@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ICSMainFramework
 
 class Receipt: NSObject, SKRequestDelegate {
 
@@ -15,12 +16,45 @@ class Receipt: NSObject, SKRequestDelegate {
     private override init() {}
 
     func validate() {
-        logEvent(.ReceiptValidation, attributes: nil)
-        guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
-            requestNewReceipt()
-            return
+        if AppEnv.isTestFlight {
+            NSLog("isTestFlight")
+            if !validateKeychainAppStore() {
+                NSLog("validateKeychainAppStore fail")
+                failAndTerminate()
+            }
         }
-        validateReceipt(receiptPath, tryAgain: true)
+        if AppEnv.isAppStore {
+            NSLog("isAppStore")
+            if isStoreReceiptValidate() {
+                NSLog("isStoreReceiptValidate true")
+                markKeychainAppStore()
+            } else {
+                NSLog("isStoreReceiptValidate false")
+                failAndTerminate()
+            }
+        }
+    }
+
+    private func markKeychainAppStore() {
+        keychain["appstore"] = "true"
+    }
+
+    private func validateKeychainAppStore() -> Bool {
+        NSLog("validateKeychainAppStore")
+        if let value = keychain["appstore"] {
+            NSLog("keychain value: \(value)")
+            return value == "true"
+        }
+        return false
+    }
+
+    private func isStoreReceiptValidate() -> Bool {
+        NSLog("appStoreReceiptURL: \(NSBundle.mainBundle().appStoreReceiptURL)")
+        guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
+            NSLog("isStoreReceiptValidate can't find appStoreReceiptURL")
+            return false
+        }
+        return ReceiptUtils.verifyReceiptAtPath(receiptPath)
     }
 
     private func requestNewReceipt() {
@@ -42,20 +76,20 @@ class Receipt: NSObject, SKRequestDelegate {
     }
 
     private func failAndTerminate() {
-        dispatch_async(dispatch_get_main_queue()) { 
-            guard let vc = UIApplication.sharedApplication().keyWindow?.rootViewController else {
-                return
-            }
-            Alert.show(vc, title: "Receipt Validation Error".localized(), message: "The app is only made for App Store users. Please try again.".localized(), confirmMessage: "CANCEL".localized(), confirmCallback: {
-                logEvent(.ReceiptValidationCancel, attributes: nil)
-                self.terminate()
-            }, cancelMessage: "BUY".localized()) {
-                logEvent(.ReceiptValidationBuy, attributes: nil)
-                Appirater.rateApp()
-                self.terminate()
-            }
-
-        }
+//        dispatch_async(dispatch_get_main_queue()) { 
+//            guard let vc = UIApplication.sharedApplication().keyWindow?.rootViewController else {
+//                return
+//            }
+//            Alert.show(vc, title: "Receipt Validation Error".localized(), message: "The app is only made for App Store users. Please try again.".localized(), confirmMessage: "CANCEL".localized(), confirmCallback: {
+//                logEvent(.ReceiptValidationCancel, attributes: nil)
+//                self.terminate()
+//            }, cancelMessage: "BUY".localized()) {
+//                logEvent(.ReceiptValidationBuy, attributes: nil)
+//                Appirater.rateApp()
+//                self.terminate()
+//            }
+//
+//        }
     }
 
     private func terminate() {

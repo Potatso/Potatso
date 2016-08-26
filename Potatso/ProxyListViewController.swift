@@ -43,7 +43,7 @@ class ProxyListViewController: FormViewController {
     }
 
     func reloadData() {
-        proxies = defaultRealm.objects(Proxy).sorted("createAt").map({ $0 })
+        proxies = DBUtils.allNotDeleted(Proxy.self, sorted: "createAt").map({ $0 })
         if allowNone {
             proxies.insert(nil, atIndex: 0)
         }
@@ -96,10 +96,8 @@ class ProxyListViewController: FormViewController {
                 return
             }
             do {
+                try DBUtils.softDelete(item.uuid, type: Proxy.self)
                 proxies.removeAtIndex(indexPath.row)
-                try defaultRealm.write {
-                    defaultRealm.delete(item)
-                }
                 form[indexPath].hidden = true
                 form[indexPath].evaluateHidden()
             }catch {

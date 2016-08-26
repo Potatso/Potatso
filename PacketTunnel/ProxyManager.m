@@ -99,9 +99,13 @@ int sock_port (int fd) {
     NSNumber *port = json[@"port"];
     NSString *password = json[@"password"];
     NSString *authscheme = json[@"authscheme"];
+    NSString *protocol = json[@"protocol"];
+    NSString *obfs = json[@"obfs"];
+    NSString *obfs_param = json[@"obfs_param"];
     BOOL ota = [json[@"ota"] boolValue];
     if (host && port && password && authscheme) {
         profile_t profile;
+        memset(&profile, 0, sizeof(profile_t));
         profile.remote_host = strdup([host UTF8String]);
         profile.remote_port = [port intValue];
         profile.password = strdup([password UTF8String]);
@@ -110,6 +114,15 @@ int sock_port (int fd) {
         profile.local_port = 0;
         profile.timeout = 600;
         profile.auth = ota;
+        if (protocol.length > 0) {
+            profile.protocol = strdup([protocol UTF8String]);
+        }
+        if (obfs.length > 0) {
+            profile.obfs = strdup([obfs UTF8String]);
+        }
+        if (obfs_param.length > 0) {
+            profile.obfs_param = strdup([obfs_param UTF8String]);
+        }
         start_ss_local_server(profile, shadowsocks_handler, (__bridge void *)self);
     }else {
         if (self.shadowsocksCompletion) {

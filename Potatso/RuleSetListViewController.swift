@@ -9,17 +9,23 @@
 import Foundation
 import PotatsoModel
 import Cartography
+import Realm
+import RealmSwift
 
 private let rowHeight: CGFloat = 54
 private let kRuleSetCellIdentifier = "ruleset"
 
 class RuleSetListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    var ruleSets: [RuleSet] = []
+    var ruleSets: Results<RuleSet>
     var chooseCallback: (RuleSet? -> Void)?
+    // Observe Realm Notifications
+    var token: RLMNotificationToken?
+    var heightAtIndex: [Int: CGFloat] = [:]
 
     init(chooseCallback: (RuleSet? -> Void)? = nil) {
         self.chooseCallback = chooseCallback
+        self.ruleSets = DBUtils.allNotDeleted(RuleSet.self, sorted: "createAt")
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,16 +38,37 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
         navigationItem.title = "Rule Set".localized()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(add))
         reloadData()
+        token = ruleSets.addNotificationBlock { [unowned self] (changed) in
+            switch changed {
+            case let .Update(_, deletions: deletions, insertions: insertions, modifications: modifications):
+                self.tableView.beginUpdates()
+                defer {
+                    self.tableView.endUpdates()
+                }
+                self.tableView.deleteRowsAtIndexPaths(deletions.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .Automatic)
+                self.tableView.insertRowsAtIndexPaths(insertions.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .Automatic)
+                self.tableView.reloadRowsAtIndexPaths(modifications.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .None)
+            case let .Error(error):
+                error.log("RuleSetListVC realm token update error")
+            default:
+                break
+            }
+        }
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        token?.stop()
+    }
+
+    func reloadData() {
+        ruleSets = DBUtils.allNotDeleted(RuleSet.self, sorted: "createAt")
+        tableView.reloadData()
     }
 
     func add() {
         let vc = RuleSetConfigurationViewController()
         navigationController?.pushViewController(vc, animated: true)
-    }
-
-    func reloadData() {
-        ruleSets = defaultRealm.objects(RuleSet).sorted("createAt").map({ $0 })
-        tableView.reloadData()
     }
 
     func showRuleSetConfiguration(ruleSet: RuleSet?) {
@@ -59,6 +86,10 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
         return cell
     }
 
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        heightAtIndex[indexPath.row] = cell.frame.size.height
+    }
+
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let ruleSet = ruleSets[indexPath.row]
@@ -67,6 +98,14 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
             close()
         }else {
             showRuleSetConfiguration(ruleSet)
+        }
+    }
+
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if let height = heightAtIndex[indexPath.row] {
+            return height
+        } else {
+            return UITableViewAutomaticDimension
         }
     }
 
@@ -85,16 +124,8 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
                 return
             }
             item = ruleSets[indexPath.row]
-            tableView.beginUpdates()
-            defer {
-                tableView.endUpdates()
-            }
             do {
-                ruleSets.removeAtIndex(indexPath.row)
-                try defaultRealm.write {
-                    defaultRealm.delete(item)
-                }
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                try DBUtils.softDelete(item.uuid, type: RuleSet.self)
             }catch {
                 self.showTextHUD("\("Fail to delete item".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
             }
@@ -121,7 +152,6 @@ class RuleSetListViewController: UIViewController, UITableViewDataSource, UITabl
         v.tableHeaderView = UIView()
         v.separatorStyle = .SingleLine
         v.rowHeight = UITableViewAutomaticDimension
-        v.estimatedRowHeight = rowHeight
         return v
     }()
 

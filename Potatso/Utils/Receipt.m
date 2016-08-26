@@ -41,29 +41,16 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
 @implementation ReceiptUtils
 
 + (BOOL)verifyReceiptAtPath: (NSString *)receiptPath {
-    NSString *bundleVersion = (NSString *)[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSLog(@"verifyReceiptAtPath: %@ bundleIdentifier: %@", receiptPath, bundleIdentifier);
     NSDictionary *receipt = [self dictionaryWithAppStoreReceipt:receiptPath];
+    NSLog(@"verifyReceiptAtPath receipt dictionary: %@", receipt);
 
     if (!receipt) {
         return NO;
     }
 
-    unsigned char uuidBytes[16];
-    NSUUID *vendorUUID = [[UIDevice currentDevice] identifierForVendor];
-    [vendorUUID getUUIDBytes:uuidBytes];
-
-    NSMutableData *input = [NSMutableData data];
-    [input appendBytes:uuidBytes length:sizeof(uuidBytes)];
-    [input appendData:[receipt objectForKey:kReceiptOpaqueValue]];
-    [input appendData:[receipt objectForKey:kReceiptBundleIdentifierData]];
-
-    NSMutableData *hash = [NSMutableData dataWithLength:SHA_DIGEST_LENGTH];
-    SHA1([input bytes], [input length], [hash mutableBytes]);
-
-    if ([bundleIdentifier isEqualToString:[receipt objectForKey:kReceiptBundleIdentifier]] &&
-        [bundleVersion isEqualToString:[receipt objectForKey:kReceiptVersion]] &&
-        [hash isEqualToData:[receipt objectForKey:kReceiptHash]]) {
+    if ([bundleIdentifier isEqualToString:[receipt objectForKey:kReceiptBundleIdentifier]]) {
         return YES;
     }
     
@@ -72,6 +59,8 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
 
 + (NSDictionary *)dictionaryWithAppStoreReceipt: (NSString *)receiptPath {
     NSData * rootCertData = [self appleRootCert];
+
+    NSLog(@"dictionaryWithAppStoreReceipt rootCertData len: %d", rootCertData.length);
 
     ERR_load_PKCS7_strings();
     ERR_load_X509_strings();
@@ -84,6 +73,7 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
     const char * path = [[receiptPath stringByStandardizingPath] fileSystemRepresentation];
     FILE *fp = fopen(path, "rb");
     if (fp == NULL) {
+        NSLog(@"dictionaryWithAppStoreReceipt open receiptPath fail: %@", receiptPath);
         return nil;
     }
 
@@ -92,15 +82,18 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
 
     // Check if the receipt file was invalid (otherwise we go crashing and burning)
     if (p7 == NULL) {
+        NSLog(@"dictionaryWithAppStoreReceipt p7 null");
         return nil;
     }
 
     if (!PKCS7_type_is_signed(p7)) {
+        NSLog(@"dictionaryWithAppStoreReceipt PKCS7_type_is_signed fail");
         PKCS7_free(p7);
         return nil;
     }
 
     if (!PKCS7_type_is_data(p7->d.sign->contents)) {
+        NSLog(@"dictionaryWithAppStoreReceipt PKCS7_type_is_data fail");
         PKCS7_free(p7);
         return nil;
     }
@@ -129,6 +122,7 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
 
     if (verifyReturnValue != 1) {
         PKCS7_free(p7);
+        NSLog(@"dictionaryWithAppStoreReceipt verifyReturnValue fail");
         return nil;
     }
 
@@ -143,6 +137,7 @@ NSString *kReceiptExpirationDate                = @"ExpDate";
     ASN1_get_object(&p, &length, &type, &xclass, end - p);
     if (type != V_ASN1_SET) {
         PKCS7_free(p7);
+        NSLog(@"dictionaryWithAppStoreReceipt type fail");
         return nil;
     }
 

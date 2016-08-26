@@ -1,12 +1,13 @@
 # Potatso ![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-<a href="https://itunes.apple.com/app/apple-store/id1070901416?pt=2305194&ct=potatso.github&mt=8">![](https://cdn.rawgit.com/iCodesign/test/master/Download.svg)</a>
+<a href="https://itunes.apple.com/app/apple-store/id1070901416?pt=2305194&ct=potatso.github&mt=8">![](https://cdn.rawgit.com/shadowsocks/Potatso/master/Download.svg)</a>
 
 Potatso is an iOS client that implements custom proxies with the leverage of Network Extension framework introduced by Apple since iOS 9.
 
 Currently, Potatso is compatible with following proxies:
 
 - [Shadowsocks](https://shadowsocks.org)
+- [ShadowsocksR](https://github.com/breakwa11/shadowsocks-rss)
 
 [Subscribe Telegram Channel](https://telegram.me/potatso) to get updates of Potatso. 
 
@@ -43,6 +44,7 @@ Services:
 - [Fabric](https://get.fabric.io/)
 - [Reveal](http://revealapp.com/)
 - [realm](https://realm.io/)
+- [HelpShift](https://www.helpshift.com)
 
 Open-source Libraries:
 
@@ -66,10 +68,14 @@ Open-source Libraries:
 - [Antinat](http://antinat.sourceforge.net/)
 - [Privoxy](https://www.privoxy.org/)
 
-Also we'd like to thank people that helped with the project or donated us:
+Also we'd like to thank people that helped with the project:
 
 - [@Blankwonder](https://twitter.com/Blankwonder)
 - [@龙七](#)
+
+or donated us:
+- [@liqianyu](https://twitter.com/liqianyu)
+- [@anonymous](#) x2
 
 And also thank all TestFlight Users and [Telegram Group](https://telegram.me/joinchat/BT0c4z49OGNZXwl9VsO0uQ) Users.
 
@@ -77,6 +83,8 @@ And also thank all TestFlight Users and [Telegram Group](https://telegram.me/joi
 Thanks again!
 
 ## License
+
+**You can't submit the app to App Store.**
 
 To be compatible with those libraries using GPL, we're distributing with GPLv3 license.
 

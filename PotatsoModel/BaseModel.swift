@@ -8,9 +8,10 @@
 
 import RealmSwift
 import PotatsoBase
+import CloudKit
 
-private let version: UInt64 = 7
-public var defaultRealm = try! Realm()
+private let version: UInt64 = 18
+public var defaultRealm: Realm!
 
 public func setupDefaultReaml() {
     var config = Realm.Configuration()
@@ -23,26 +24,68 @@ public func setupDefaultReaml() {
     config.fileURL = sharedURL
     config.schemaVersion = version
     config.migrationBlock = { migration, oldSchemaVersion in
-        // 目前我们还未进行数据迁移，因此 oldSchemaVersion == 0
-        if (oldSchemaVersion < version) {
-            // 什么都不要做！Realm 会自行检测新增和需要移除的属性，然后自动更新硬盘上的数据库架构
+        if oldSchemaVersion < 18 {
+            // Migrating old rules list to json
+            migrateRulesList(migration, oldSchemaVersion: oldSchemaVersion)
         }
     }
     Realm.Configuration.defaultConfiguration = config
+    defaultRealm = try! Realm()
 }
+
 
 public class BaseModel: Object {
     public dynamic var uuid = NSUUID().UUIDString
     public dynamic var createAt = NSDate().timeIntervalSince1970
-    
+    public dynamic var updatedAt = NSDate().timeIntervalSince1970
+    public dynamic var deleted = false
+    public dynamic var synced = false
+
     override public static func primaryKey() -> String? {
         return "uuid"
     }
     
     static var dateFormatter: NSDateFormatter {
         let f = NSDateFormatter()
-        f.dateFormat = "yyyy-MM-dd HH:mm:ss.FFF"
+        f.dateFormat = "MM-dd HH:mm:ss"
         return f
     }
 
+    public func validate(inRealm realm: Realm) throws {
+        //
+    }
+
+}
+
+// MARK: - Migration
+func migrateRulesList(migration: Migration, oldSchemaVersion: UInt64) {
+    migration.enumerate(RuleSet.className(), { (oldObject, newObject) in
+        if oldSchemaVersion > 11 {
+            guard let deleted = oldObject!["deleted"] as? Bool where !deleted else {
+                return
+            }
+        }
+        guard let rules = oldObject!["rules"] as? List<DynamicObject> else {
+            return
+        }
+        var rulesJSONArray: [[NSObject: AnyObject]] = []
+        for rule in rules {
+            if oldSchemaVersion > 11 {
+                guard let deleted = rule["deleted"] as? Bool where !deleted else {
+                    return
+                }
+            }
+            guard let typeRaw = rule["typeRaw"]as? String, contentJSONString = rule["content"] as? String, contentJSON = contentJSONString.jsonDictionary() else {
+                return
+            }
+            var ruleJSON = contentJSON
+            ruleJSON["type"] = typeRaw
+            rulesJSONArray.append(ruleJSON)
+        }
+        if let newJSON = (rulesJSONArray as NSArray).jsonString() {
+            newObject!["rulesJSON"] = newJSON
+            newObject!["ruleCount"] = rulesJSONArray.count
+        }
+        newObject!["synced"] = false
+    })
 }

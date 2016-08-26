@@ -42,15 +42,12 @@ public class ConfigurationGroup: BaseModel {
         return ["name"]
     }
     
-    public func validate(inRealm realm: Realm) throws {
+    public override func validate(inRealm realm: Realm) throws {
         guard name.characters.count > 0 else {
             throw ConfigurationGroupError.EmptyName
         }
-        guard realm.objects(ConfigurationGroup).filter("name = '\(name)'").first == nil else {
-            throw ConfigurationGroupError.NameAlreadyExists
-        }
-
     }
+
     public override var description: String {
         return name
     }
@@ -65,7 +62,7 @@ extension ConfigurationGroup {
         }
         self.name = name
         if realm.objects(RuleSet).filter("name = '\(name)'").first != nil {
-            self.name = ConfigurationGroup.dateFormatter.stringFromDate(NSDate())
+            self.name = "\(name) \(ConfigurationGroup.dateFormatter.stringFromDate(NSDate()))"
         }
         if let proxyName = dictionary["proxy"] as? String, proxy = realm.objects(Proxy).filter("name = '\(proxyName)'").first {
             self.proxies.removeAll()

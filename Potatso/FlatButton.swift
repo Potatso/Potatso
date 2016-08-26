@@ -15,9 +15,6 @@ class FlatButton: UIButton {
 
     var animating = false {
         didSet(o) {
-            guard o != animating else {
-                return
-            }
             if animating {
                 indicator.startAnimating()
             }else {

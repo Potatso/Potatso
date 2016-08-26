@@ -119,9 +119,9 @@ const char jbsockets_h_rcs[] = JBSOCKETS_H_VERSION;
 #define MAX_LISTEN_BACKLOG 128
 
 #ifdef HAVE_RFC2553
-static jb_socket rfc2553_connect_to(const char *host, int portnum, struct client_state *csp);
+static jb_socket rfc2553_connect_to(const char *host, int portnum, struct client_state *csp, int is_proxy);
 #else
-static jb_socket no_rfc2553_connect_to(const char *host, int portnum, struct client_state *csp);
+static jb_socket no_rfc2553_connect_to(const char *host, int portnum, struct client_state *csp, int is_proxy);
 #endif
 
 /*********************************************************************
@@ -167,7 +167,7 @@ static void set_no_delay_flag(int fd)
  *                file descriptor.
  *
  *********************************************************************/
-jb_socket connect_to(const char *host, int portnum, struct client_state *csp)
+jb_socket connect_to(const char *host, int portnum, struct client_state *csp, int is_proxy)
 {
    jb_socket fd;
    int forwarded_connect_retries = 0;
@@ -180,9 +180,9 @@ jb_socket connect_to(const char *host, int portnum, struct client_state *csp)
        */
       /* errno = 0;*/
 #ifdef HAVE_RFC2553
-      fd = rfc2553_connect_to(host, portnum, csp);
+      fd = rfc2553_connect_to(host, portnum, csp, is_proxy);
 #else
-      fd = no_rfc2553_connect_to(host, portnum, csp);
+      fd = no_rfc2553_connect_to(host, portnum, csp, is_proxy);
 #endif
       if ((fd != JB_INVALID_SOCKET) || (errno == EINVAL)
          || (csp->fwd == NULL)
@@ -203,277 +203,331 @@ jb_socket connect_to(const char *host, int portnum, struct client_state *csp)
    return fd;
 }
 
+jb_socket connect_to_forward(struct client_state *csp, struct forward_spec *fwd, int is_proxy) {
+    csp->fwd = fwd;
+    const char *dest_host;
+    int dest_port;
+    /* Figure out if we need to connect to the web server or a HTTP proxy. */
+    if (fwd->forward_host)
+    {
+        /* HTTP proxy */
+        dest_host = fwd->forward_host;
+        dest_port = fwd->forward_port;
+    }
+    else
+    {
+        /* Web server */
+        dest_host = csp->http->host;
+        dest_port = csp->http->port;
+    }
+
+    /* Connect, maybe using a SOCKS proxy */
+    switch (fwd->type)
+    {
+        case SOCKS_NONE:
+        case FORWARD_WEBSERVER:
+            return connect_to(dest_host, dest_port, csp, is_proxy);
+            break;
+        case SOCKS_4:
+        case SOCKS_4A:
+            return socks4_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
+            break;
+        case SOCKS_5:
+        case SOCKS_5T:
+            return socks5_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
+            break;
+        default:
+            log_error(LOG_LEVEL_FATAL,
+                      "Internal error in rfc2553_connect_to() ip. Bad proxy type: %d", fwd->type);
+            return JB_INVALID_SOCKET;
+    }
+}
+
 #ifdef HAVE_RFC2553
 /* Getaddrinfo implementation */
-static jb_socket rfc2553_connect_to(const char *host, int portnum, struct client_state *csp)
+static jb_socket rfc2553_connect_to(const char *host, int portnum, struct client_state *csp, int is_proxy)
 {
-   struct addrinfo hints, *result, *rp;
-   char service[6];
-   int retval;
-   jb_socket fd;
-   fd_set wfds;
-   struct timeval timeout;
-#if !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__)
-   int   flags;
-#endif
-   int connect_failed;
-   /*
+    struct addrinfo hints, *result, *rp;
+    char service[6];
+    int retval;
+    jb_socket fd;
+    fd_set wfds;
+    struct timeval timeout;
+    #if !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__)
+    int   flags;
+    #endif
+    int connect_failed;
+    /*
     * XXX: Initializeing it here is only necessary
     *      because not all situations are properly
     *      covered yet.
     */
-   int socket_error = 0;
-    logRequestStatus(csp, CONN_STATUS_DNS);
+    int socket_error = 0;
+    if (is_proxy) {
+        log_time_stage(csp, TIME_STAGE_PROXY_DNS_START);
+    }else {
+        log_time_stage(csp, TIME_STAGE_DNS_START);
+    }
 
-   struct access_control_addr dst[1];
+    struct access_control_addr dst[1];
 
-   /* Don't leak memory when retrying. */
-   freez(csp->error_message);
-   freez(csp->http->host_ip_addr_str);
+    /* Don't leak memory when retrying. */
+    freez(csp->error_message);
+    freez(csp->http->host_ip_addr_str);
 
-   retval = snprintf(service, sizeof(service), "%d", portnum);
-   if ((-1 == retval) || (sizeof(service) <= retval))
-   {
-      log_error(LOG_LEVEL_ERROR,
+    retval = snprintf(service, sizeof(service), "%d", portnum);
+    if ((-1 == retval) || (sizeof(service) <= retval))
+    {
+        log_error(LOG_LEVEL_ERROR,
          "Port number (%d) ASCII decimal representation doesn't fit into 6 bytes",
          portnum);
-      csp->error_message = strdup("Invalid port number");
-      csp->http->host_ip_addr_str = strdup("unknown");
-      return(JB_INVALID_SOCKET);
-   }
+        csp->error_message = strdup("Invalid port number");
+        csp->http->host_ip_addr_str = strdup("unknown");
+        return(JB_INVALID_SOCKET);
+    }
 
-   memset((char *)&hints, 0, sizeof(hints));
-   hints.ai_family = AF_UNSPEC;
-   hints.ai_socktype = SOCK_STREAM;
-   hints.ai_flags = AI_NUMERICSERV; /* avoid service look-up */
-#ifdef AI_ADDRCONFIG
-   hints.ai_flags |= AI_ADDRCONFIG;
-#endif
-   if ((retval = getaddrinfo(host, service, &hints, &result)))
-   {
-      log_error(LOG_LEVEL_INFO,
+    memset((char *)&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_NUMERICSERV; /* avoid service look-up */
+    #ifdef AI_ADDRCONFIG
+    hints.ai_flags |= AI_ADDRCONFIG;
+    #endif
+    if ((retval = getaddrinfo(host, service, &hints, &result)))
+    {
+        if (is_proxy) {
+            log_time_stage(csp, TIME_STAGE_PROXY_DNS_FAIL);
+        }else {
+            log_time_stage(csp, TIME_STAGE_DNS_FAIL);
+            if (proxy_list) {
+                csp->routing = ROUTE_PROXY;
+                csp->current_forward_stage = FORWARD_STAGE_DNS_FAILURE;
+                return connect_to_forward(csp, proxy_list, 1);
+            }
+        }
+        log_error(LOG_LEVEL_INFO,
          "Can not resolve %s: %s", host, gai_strerror(retval));
-      /* XXX: Should find a better way to propagate this error. */
-      errno = EINVAL;
-      csp->error_message = strdup(gai_strerror(retval));
-      csp->http->host_ip_addr_str = strdup("unknown");
-      return(JB_INVALID_SOCKET);
-   }
+        /* XXX: Should find a better way to propagate this error. */
+        errno = EINVAL;
+        csp->error_message = strdup(gai_strerror(retval));
+        csp->http->host_ip_addr_str = strdup("unknown");
+        return(JB_INVALID_SOCKET);
+    }
 
-   csp->http->host_ip_addr_str = malloc_or_die(NI_MAXHOST);
+    csp->http->host_ip_addr_str = malloc_or_die(NI_MAXHOST);
 
-   for (rp = result; rp != NULL; rp = rp->ai_next)
-   {
-
-      memcpy(&dst->addr, rp->ai_addr, rp->ai_addrlen);
-#ifdef FEATURE_ACL
-      if (block_acl(dst, csp))
-      {
-#ifdef __OS2__
+    for (rp = result; rp != NULL; rp = rp->ai_next)
+    {
+        memcpy(&dst->addr, rp->ai_addr, rp->ai_addrlen);
+    #ifdef FEATURE_ACL
+        if (block_acl(dst, csp))
+        {
+    #ifdef __OS2__
          socket_error = errno = SOCEPERM;
-#else
+    #else
          socket_error = errno = EPERM;
-#endif
+    #endif
          continue;
-      }
-#endif /* def FEATURE_ACL */
+        }
+    #endif /* def FEATURE_ACL */
 
-      retval = getnameinfo(rp->ai_addr, rp->ai_addrlen,
-         csp->http->host_ip_addr_str, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-      if (retval)
-      {
+        retval = getnameinfo(rp->ai_addr, rp->ai_addrlen, csp->http->host_ip_addr_str, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+        if (retval)
+        {
          log_error(LOG_LEVEL_ERROR,
             "Failed to get the host name from the socket structure: %s",
             gai_strerror(retval));
          continue;
-      }
-       if (csp->fwd->type == SOCKS_NONE && csp->fwd->forward_host == NULL && !csp->forward_determined) {
-           csp->forward_determined = 1;
-           struct forward_spec *fwd = forward_ip(csp, dst->addr);
-           if (fwd == NULL && global_mode) {
-               fwd = proxy_list;
-           }
-           if (fwd) {
-               csp->fwd = fwd;
-               int should_direct = 0;
-               const char *dest_host;
-               int dest_port;
-               /* Figure out if we need to connect to the web server or a HTTP proxy. */
-               if (fwd->forward_host)
-               {
-                   /* HTTP proxy */
-                   dest_host = fwd->forward_host;
-                   dest_port = fwd->forward_port;
-               }
-               else
-               {
-                   /* Web server */
-                   dest_host = csp->http->host;
-                   dest_port = csp->http->port;
-                   if (fwd->type == SOCKS_NONE) {
-                       should_direct = 1;
-                   }
-               }
+        }
+        if (is_proxy) {
+            log_time_stage(csp, TIME_STAGE_PROXY_DNS_END);
+        }else {
+            csp->http->remote_host_ip_addr_str = strdup_or_die(csp->http->host_ip_addr_str);
+            log_time_stage(csp, TIME_STAGE_DNS_END);
+        }
+        if (!is_proxy) {
+            if (dst->addr.ss_family == AF_INET) {
+                // IPv4
+                if (csp->current_forward_stage == FORWARD_STAGE_NONE && !csp->forward_determined) {
+                    log_time_stage(csp, TIME_STAGE_IP_RULE_MATCH_START);
+                    struct forward_spec *fwd = forward_ip(csp, dst->addr);
+                    log_time_stage(csp, TIME_STAGE_IP_RULE_MATCH_END);
+                    csp->forward_determined = 1;
+                    if (csp->routing == ROUTE_NONE) {
+                        log_time_stage(csp, TIME_STAGE_DNS_IP_RULE_MATCH_START);
+                        fwd = forward_dns_pollution_ip(csp, dst->addr);
+                        log_time_stage(csp, TIME_STAGE_DNS_IP_RULE_MATCH_END);
+                        if (csp->routing == ROUTE_NONE) {
+                            if (global_mode && proxy_list) {
+                                log_time_stage(csp, TIME_STAGE_GLOBAL_MODE);
+                                fwd = proxy_list;
+                                csp->routing = ROUTE_PROXY;
+                            }else {
+                                log_time_stage(csp, TIME_STAGE_NON_GLOBAL_MODE);
+                                csp->routing = ROUTE_DIRECT;
+                            }
+                        }
+                    }
+                    if (csp->routing == ROUTE_NONE || csp->routing == ROUTE_DIRECT) {
 
-               if (!should_direct) {
-                   /* Connect, maybe using a SOCKS proxy */
-                   logRequestStatus(csp, CONN_STATUS_REMOTE);
-                   switch (fwd->type)
-                   {
-                       case SOCKS_NONE:
-                       case FORWARD_WEBSERVER:
-                           return connect_to(dest_host, dest_port, csp);
-                           break;
-                       case SOCKS_4:
-                       case SOCKS_4A:
-                           return socks4_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
-                           break;
-                       case SOCKS_5:
-                       case SOCKS_5T:
-                           return socks5_connect(fwd->gateway_host, fwd->gateway_port, fwd->type, dest_host, dest_port, csp);
-                           break;
-                       default:
-                           /* Should never get here */
-                           log_error(LOG_LEVEL_FATAL,
-                                     "Internal error in rfc2553_connect_to() ip. Bad proxy type: %d", fwd->type);
-                           return JB_INVALID_SOCKET;
-                   }
-               }
-           }
-       }
-       logRequestStatus(csp, CONN_STATUS_REMOTE);
+                    }else if (csp->routing == ROUTE_BLOCK) {
+                        log_error(LOG_LEVEL_CONNECT,
+                                  "Block request to ip: %s", csp->http->host_ip_addr_str);
+                        return JB_INVALID_SOCKET;
+                    }else {
+                        if (fwd) {
+                            return connect_to_forward(csp, fwd, 1);
+                        }else {
+                            // No proxy provided.
+                        }
+                    }
+                }
+            }else {
+                csp->is_ipv6 = 1;
+                csp->routing = ROUTE_DIRECT;
+                log_time_stage(csp, TIME_STAGE_IPV6);
+            }
+        }
+        if (is_proxy) {
+            log_time_stage(csp, TIME_STAGE_PROXY_START);
+        }else {
+            log_time_stage(csp, TIME_STAGE_REMOTE_START);
+        }
 
-      fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-#ifdef _WIN32
-      if (fd == JB_INVALID_SOCKET)
-#else
-      if (fd < 0)
-#endif
-      {
+        fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    #ifdef _WIN32
+        if (fd == JB_INVALID_SOCKET)
+    #else
+        if (fd < 0)
+    #endif
+        {
          continue;
-      }
+        }
 
-#ifndef _WIN32
-      if (fd >= FD_SETSIZE)
-      {
-         log_error(LOG_LEVEL_ERROR,
+    #ifndef _WIN32
+        if (fd >= FD_SETSIZE)
+        {
+            log_error(LOG_LEVEL_ERROR,
             "Server socket number too high to use select(): %d >= %d",
             fd, FD_SETSIZE);
-         close_socket(fd);
-         freeaddrinfo(result);
-         return JB_INVALID_SOCKET;
-      }
-#endif
+            close_socket(fd);
+            freeaddrinfo(result);
+            return JB_INVALID_SOCKET;
+        }
+    #endif
 
 #ifdef FEATURE_EXTERNAL_FILTERS
-      mark_socket_for_close_on_execute(fd);
+        mark_socket_for_close_on_execute(fd);
 #endif
 
-      set_no_delay_flag(fd);
-       int yes = 1;
-       setsockopt (fd, SOL_SOCKET, SO_NOSIGPIPE, (char *) &yes, sizeof (yes));
+        set_no_delay_flag(fd);
+        int yes = 1;
+        setsockopt (fd, SOL_SOCKET, SO_NOSIGPIPE, (char *) &yes, sizeof (yes));
 
 #if !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__)
-      if ((flags = fcntl(fd, F_GETFL, 0)) != -1)
-      {
-         flags |= O_NDELAY;
-         fcntl(fd, F_SETFL, flags);
-      }
+        if ((flags = fcntl(fd, F_GETFL, 0)) != -1)
+        {
+            flags |= O_NDELAY;
+            fcntl(fd, F_SETFL, flags);
+        }
 #endif /* !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__) */
 
-      connect_failed = 0;
-      while (connect(fd, rp->ai_addr, rp->ai_addrlen) == JB_INVALID_SOCKET)
-      {
+        connect_failed = 0;
+        while (connect(fd, rp->ai_addr, rp->ai_addrlen) == JB_INVALID_SOCKET)
+        {
 #ifdef __OS2__
-         errno = sock_errno();
+            errno = sock_errno();
 #endif /* __OS2__ */
 
 #ifdef _WIN32
-         if (errno == WSAEINPROGRESS)
+            if (errno == WSAEINPROGRESS)
 #else /* ifndef _WIN32 */
-         if (errno == EINPROGRESS)
+            if (errno == EINPROGRESS)
 #endif /* ndef _WIN32 || __OS2__ */
-         {
-            break;
-         }
+            {
+                break;
+            }
 
-         if (errno != EINTR)
-         {
-            socket_error = errno;
-            close_socket(fd);
-            connect_failed = 1;
-            break;
-         }
-      }
-      if (connect_failed)
-      {
-         continue;
-      }
+            if (errno != EINTR)
+            {
+                socket_error = errno;
+                close_socket(fd);
+                connect_failed = 1;
+                break;
+            }
+        }
+        if (connect_failed)
+        {
+            continue;
+        }
 
 #if !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__)
-      if (flags != -1)
-      {
-         flags &= ~O_NDELAY;
-         fcntl(fd, F_SETFL, flags);
-      }
+        if (flags != -1)
+        {
+            flags &= ~O_NDELAY;
+            fcntl(fd, F_SETFL, flags);
+        }
 #endif /* !defined(_WIN32) && !defined(__BEOS__) && !defined(AMIGA) && !defined(__OS2__) */
 
-      /* wait for connection to complete */
-      FD_ZERO(&wfds);
-      FD_SET(fd, &wfds);
+        /* wait for connection to complete */
+        FD_ZERO(&wfds);
+        FD_SET(fd, &wfds);
 
-      memset(&timeout, 0, sizeof(timeout));
-      timeout.tv_sec  = 30;
+        memset(&timeout, 0, sizeof(timeout));
+        timeout.tv_sec  = 30;
 
-      /* MS Windows uses int, not SOCKET, for the 1st arg of select(). Weird! */
-      if ((select((int)fd + 1, NULL, &wfds, NULL, &timeout) > 0)
-         && FD_ISSET(fd, &wfds))
-      {
-         socklen_t optlen = sizeof(socket_error);
-         if (!getsockopt(fd, SOL_SOCKET, SO_ERROR, &socket_error, &optlen))
-         {
-            if (!socket_error)
+        /* MS Windows uses int, not SOCKET, for the 1st arg of select(). Weird! */
+        if ((select((int)fd + 1, NULL, &wfds, NULL, &timeout) > 0) && FD_ISSET(fd, &wfds))
+        {
+            socklen_t optlen = sizeof(socket_error);
+            if (!getsockopt(fd, SOL_SOCKET, SO_ERROR, &socket_error, &optlen))
             {
-               /* Connection established, no need to try other addresses. */
-               break;
+                if (!socket_error)
+                {
+                    /* Connection established, no need to try other addresses. */
+                    break;
+                }
+                if (rp->ai_next != NULL)
+                {
+                    /*
+                    * There's another address we can try, so log that this
+                    * one didn't work out. If the last one fails, too,
+                    * it will get logged outside the loop body so we don't
+                    * have to mention it here.
+                    */
+                    log_error(LOG_LEVEL_CONNECT, "Could not connect to [%s]:%s: %s.",
+                      csp->http->host_ip_addr_str, service, strerror(socket_error));
+                }
             }
-            if (rp->ai_next != NULL)
+            else
             {
-               /*
-                * There's another address we can try, so log that this
-                * one didn't work out. If the last one fails, too,
-                * it will get logged outside the loop body so we don't
-                * have to mention it here.
-                */
-               log_error(LOG_LEVEL_CONNECT, "Could not connect to [%s]:%s: %s.",
-                  csp->http->host_ip_addr_str, service, strerror(socket_error));
+                socket_error = errno;
+                log_error(LOG_LEVEL_ERROR, "Could not get the state of "
+                          "the connection to [%s]:%s: %s; dropping connection.",
+                          csp->http->host_ip_addr_str, service, strerror(errno));
             }
-         }
-         else
-         {
-            socket_error = errno;
-            log_error(LOG_LEVEL_ERROR, "Could not get the state of "
-               "the connection to [%s]:%s: %s; dropping connection.",
-               csp->http->host_ip_addr_str, service, strerror(errno));
-         }
-      }
+        }
 
-      /* Connection failed, try next address */
-      close_socket(fd);
-   }
+        /* Connection failed, try next address */
+        close_socket(fd);
+    }
 
-   freeaddrinfo(result);
-   if (!rp)
-   {
-      log_error(LOG_LEVEL_CONNECT, "Could not connect to [%s]:%s: %s.",
+    freeaddrinfo(result);
+    if (!rp)
+    {
+        log_error(LOG_LEVEL_CONNECT, "Could not connect to [%s]:%s: %s.",
          host, service, strerror(socket_error));
-      csp->error_message = strdup(strerror(socket_error));
-      return(JB_INVALID_SOCKET);
-   }
-   log_error(LOG_LEVEL_CONNECT, "Connected to %s[%s]:%s.",
+        csp->error_message = strdup(strerror(socket_error));
+        return(JB_INVALID_SOCKET);
+    }
+    log_error(LOG_LEVEL_CONNECT, "Connected to %s[%s]:%s.",
       host, csp->http->host_ip_addr_str, service);
-
-   return(fd);
+    if (is_proxy) {
+        log_time_stage(csp, TIME_STAGE_PROXY_CONNECTED);
+    }else {
+        log_time_stage(csp, TIME_STAGE_REMOTE_CONNECTED);
+    }
+    return(fd);
 
 }
 

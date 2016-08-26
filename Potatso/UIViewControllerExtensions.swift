@@ -34,7 +34,9 @@ extension UIViewController: UIGestureRecognizerDelegate  {
     func ics_viewWillAppear(animated: Bool) {
         self.ics_viewWillAppear(animated)
         if let navVC = self.navigationController {
-            showLeftBackButton(navVC.viewControllers.count > 1)
+            if !isModal() {
+                showLeftBackButton(navVC.viewControllers.count > 1)
+            }
         }
     }
     
@@ -98,6 +100,22 @@ extension UIViewController: UIGestureRecognizerDelegate  {
         }else {
             dismiss()
         }
+    }
+
+    func isModal() -> Bool {
+        if self.presentingViewController != nil {
+            return true
+        }
+        if self.presentingViewController?.presentedViewController == self {
+            return true
+        }
+        if self.navigationController?.presentingViewController?.presentedViewController == self.navigationController  {
+            return true
+        }
+        if self.tabBarController?.presentingViewController is UITabBarController {
+            return true
+        }
+        return false
     }
 
 }

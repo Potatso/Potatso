@@ -36,7 +36,7 @@ class RuleConfigurationViewController: FormViewController {
             self.rule = rule
             isEdit = true
         }else {
-            self.rule = Rule()
+            self.rule = Rule(type: RuleType.DomainSuffix, action: RuleAction.Proxy, value: "")
             isEdit = false
         }
         self.callback = callback
@@ -67,7 +67,7 @@ class RuleConfigurationViewController: FormViewController {
             <<< PushRow<RuleType>(kRuleFormType) {
                 $0.title = "Type".localized()
                 $0.selectorTitle = "Choose type of rule".localized()
-                $0.options = [RuleType.URL, RuleType.DomainSuffix, RuleType.DomainMatch, RuleType.Domain, RuleType.IPCIDR, RuleType.GeoIP]
+                $0.options = [RuleType.DomainSuffix, RuleType.DomainMatch, RuleType.Domain, RuleType.IPCIDR, RuleType.GeoIP]
                 $0.value = self.rule.type
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
@@ -79,6 +79,8 @@ class RuleConfigurationViewController: FormViewController {
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
                     cell.textField.keyboardType = .URL
+                    cell.textField.autocorrectionType = .No
+                    cell.textField.autocapitalizationType = .None
                 })
             <<< PushRow<RuleAction>(kRuleFormAction) {
                 $0.title = "Action".localized()
@@ -103,10 +105,9 @@ class RuleConfigurationViewController: FormViewController {
             guard let action = values[kRuleFormAction] as? RuleAction else {
                 throw "You must choose a action".localized()
             }
-            defaultRealm.beginWrite()
-            rule.update(type, action: action, value: value)
-            defaultRealm.add(rule, update: true)
-            try defaultRealm.commitWrite()
+            rule.type = type
+            rule.value = value
+            rule.action = action
             callback?(rule)
             close()
         }catch {

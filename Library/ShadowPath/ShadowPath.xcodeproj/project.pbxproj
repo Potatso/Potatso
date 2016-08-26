@@ -229,6 +229,20 @@
 		B82D7D871CEC6BCE00357F5F /* socks5.m in Sources */ = {isa = PBXBuildFile; fileRef = B82D7D6A1CEC6BCE00357F5F /* socks5.m */; };
 		B82D7D8A1CEC6BE200357F5F /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = B82D7D881CEC6BE200357F5F /* fmemopen.c */; };
 		B82D7D8B1CEC6BE200357F5F /* fmemopen.h in Headers */ = {isa = PBXBuildFile; fileRef = B82D7D891CEC6BE200357F5F /* fmemopen.h */; };
+		B830CC681D2D69E300FA8E37 /* auth.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC661D2D69E300FA8E37 /* auth.c */; };
+		B830CC691D2D69E300FA8E37 /* auth.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC671D2D69E300FA8E37 /* auth.h */; };
+		B830CC6B1D2D69FA00FA8E37 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC6A1D2D69FA00FA8E37 /* crc32.c */; };
+		B830CC6E1D2D6A0000FA8E37 /* http_simple.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC6C1D2D6A0000FA8E37 /* http_simple.c */; };
+		B830CC6F1D2D6A0000FA8E37 /* http_simple.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC6D1D2D6A0000FA8E37 /* http_simple.h */; };
+		B830CC731D2D6A1700FA8E37 /* obfs.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC701D2D6A1700FA8E37 /* obfs.c */; };
+		B830CC741D2D6A1700FA8E37 /* obfs.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC711D2D6A1700FA8E37 /* obfs.h */; };
+		B830CC751D2D6A1700FA8E37 /* obfsutil.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC721D2D6A1700FA8E37 /* obfsutil.c */; };
+		B830CC7A1D2D6A3400FA8E37 /* tls1.0_session.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC761D2D6A3400FA8E37 /* tls1.0_session.c */; };
+		B830CC7B1D2D6A3400FA8E37 /* tls1.0_session.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC771D2D6A3400FA8E37 /* tls1.0_session.h */; };
+		B830CC7C1D2D6A3400FA8E37 /* tls1.2_ticket.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC781D2D6A3400FA8E37 /* tls1.2_ticket.c */; };
+		B830CC7D1D2D6A3400FA8E37 /* tls1.2_ticket.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC791D2D6A3400FA8E37 /* tls1.2_ticket.h */; };
+		B830CC801D2D6A4000FA8E37 /* verify.c in Sources */ = {isa = PBXBuildFile; fileRef = B830CC7E1D2D6A4000FA8E37 /* verify.c */; };
+		B830CC811D2D6A4000FA8E37 /* verify.h in Headers */ = {isa = PBXBuildFile; fileRef = B830CC7F1D2D6A4000FA8E37 /* verify.h */; };
 		B86B04B11D17DABB00613014 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = B86B000A1D17DABA00613014 /* config.h */; };
 		B86B04D81D17DABB00613014 /* commands.c in Sources */ = {isa = PBXBuildFile; fileRef = B86B00391D17DABA00613014 /* commands.c */; };
 		B86B04E21D17DABB00613014 /* allocator.c in Sources */ = {isa = PBXBuildFile; fileRef = B86B00451D17DABA00613014 /* allocator.c */; };
@@ -328,6 +342,10 @@
 		B8DEFEFA1CEA1D4C003FC706 /* jcc.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEF81CEA1D4C003FC706 /* jcc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8DEFEFC1CEA1DCE003FC706 /* sp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEFB1CEA1DCE003FC706 /* sp_config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8DEFEFE1CEA1EB7003FC706 /* project.h in Headers */ = {isa = PBXBuildFile; fileRef = B8DEFEFD1CEA1EB7003FC706 /* project.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC6501D40D01C0046963C /* maxminddb.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5C61D40D01C0046963C /* maxminddb.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC6511D40D01C0046963C /* maxminddb_config.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5C71D40D01C0046963C /* maxminddb_config.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8EAC67F1D40D01C0046963C /* maxminddb-compat-util.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */; };
+		B8EAC6801D40D01C0046963C /* maxminddb.c in Sources */ = {isa = PBXBuildFile; fileRef = B8EAC5FB1D40D01C0046963C /* maxminddb.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -579,6 +597,21 @@
 		B82D7D6A1CEC6BCE00357F5F /* socks5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socks5.m; sourceTree = "<group>"; };
 		B82D7D881CEC6BE200357F5F /* fmemopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmemopen.c; sourceTree = "<group>"; };
 		B82D7D891CEC6BE200357F5F /* fmemopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmemopen.h; sourceTree = "<group>"; };
+		B830CC661D2D69E300FA8E37 /* auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = auth.c; sourceTree = "<group>"; };
+		B830CC671D2D69E300FA8E37 /* auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = auth.h; sourceTree = "<group>"; };
+		B830CC6A1D2D69FA00FA8E37 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
+		B830CC6C1D2D6A0000FA8E37 /* http_simple.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = http_simple.c; sourceTree = "<group>"; };
+		B830CC6D1D2D6A0000FA8E37 /* http_simple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_simple.h; sourceTree = "<group>"; };
+		B830CC701D2D6A1700FA8E37 /* obfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = obfs.c; sourceTree = "<group>"; };
+		B830CC711D2D6A1700FA8E37 /* obfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obfs.h; sourceTree = "<group>"; };
+		B830CC721D2D6A1700FA8E37 /* obfsutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = obfsutil.c; sourceTree = "<group>"; };
+		B830CC761D2D6A3400FA8E37 /* tls1.0_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1.0_session.c; sourceTree = "<group>"; };
+		B830CC771D2D6A3400FA8E37 /* tls1.0_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.0_session.h; sourceTree = "<group>"; };
+		B830CC781D2D6A3400FA8E37 /* tls1.2_ticket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1.2_ticket.c; sourceTree = "<group>"; };
+		B830CC791D2D6A3400FA8E37 /* tls1.2_ticket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.2_ticket.h; sourceTree = "<group>"; };
+		B830CC7E1D2D6A4000FA8E37 /* verify.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = verify.c; sourceTree = "<group>"; };
+		B830CC7F1D2D6A4000FA8E37 /* verify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verify.h; sourceTree = "<group>"; };
+		B830CC821D2D6D1A00FA8E37 /* crc32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crc32.h; sourceTree = "<group>"; };
 		B86B000A1D17DABA00613014 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		B86B00391D17DABA00613014 /* commands.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = commands.c; sourceTree = "<group>"; };
 		B86B00451D17DABA00613014 /* allocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = allocator.c; sourceTree = "<group>"; };
@@ -680,6 +713,10 @@
 		B8DEFEF81CEA1D4C003FC706 /* jcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jcc.h; sourceTree = "<group>"; };
 		B8DEFEFB1CEA1DCE003FC706 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
 		B8DEFEFD1CEA1EB7003FC706 /* project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = project.h; sourceTree = "<group>"; };
+		B8EAC5C61D40D01C0046963C /* maxminddb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxminddb.h; sourceTree = "<group>"; };
+		B8EAC5C71D40D01C0046963C /* maxminddb_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxminddb_config.h; sourceTree = "<group>"; };
+		B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "maxminddb-compat-util.h"; sourceTree = "<group>"; };
+		B8EAC5FB1D40D01C0046963C /* maxminddb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = maxminddb.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1245,11 +1282,17 @@
 			children = (
 				B86B04781D17DABB00613014 /* acl.c */,
 				B86B04791D17DABB00613014 /* acl.h */,
+				B830CC661D2D69E300FA8E37 /* auth.c */,
+				B830CC671D2D69E300FA8E37 /* auth.h */,
 				B86B047B1D17DABB00613014 /* cache.c */,
 				B86B047C1D17DABB00613014 /* cache.h */,
 				B86B047D1D17DABB00613014 /* common.h */,
+				B830CC6A1D2D69FA00FA8E37 /* crc32.c */,
+				B830CC821D2D6D1A00FA8E37 /* crc32.h */,
 				B86B047E1D17DABB00613014 /* encrypt.c */,
 				B86B047F1D17DABB00613014 /* encrypt.h */,
+				B830CC6C1D2D6A0000FA8E37 /* http_simple.c */,
+				B830CC6D1D2D6A0000FA8E37 /* http_simple.h */,
 				B86B04801D17DABB00613014 /* jconf.c */,
 				B86B04811D17DABB00613014 /* jconf.h */,
 				B86B04821D17DABB00613014 /* json.c */,
@@ -1258,15 +1301,24 @@
 				B86B04851D17DABB00613014 /* local.h */,
 				B86B048B1D17DABB00613014 /* netutils.c */,
 				B86B048C1D17DABB00613014 /* netutils.h */,
+				B830CC701D2D6A1700FA8E37 /* obfs.c */,
+				B830CC711D2D6A1700FA8E37 /* obfs.h */,
+				B830CC721D2D6A1700FA8E37 /* obfsutil.c */,
 				B86B048F1D17DABB00613014 /* resolv.c */,
 				B86B04901D17DABB00613014 /* resolv.h */,
 				B86B04931D17DABB00613014 /* shadowsocks.h */,
 				B86B04941D17DABB00613014 /* socks5.h */,
+				B830CC761D2D6A3400FA8E37 /* tls1.0_session.c */,
+				B830CC771D2D6A3400FA8E37 /* tls1.0_session.h */,
+				B830CC781D2D6A3400FA8E37 /* tls1.2_ticket.c */,
+				B830CC791D2D6A3400FA8E37 /* tls1.2_ticket.h */,
 				B86B04981D17DABB00613014 /* udprelay.c */,
 				B86B04991D17DABB00613014 /* udprelay.h */,
 				B86B049A1D17DABB00613014 /* uthash.h */,
 				B86B049B1D17DABB00613014 /* utils.c */,
 				B86B049C1D17DABB00613014 /* utils.h */,
+				B830CC7E1D2D6A4000FA8E37 /* verify.c */,
+				B830CC7F1D2D6A4000FA8E37 /* verify.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -1308,6 +1360,7 @@
 			children = (
 				B81888221D2C09DA00E41C89 /* libsodium-ios */,
 				B81887071D2BFC1B00E41C89 /* libopenssl */,
+				B8EAC5971D40D01C0046963C /* libmaxminddb */,
 				B86BFFF61D17DABA00613014 /* shadowsocks-libev */,
 				B82D7D471CEC6BCE00357F5F /* Antinat */,
 				B82D7D461CEC6B6300357F5F /* Privoxy */,
@@ -1315,6 +1368,33 @@
 				B8DEFD7E1CE9C923003FC706 /* ShadowPath.h */,
 			);
 			path = ShadowPath;
+			sourceTree = "<group>";
+		};
+		B8EAC5971D40D01C0046963C /* libmaxminddb */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5C51D40D01C0046963C /* include */,
+				B8EAC5F21D40D01C0046963C /* src */,
+			);
+			path = libmaxminddb;
+			sourceTree = "<group>";
+		};
+		B8EAC5C51D40D01C0046963C /* include */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5C61D40D01C0046963C /* maxminddb.h */,
+				B8EAC5C71D40D01C0046963C /* maxminddb_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		B8EAC5F21D40D01C0046963C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */,
+				B8EAC5FB1D40D01C0046963C /* maxminddb.c */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1335,10 +1415,13 @@
 				B818886B1D2C09DA00E41C89 /* crypto_core_salsa20.h in Headers */,
 				B82847971CEB10F500820456 /* cgiedit.h in Headers */,
 				B81888961D2C09DA00E41C89 /* utils.h in Headers */,
+				B830CC741D2D6A1700FA8E37 /* obfs.h in Headers */,
 				B81887731D2BFC1B00E41C89 /* ecdh.h in Headers */,
+				B830CC691D2D69E300FA8E37 /* auth.h in Headers */,
 				B81888861D2C09DA00E41C89 /* crypto_stream_salsa20.h in Headers */,
 				B81888781D2C09DA00E41C89 /* crypto_pwhash_argon2i.h in Headers */,
 				B828476D1CEB104E00820456 /* filters.h in Headers */,
+				B830CC7B1D2D6A3400FA8E37 /* tls1.0_session.h in Headers */,
 				B818887B1D2C09DA00E41C89 /* crypto_scalarmult_curve25519.h in Headers */,
 				B82847751CEB106200820456 /* loaders.h in Headers */,
 				B828478F1CEB10E200820456 /* actionlist.h in Headers */,
@@ -1348,6 +1431,7 @@
 				B818875D1D2BFC1B00E41C89 /* asn1t.h in Headers */,
 				B82847811CEB10B800820456 /* actions.h in Headers */,
 				B81888941D2C09DA00E41C89 /* randombytes_sysrandom.h in Headers */,
+				B830CC811D2D6A4000FA8E37 /* verify.h in Headers */,
 				B81888651D2C09DA00E41C89 /* crypto_auth_hmacsha512.h in Headers */,
 				B828479F1CEB111000820456 /* gateway.h in Headers */,
 				B81888611D2C09DA00E41C89 /* crypto_aead_aes256gcm.h in Headers */,
@@ -1362,6 +1446,7 @@
 				B86B08441D17DABB00613014 /* acl.h in Headers */,
 				B818877A1D2BFC1B00E41C89 /* krb5_asn.h in Headers */,
 				B818876F1D2BFC1B00E41C89 /* dtls1.h in Headers */,
+				B8EAC6511D40D01C0046963C /* maxminddb_config.h in Headers */,
 				B82847711CEB105B00820456 /* parsers.h in Headers */,
 				B86B085F1D17DABB00613014 /* socks5.h in Headers */,
 				B82847651CEB0E6400820456 /* internal.h in Headers */,
@@ -1440,6 +1525,7 @@
 				B818879E1D2BFC1B00E41C89 /* txt_db.h in Headers */,
 				B818875E1D2BFC1B00E41C89 /* bio.h in Headers */,
 				B818886F1D2C09DA00E41C89 /* crypto_generichash_blake2b.h in Headers */,
+				B830CC7D1D2D6A3400FA8E37 /* tls1.2_ticket.h in Headers */,
 				B818887F1D2C09DA00E41C89 /* crypto_shorthash_siphash24.h in Headers */,
 				B82847791CEB109700820456 /* ssplit.h in Headers */,
 				B86B08571D17DABB00613014 /* netutils.h in Headers */,
@@ -1449,6 +1535,7 @@
 				B818887C1D2C09DA00E41C89 /* crypto_secretbox.h in Headers */,
 				B818888D1D2C09DA00E41C89 /* crypto_uint8.h in Headers */,
 				B86B08471D17DABB00613014 /* cache.h in Headers */,
+				B8EAC67F1D40D01C0046963C /* maxminddb-compat-util.h in Headers */,
 				B81888701D2C09DA00E41C89 /* crypto_hash.h in Headers */,
 				B81888871D2C09DA00E41C89 /* crypto_stream_salsa2012.h in Headers */,
 				B81887641D2BFC1B00E41C89 /* cmac.h in Headers */,
@@ -1463,6 +1550,7 @@
 				B818877B1D2BFC1B00E41C89 /* kssl.h in Headers */,
 				B81887831D2BFC1B00E41C89 /* ocsp.h in Headers */,
 				B86B05451D17DABB00613014 /* ev.h in Headers */,
+				B830CC6F1D2D6A0000FA8E37 /* http_simple.h in Headers */,
 				B818886D1D2C09DA00E41C89 /* crypto_core_salsa208.h in Headers */,
 				B818877E1D2BFC1B00E41C89 /* md5.h in Headers */,
 				B818876A1D2BFC1B00E41C89 /* des.h in Headers */,
@@ -1494,6 +1582,7 @@
 				B86B04B11D17DABB00613014 /* config.h in Headers */,
 				B81888831D2C09DA00E41C89 /* crypto_stream.h in Headers */,
 				B81888851D2C09DA00E41C89 /* crypto_stream_chacha20.h in Headers */,
+				B8EAC6501D40D01C0046963C /* maxminddb.h in Headers */,
 				B818878A1D2BFC1B00E41C89 /* pkcs7.h in Headers */,
 				B81887811D2BFC1B00E41C89 /* obj_mac.h in Headers */,
 				B81887671D2BFC1B00E41C89 /* conf.h in Headers */,
@@ -1632,6 +1721,7 @@
 			files = (
 				B86B058A1D17DABB00613014 /* inspection.c in Sources */,
 				B86B04E81D17DABB00613014 /* timestamp.c in Sources */,
+				B830CC7C1D2D6A3400FA8E37 /* tls1.2_ticket.c in Sources */,
 				B86B05681D17DABB00613014 /* read.c in Sources */,
 				B8D0CD691CF1AF60007282A7 /* radix.c in Sources */,
 				B86B07E51D17DABB00613014 /* udns_misc.c in Sources */,
@@ -1655,6 +1745,7 @@
 				B86B05331D17DABB00613014 /* directory-walker.c in Sources */,
 				B86B05901D17DABB00613014 /* storage.c in Sources */,
 				B82D7D831CEC6BCE00357F5F /* libds.m in Sources */,
+				B830CC731D2D6A1700FA8E37 /* obfs.c in Sources */,
 				B86B04E71D17DABB00613014 /* mempool.c in Sources */,
 				B86B04F61D17DABB00613014 /* dllist.c in Sources */,
 				B82D7D6F1CEC6BCE00357F5F /* an_proxy.m in Sources */,
@@ -1683,7 +1774,9 @@
 				B828475B1CEB0D5900820456 /* encode.c in Sources */,
 				B86B05671D17DABB00613014 /* reachable.c in Sources */,
 				B86B05381D17DABB00613014 /* subprocess.c in Sources */,
+				B830CC6E1D2D6A0000FA8E37 /* http_simple.c in Sources */,
 				B82D7D7A1CEC6BCE00357F5F /* addrinfo.m in Sources */,
+				B830CC7A1D2D6A3400FA8E37 /* tls1.0_session.c in Sources */,
 				B86B07E01D17DABB00613014 /* udns_codes.c in Sources */,
 				B86B05371D17DABB00613014 /* process.c in Sources */,
 				B86B05881D17DABB00613014 /* allocation.c in Sources */,
@@ -1695,6 +1788,8 @@
 				B86B07E11D17DABB00613014 /* udns_dn.c in Sources */,
 				B86B05351D17DABB00613014 /* exec.c in Sources */,
 				B86B07E91D17DABB00613014 /* udns_rr_mx.c in Sources */,
+				B830CC751D2D6A1700FA8E37 /* obfsutil.c in Sources */,
+				B830CC681D2D69E300FA8E37 /* auth.c in Sources */,
 				B86B058C1D17DABB00613014 /* ipv6_set.c in Sources */,
 				B86B05341D17DABB00613014 /* env.c in Sources */,
 				B82847961CEB10F500820456 /* cgiedit.c in Sources */,
@@ -1710,6 +1805,7 @@
 				B86B07EA1D17DABB00613014 /* udns_rr_naptr.c in Sources */,
 				B86B05361D17DABB00613014 /* files.c in Sources */,
 				B86B057B1D17DABB00613014 /* inspection.c in Sources */,
+				B8EAC6801D40D01C0046963C /* maxminddb.c in Sources */,
 				B82847681CEB103800820456 /* list.c in Sources */,
 				B86B08461D17DABB00613014 /* cache.c in Sources */,
 				B86B04F51D17DABB00613014 /* buffer.c in Sources */,
@@ -1728,11 +1824,13 @@
 				B82D7D711CEC6BCE00357F5F /* an_socks5.m in Sources */,
 				B86B05801D17DABB00613014 /* storage.c in Sources */,
 				B86B05611D17DABB00613014 /* assignments.c in Sources */,
+				B830CC6B1D2D69FA00FA8E37 /* crc32.c in Sources */,
 				B828479E1CEB111000820456 /* gateway.c in Sources */,
 				B82D7D871CEC6BCE00357F5F /* socks5.m in Sources */,
 				B86B08491D17DABB00613014 /* encrypt.c in Sources */,
 				B82847781CEB109700820456 /* ssplit.c in Sources */,
 				B86B04D81D17DABB00613014 /* commands.c in Sources */,
+				B830CC801D2D6A4000FA8E37 /* verify.c in Sources */,
 				B86B04F31D17DABB00613014 /* array.c in Sources */,
 				B82D7D851CEC6BCE00357F5F /* os_unix.m in Sources */,
 				B86B08661D17DABB00613014 /* utils.c in Sources */,

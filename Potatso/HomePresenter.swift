@@ -34,6 +34,10 @@ class HomePresenter: NSObject {
         }
     }
 
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
     func bindToVC(vc: UIViewController) {
         self.vc = vc
     }
@@ -51,15 +55,10 @@ class HomePresenter: NSObject {
     func chooseProxy() {
         let chooseVC = ProxyListViewController(allowNone: true) { [unowned self] proxy in
             do {
-                try defaultRealm.write {
-                    self.group.proxies.removeAll()
-                    if let proxy = proxy {
-                        self.group.proxies.append(proxy)
-                    }
-                }
+                try ConfigurationGroup.changeProxy(forGroupId: self.group.uuid, proxyId: proxy?.uuid)
                 self.delegate?.handleRefreshUI()
             }catch {
-                self.vc.showTextHUD("\("Fail to add ruleset".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
+                self.vc.showTextHUD("\("Fail to change proxy".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
             }
         }
         vc.navigationController?.pushViewController(chooseVC, animated: true)
@@ -94,15 +93,10 @@ class HomePresenter: NSObject {
         if trimmedName.characters.count == 0 {
             throw "Name can't be empty".localized()
         }
-        if let _ = defaultRealm.objects(ConfigurationGroup).filter("name = '\(trimmedName)'").first {
-            throw "Name already exists".localized()
-        }
         let group = ConfigurationGroup()
         group.name = trimmedName
-        try defaultRealm.write {
-            defaultRealm.add(group)
-        }
-        CurrentGroupManager.shared.group = group
+        try DBUtils.add(group)
+        CurrentGroupManager.shared.setConfigGroupId(group.uuid)
     }
 
     func addRuleSet() {
@@ -124,9 +118,7 @@ class HomePresenter: NSObject {
             return
         }
         do {
-            try defaultRealm.write {
-                group.ruleSets.append(ruleSet)
-            }
+            try ConfigurationGroup.appendRuleSet(forGroupId: group.uuid, rulesetId: ruleSet.uuid)
             self.delegate?.handleRefreshUI()
         }catch {
             self.vc.showTextHUD("\("Fail to add ruleset".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
@@ -152,9 +144,7 @@ class HomePresenter: NSObject {
             }
         }
         do {
-            try defaultRealm.write {
-                self.group.dns = dns
-            }
+            try ConfigurationGroup.changeDNS(forGroupId: group.uuid, dns: dns)
         }catch {
             self.vc.showTextHUD("\("Fail to change dns".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
         }
@@ -164,19 +154,60 @@ class HomePresenter: NSObject {
         self.delegate?.handleRefreshUI()
     }
 
+    func changeGroupName() {
+        var urlTextField: UITextField?
+        let alert = UIAlertController(title: "Change Name".localized(), message: nil, preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler { (textField) in
+            textField.placeholder = "Input New Name".localized()
+            urlTextField = textField
+        }
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default, handler: { [unowned self] (action) in
+            if let newName = urlTextField?.text {
+                do {
+                    try ConfigurationGroup.changeName(forGroupId: self.group.uuid, name: newName)
+                }catch {
+                    Alert.show(self.vc, title: "Failed to change name", message: "\(error)")
+                }
+                self.delegate?.handleRefreshUI()
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel, handler: nil))
+        vc.presentViewController(alert, animated: true, completion: nil)
+    }
+
 }
 
 class CurrentGroupManager {
 
     static let shared = CurrentGroupManager()
 
-    private init() {}
+    private init() {
+        _groupUUID = Manager.sharedManager.defaultConfigGroup.uuid
+    }
 
     var onChange: (ConfigurationGroup? -> Void)?
 
-    var group: ConfigurationGroup! {
+    private var _groupUUID: String {
         didSet(o) {
             self.onChange?(group)
+        }
+    }
+
+    var group: ConfigurationGroup {
+        if let group = DBUtils.get(_groupUUID, type: ConfigurationGroup.self, filter: "deleted = false") {
+            return group
+        } else {
+            let defaultGroup = Manager.sharedManager.defaultConfigGroup
+            setConfigGroupId(defaultGroup.uuid)
+            return defaultGroup
+        }
+    }
+
+    func setConfigGroupId(id: String) {
+        if let _ = DBUtils.get(id, type: ConfigurationGroup.self, filter: "deleted = false") {
+            _groupUUID = id
+        } else {
+            _groupUUID = Manager.sharedManager.defaultConfigGroup.uuid
         }
     }
     

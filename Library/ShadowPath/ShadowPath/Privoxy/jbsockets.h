@@ -42,7 +42,8 @@
 
 struct client_state;
 
-extern jb_socket connect_to(const char *host, int portnum, struct client_state *csp);
+extern jb_socket connect_to(const char *host, int portnum, struct client_state *csp, int is_proxy);
+extern jb_socket connect_to_forward(struct client_state *csp, struct forward_spec *fwd, int is_proxy);
 #ifdef AMIGA
 extern int write_socket(jb_socket fd, const char *buf, ssize_t n);
 #else

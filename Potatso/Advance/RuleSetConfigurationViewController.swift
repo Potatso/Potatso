@@ -33,7 +33,7 @@ class RuleSetConfigurationViewController: FormViewController {
             self.ruleSet = RuleSet()
             self.isEdit = false
         }
-        self.rules = self.ruleSet.rules.map { $0 }
+        self.rules = self.ruleSet.rules
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -107,7 +107,7 @@ class RuleSetConfigurationViewController: FormViewController {
         let vc = RuleConfigurationViewController(rule: rule) { result in
             if rule == nil {
                 self.insertRule(result, atIndex: self.form[1].count)
-                self.rules.append(result)
+                self.ruleSet.addRule(result)
             }
         }
         vc.editable = editable
@@ -120,18 +120,8 @@ class RuleSetConfigurationViewController: FormViewController {
             guard let name = (values[kRuleSetFormName] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) where name.characters.count > 0 else {
                 throw "Name can't be empty".localized()
             }
-            if !isEdit {
-                if let _ = defaultRealm.objects(RuleSet).filter("name = '\(name)'").first {
-                    throw "Name already exists".localized()
-                }
-            }
-            
-            defaultRealm.beginWrite()
             ruleSet.name = name
-            ruleSet.rules.removeAll()
-            ruleSet.rules.appendContentsOf(rules)
-            defaultRealm.add(ruleSet, update: true)
-            try defaultRealm.commitWrite()
+            try DBUtils.add(ruleSet)
             callback?(ruleSet)
             close()
         }catch {
@@ -148,7 +138,7 @@ class RuleSetConfigurationViewController: FormViewController {
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            rules.removeAtIndex(indexPath.row-1)
+            ruleSet.removeRule(atIndex: indexPath.row - 1)
             form[indexPath].hidden = true
             form[indexPath].evaluateHidden()
         }

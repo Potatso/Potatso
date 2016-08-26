@@ -10,7 +10,7 @@ import Foundation
 import Cartography
 import PotatsoModel
 
-extension RuleAction {
+extension RequestRouting {
     
     var image: UIImage? {
         switch self {
@@ -18,27 +18,9 @@ extension RuleAction {
             return "Proxy".image
         case .Reject:
             return "Reject".image
-        case .Direct:
+        case .Direct, .None:
             return "Direct".image
         }
-    }
-    
-}
-
-class PaddingLabel: UILabel {
-    
-    var padding: UIEdgeInsets = UIEdgeInsetsZero
-    
-    override func drawTextInRect(rect: CGRect) {
-        let newRect = UIEdgeInsetsInsetRect(rect, padding)
-        super.drawTextInRect(newRect)
-    }
-    
-    override func intrinsicContentSize() -> CGSize {
-        var s = super.intrinsicContentSize()
-        s.height += padding.top + padding.bottom
-        s.width += padding.left + padding.right
-        return s
     }
     
 }
@@ -75,15 +57,7 @@ class RecentRequestsCell: UITableViewCell {
         }else {
             timeLabel.text = nil
         }
-        if let rule = request.rule {
-            actionImageView.image = rule.action.image
-        }else {
-            if (request.globalMode) {
-                actionImageView.image = "Proxy".image
-            }else {
-                actionImageView.image = "Direct".image
-            }
-        }
+        actionImageView.image = request.routing.image
         if let version = request.version {
             httpVersionLabel.text = version
             httpVersionLabel.hidden = false

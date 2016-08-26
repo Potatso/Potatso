@@ -1758,53 +1758,51 @@ static jb_err parse_client_request(struct client_state *csp)
  *********************************************************************/
 static void chat(struct client_state *csp)
 {
-   char buf[BUFFER_SIZE];
-   char *hdr;
-   char *p;
-   fd_set rfds;
-   int n;
-   jb_socket maxfd;
-   int server_body;
-   int ms_iis5_hack = 0;
-   unsigned long long byte_count = 0;
-   struct forward_spec *fwd;
-   struct http_request *http;
-   long len = 0; /* for buffer sizes (and negative error codes) */
-   int buffer_and_filter_content = 0;
+    char buf[BUFFER_SIZE];
+    char *hdr;
+    char *p;
+    fd_set rfds;
+    int n;
+    jb_socket maxfd;
+    int server_body;
+    int ms_iis5_hack = 0;
+    unsigned long long byte_count = 0;
+    struct forward_spec *fwd;
+    struct http_request *http;
+    long len = 0; /* for buffer sizes (and negative error codes) */
+    int buffer_and_filter_content = 0;
 
-   /* Skeleton for HTTP response, if we should intercept the request */
-   struct http_response *rsp;
-   struct timeval timeout;
-#ifdef FEATURE_CONNECTION_KEEP_ALIVE
-   int watch_client_socket;
-#endif
+    /* Skeleton for HTTP response, if we should intercept the request */
+    struct http_response *rsp;
+    struct timeval timeout;
+    #ifdef FEATURE_CONNECTION_KEEP_ALIVE
+    int watch_client_socket;
+    #endif
 
-   memset(buf, 0, sizeof(buf));
+    memset(buf, 0, sizeof(buf));
 
-   http = csp->http;
+    http = csp->http;
 
-   if (receive_client_request(csp) != JB_ERR_OK)
-   {
+    if (receive_client_request(csp) != JB_ERR_OK)
+    {
       return;
-   }
-   if (parse_client_request(csp) != JB_ERR_OK)
-   {
+    }
+    if (parse_client_request(csp) != JB_ERR_OK)
+    {
       return;
-   }
+    }
 
-    lock_log_request();
     add_log_csp(csp);
-    unlock_log_request();
 
-   /* decide how to route the HTTP request */
-   fwd = forward_url(csp, http);
-   if (NULL == fwd)
-   {
-      log_error(LOG_LEVEL_FATAL, "gateway spec is NULL!?!?  This can't happen!");
-      /* Never get here - LOG_LEVEL_FATAL causes program exit */
-      return;
-   }
-   csp->fwd = fwd;
+    /* decide how to route the HTTP request */
+    fwd = forward_url(csp, http);
+    if (NULL == fwd)
+    {
+        log_error(LOG_LEVEL_FATAL, "gateway spec is NULL!?!?  This can't happen!");
+        /* Never get here - LOG_LEVEL_FATAL causes program exit */
+        return;
+    }
+    csp->fwd = fwd;
 
    /*
     * build the http request to send to the server
@@ -2031,7 +2029,7 @@ static void chat(struct client_state *csp)
    }
 
    log_error(LOG_LEVEL_CONNECT, "to %s successful", http->hostport);
-   logRequestStatus(csp, CONN_STATUS_OPEN);
+//   logRequestStatus(csp, CONN_STATUS_OPEN);
 
    /* XXX: should the time start earlier for optimistically sent data? */
    csp->server_connection.request_sent = time(NULL);
@@ -2147,37 +2145,37 @@ static void chat(struct client_state *csp)
        */
       if (FD_ISSET(csp->cfd, &rfds))
       {
-         int max_bytes_to_read = sizeof(buf) - 1;
+          int max_bytes_to_read = sizeof(buf) - 1;
 
 #ifdef FEATURE_CONNECTION_KEEP_ALIVE
-         if ((csp->flags & CSP_FLAG_CLIENT_REQUEST_COMPLETELY_READ))
-         {
-            if (data_is_available(csp->cfd, 0))
-            {
-               /*
+          if ((csp->flags & CSP_FLAG_CLIENT_REQUEST_COMPLETELY_READ))
+          {
+              if (data_is_available(csp->cfd, 0))
+              {
+                /*
                 * If the next request is already waiting, we have
                 * to stop select()ing the client socket. Otherwise
                 * we would always return right away and get nothing
                 * else done.
                 */
-               watch_client_socket = 0;
-               log_error(LOG_LEVEL_CONNECT,
+                 watch_client_socket = 0;
+                 log_error(LOG_LEVEL_CONNECT,
                   "Stopping to watch the client socket %d. "
                   "There's already another request waiting.",
                   csp->cfd);
-               continue;
-            }
+                  continue;
+              }
             /*
              * If the client socket is set, but there's no data
              * available on the socket, the client went fishing
              * and continuing talking to the server makes no sense.
              */
-            log_error(LOG_LEVEL_CONNECT,
+              log_error(LOG_LEVEL_CONNECT,
                "The client closed socket %d while "
                "the server socket %d is still open.",
                csp->cfd, csp->server_connection.sfd);
-            mark_server_socket_tainted(csp);
-            break;
+              mark_server_socket_tainted(csp);
+              break;
          }
          if (csp->expected_client_content_length != 0)
          {
@@ -3345,17 +3343,19 @@ static inline void unlock_log_request() {}
 
 
 static void add_log_csp(struct client_state *csp) {
+    lock_log_request();
     struct log_client_states *log_csp_list = NULL;
     log_csp_list = (struct log_client_states *)zalloc(sizeof(*log_csp_list));
     if (NULL == log_csp_list)
     {
         log_error(LOG_LEVEL_FATAL, "malloc(%d) for log_csp_list failed: %E", sizeof(*log_csp_list));
+        unlock_log_request();
         return;
     }
 
     log_csp_list->csp = csp;
     csp->flags |= CSP_FLAG_LOG_REQUEST;
-    logRequestStatus(csp, CONN_STATUS_INIT);
+    log_time_stage(csp, TIME_STAGE_INIT);
 
     if (log_clients_tail == NULL) {
         log_clients = log_csp_list;
@@ -3372,12 +3372,13 @@ static void add_log_csp(struct client_state *csp) {
         log_clients = log_clients->next;
         log_clients_count --;
     }
+    unlock_log_request();
 }
 
-void logRequestStatus(struct client_state *csp, ConnectionStatus status) {
-    if (csp && csp->timestamp[status] == 0) {
-        csp->timestamp[status] = [[NSDate date] timeIntervalSince1970];
-        csp->status = status;
+void log_time_stage(struct client_state *csp, enum time_stage stage) {
+    if (csp && csp->time_stages[stage] == 0) {
+        csp->time_stages[stage] = [[NSDate date] timeIntervalSince1970];
+        csp->current_time_stage = stage;
     }
 }
 

@@ -35,6 +35,28 @@ public struct AppEnv {
     public static var appName: String {
         return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleDisplayName") as! String
     }
-    
-    
+
+    public static var isTestFlight: Bool {
+        return isAppStoreReceiptSandbox && !hasEmbeddedMobileProvision
+    }
+
+    public static var isAppStore: Bool {
+        if isAppStoreReceiptSandbox || hasEmbeddedMobileProvision {
+            return false
+        }
+        return true
+    }
+
+    private static var isAppStoreReceiptSandbox: Bool {
+        let b = NSBundle.mainBundle().appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        NSLog("isAppStoreReceiptSandbox: \(b)")
+        return b
+    }
+
+    private static var hasEmbeddedMobileProvision: Bool {
+        let b = NSBundle.mainBundle().pathForResource("embedded", ofType: "mobileprovision") != nil
+        NSLog("hasEmbeddedMobileProvision: \(b)")
+        return b
+    }
+
 }

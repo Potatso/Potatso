@@ -28,13 +28,7 @@ class VPN {
     }
 
     private static func _switchDefaultVPN(group: ConfigurationGroup, completion: ((ErrorType?) -> Void)? = nil) {
-        do {
-            try Manager.sharedManager.setDefaultConfigGroup(group)
-        }catch{
-            Async.main{
-                completion?(error)
-            }
-        }
+        Manager.sharedManager.setDefaultConfigGroup(group.uuid, name: group.name)
         Manager.sharedManager.switchVPN { (manager, error) in
             if let _ = manager {
                 Async.background(after: 2, block: { () -> Void in

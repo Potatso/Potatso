@@ -10,6 +10,7 @@ import Foundation
 import Cartography
 import PotatsoModel
 import RealmSwift
+import Realm
 import PotatsoLibrary
 
 private let kGroupCellIdentifier = "group"
@@ -20,33 +21,27 @@ class ConfigGroupChooseManager {
 
     static let shared = ConfigGroupChooseManager()
 
-    var window: UIWindow?
-    var chooseVC: ConfigGroupChooseVC?
-
-    let screenHeight = UIScreen.mainScreen().bounds.height
-    let screenWidth = UIScreen.mainScreen().bounds.width
+    var window: ConfigGroupChooseWindow?
 
     func show() {
         if window == nil {
-            window = UIWindow(frame: UIScreen.mainScreen().bounds)
-            window?.backgroundColor = "000".color.alpha(0.5)
+            window = ConfigGroupChooseWindow(frame: UIScreen.mainScreen().bounds)
+            window?.backgroundColor = UIColor.clearColor()
             window?.makeKeyAndVisible()
-            chooseVC = ConfigGroupChooseVC()
-            window?.addSubview(chooseVC!.view)
-            chooseVC!.view.frame = CGRect(x: 0, y: screenHeight, width: screenWidth, height: screenHeight)
+            window?.chooseVC.view.frame = CGRect(x: 0, y: window!.frame.height, width: window!.frame.width, height: window!.frame.height)
             UIView.animateWithDuration(0.3) {
-                self.chooseVC!.view.frame.origin = CGPoint(x: 0, y: 0)
+                self.window?.backgroundColor = "000".color.alpha(0.5)
+                self.window?.chooseVC.view.frame.origin = CGPoint(x: 0, y: 0)
             }
         }
     }
 
     func hide() {
-        if let vc = chooseVC {
+        if let window = window  {
             UIView.animateWithDuration(0.3, animations: {
-                vc.view.frame.origin = CGPoint(x: 0, y: self.screenHeight)
+                window.chooseVC.view.frame.origin = CGPoint(x: 0, y: window.frame.height)
             }, completion: { (finished) in
-                vc.view.removeFromSuperview()
-                self.chooseVC = nil
+                window.chooseVC.view.removeFromSuperview()
                 self.window?.hidden = true
                 self.window = nil
             })
@@ -55,14 +50,35 @@ class ConfigGroupChooseManager {
 
 }
 
+class ConfigGroupChooseWindow: UIWindow {
+
+    let chooseVC = ConfigGroupChooseVC()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(chooseVC.view)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConfigGroupChooseWindow.onStatusBarFrameChange), name: UIApplicationDidChangeStatusBarFrameNotification, object: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func onStatusBarFrameChange() {
+        frame = UIScreen.mainScreen().bounds
+    }
+
+}
+
 class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    var groups: [ConfigurationGroup]
+    let groups: Results<ConfigurationGroup>
     let colors = ["3498DB", "E74C3C", "8E44AD", "16A085", "E67E22", "2C3E50"]
     var gesture: UITapGestureRecognizer?
+    var token: RLMNotificationToken?
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        groups = defaultRealm.objects(ConfigurationGroup).sorted("createAt").map { $0 }
+        groups = DBUtils.allNotDeleted(ConfigurationGroup.self, sorted: "createAt")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onVPNStatusChanged), name: kProxyServiceVPNStatusNotification, object: nil)
     }
@@ -78,6 +94,26 @@ class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewD
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateUI()
+        token = groups.addNotificationBlock { [unowned self] (changed) in
+            switch changed {
+            case let .Update(_, deletions: deletions, insertions: insertions, modifications: modifications):
+                self.tableView.beginUpdates()
+                defer {
+                    self.tableView.endUpdates()
+                    CurrentGroupManager.shared.setConfigGroupId(CurrentGroupManager.shared.group.uuid)
+                }
+                self.tableView.deleteRowsAtIndexPaths(deletions.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .Automatic)
+                self.tableView.insertRowsAtIndexPaths(insertions.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .Automatic)
+                self.tableView.reloadRowsAtIndexPaths(modifications.map({ NSIndexPath(forRow: $0, inSection: 0) }), withRowAnimation: .Automatic)
+            default:
+                break
+            }
+        }
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        token?.stop()
     }
 
     func onVPNStatusChanged() {
@@ -89,7 +125,7 @@ class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     func showConfigGroup(group: ConfigurationGroup, animated: Bool = true) {
-        CurrentGroupManager.shared.group = group
+        CurrentGroupManager.shared.setConfigGroupId(group.uuid)
         ConfigGroupChooseManager.shared.hide()
     }
 
@@ -120,6 +156,10 @@ class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        let group = groups[indexPath.row]
+        if group.isDefault && Manager.sharedManager.vpnStatus != .Off {
+            return false
+        }
         return groups.count > 1
     }
 
@@ -134,16 +174,8 @@ class ConfigGroupChooseVC: UIViewController, UITableViewDataSource, UITableViewD
                 return
             }
             item = groups[indexPath.row]
-            tableView.beginUpdates()
-            defer {
-                tableView.endUpdates()
-            }
             do {
-                groups.removeAtIndex(indexPath.row)
-                try defaultRealm.write {
-                    defaultRealm.delete(item)
-                }
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                try DBUtils.softDelete(item.uuid, type: ConfigurationGroup.self)
             }catch {
                 self.showTextHUD("\("Fail to delete item".localized()): \((error as NSError).localizedDescription)", dismissAfterDelay: 1.5)
             }

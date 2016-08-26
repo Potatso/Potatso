@@ -11,11 +11,10 @@ import Foundation
 extension ErrorType {
 
     func log(message: String?) {
-        let errorDesc = (self as NSError).localizedDescription
         if let message = message {
-            DDLogError("\(message): \(errorDesc)")
+            DDLogError("\(message): \(self)")
         }else {
-            DDLogError("\(errorDesc)")
+            DDLogError("\(self)")
         }
     }
 

@@ -43,6 +43,7 @@ class CloudDetailViewController: UIViewController, UITableViewDataSource, UITabl
     func loadData() {
         activityIndicator.startAnimating()
         activityIndicator.hidden = false
+        subscribeButton.hidden = true
         API.getRuleSetDetail(ruleSet.uuid) { (response) in
             defer {
                 self.activityIndicator.stopAnimating()
@@ -57,22 +58,20 @@ class CloudDetailViewController: UIViewController, UITableViewDataSource, UITabl
                 }
                 self.ruleSet = result
                 self.tableView.reloadData()
+                self.subscribeButton.hidden = false
             }
         }
     }
 
     func isExist(uuid: String) -> Bool {
-        return defaultRealm.objects(RuleSet).filter("uuid = %@", uuid).count > 0
+        return defaultRealm.objects(RuleSet).filter("uuid == '\(uuid)' && deleted == false").count > 0
     }
 
     func subscribe() {
         let uuid = ruleSet.uuid
         if isExist(uuid) {
-            let sets = defaultRealm.objects(RuleSet).filter("uuid = %@", uuid)
             do {
-                try defaultRealm.write {
-                    defaultRealm.delete(sets)
-                }
+                try DBUtils.softDelete([uuid], type: RuleSet.self)
             }catch {
                 self.showTextHUD("Fail to unsubscribe".localized(), dismissAfterDelay: 1.0)
                 return

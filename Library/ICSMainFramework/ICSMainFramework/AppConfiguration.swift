@@ -20,8 +20,7 @@ public struct LifeCycleKey {
     public static let didEnterBackground = "didEnterBackground"
     public static let willEnterForeground = "willEnterForeground"
     public static let didBecomeActive = "didBecomeActive"
-    public static let didRegisterForRemoteNotificationsWithDeviceToken = "didRegisterForRemoteNotificationsWithDeviceToken"
-    public static let didReceiveRemoteNotificationFetchCompletionHandler = "didReceiveRemoteNotificationFetchCompletionHandler"
+    public static let remoteNotification = "remoteNotification"
     public static let willTerminate = "willTerminate"
     public static let openURL = "openURL"
 }
@@ -61,7 +60,6 @@ public class AppConfig {
             var items = [AppLifeCycleItem]()
             if let itemArray = value as? [AnyObject] {
                 items = itemArray.map { AppLifeCycleItem(dictionary: $0 as! [String: AnyObject]) }.filter { $0 != nil }.map { $0! }
-                print("load config: key: \(key) items:\(items)")
             }
             lifeCycleConfig[key] = items
         }
