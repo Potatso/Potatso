@@ -17,8 +17,8 @@ class RuleSetCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         preservesSuperviewLayoutMargins = false
-        layoutMargins = UIEdgeInsetsZero
-        separatorInset = UIEdgeInsetsZero
+        layoutMargins = UIEdgeInsets.zero
+        separatorInset = UIEdgeInsets.zero
         contentView.addSubview(titleLabel)
         contentView.addSubview(countLabel)
         contentView.addSubview(leftHintView)
@@ -30,8 +30,8 @@ class RuleSetCell: UITableViewCell {
         constrain(contentView, self) { contentView, superview in
             contentView.edges == superview.edges
         }
-        countLabel.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-        countLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+        countLabel.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
+        countLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
         constrain(titleLabel, countLabel, contentView) { titleLabel, countLabel, contentView in
             titleLabel.leading == contentView.leading + 15
             titleLabel.top == contentView.top + 13
@@ -60,7 +60,7 @@ class RuleSetCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setRuleSet(ruleSet: RuleSet, showFullDescription: Bool = false, showSubscribe: Bool = false) {
+    func setRuleSet(_ ruleSet: RuleSet, showFullDescription: Bool = false, showSubscribe: Bool = false) {
         titleLabel.text = ruleSet.name
         var count = 0
         if ruleSet.ruleCount > 0 {
@@ -77,10 +77,10 @@ class RuleSetCell: UITableViewCell {
         descLabel.numberOfLines = showFullDescription ? 0 : 2
         let bottomView: UIView
         if showSubscribe && ruleSet.isSubscribe {
-            subscribeFlagLabel.hidden = false
+            subscribeFlagLabel.isHidden = false
             bottomView = subscribeFlagLabel
         }else {
-            subscribeFlagLabel.hidden = true
+            subscribeFlagLabel.isHidden = true
             if ruleSet.desc.characters.count > 0 {
                 bottomView = descLabel
             }else{
@@ -93,13 +93,13 @@ class RuleSetCell: UITableViewCell {
         }
     }
 
-    override func setHighlighted(highlighted: Bool, animated: Bool) {
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         subscribeFlagLabel.backgroundColor = "16A085".color
         leftHintView.backgroundColor = "DEDEDE".color
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         subscribeFlagLabel.backgroundColor = "16A085".color
         leftHintView.backgroundColor = "DEDEDE".color
@@ -108,21 +108,21 @@ class RuleSetCell: UITableViewCell {
     lazy var titleLabel: UILabel = {
         let v = UILabel()
         v.textColor = "000".color
-        v.font = UIFont.systemFontOfSize(17)
+        v.font = UIFont.systemFont(ofSize: 17)
         return v
     }()
 
     lazy var countLabel: UILabel = {
         let v = UILabel()
         v.textColor = "404040".color
-        v.font = UIFont.systemFontOfSize(14)
+        v.font = UIFont.systemFont(ofSize: 14)
         return v
     }()
 
     lazy var descLabel: UILabel = {
         let v = UILabel()
         v.textColor = "5B5B5B".color
-        v.font = UIFont.systemFontOfSize(13)
+        v.font = UIFont.systemFont(ofSize: 13)
         v.numberOfLines = 2
         return v
     }()
@@ -135,28 +135,28 @@ class RuleSetCell: UITableViewCell {
 
     lazy var avatarImageView: UIImageView = {
         let v = UIImageView()
-        v.contentMode = .ScaleAspectFit
+        v.contentMode = .scaleAspectFit
         return v
     }()
 
     lazy var authorNameLabel: UILabel = {
         let v = UILabel()
         v.textColor = "5D5D5D".color
-        v.font = UIFont.systemFontOfSize(12)
+        v.font = UIFont.systemFont(ofSize: 12)
         return v
     }()
 
     lazy var updateAtLabel: UILabel = {
         let v = UILabel()
         v.textColor = "5D5D5D".color
-        v.font = UIFont.systemFontOfSize(12)
+        v.font = UIFont.systemFont(ofSize: 12)
         return v
     }()
 
     lazy var subscribeFlagLabel: PaddingLabel = {
         let v = PaddingLabel()
-        v.textColor = UIColor.whiteColor()
-        v.font = UIFont.systemFontOfSize(10)
+        v.textColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        v.font = UIFont.systemFont(ofSize: 10)
         v.padding = UIEdgeInsetsMake(3, 10, 3, 10)
         v.layer.cornerRadius = 3
         v.layer.masksToBounds = true

@@ -12,12 +12,12 @@ import CloudKit
 
 class NotificationHandler: NSObject, AppLifeCycleProtocol {
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         configPush()
-        if let launchOptions = launchOptions, userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject: AnyObject], origin = userInfo["origin"] as? String {
+        if let launchOptions = launchOptions, let userInfo = launchOptions[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable: Any], let origin = userInfo["origin"] as? String {
             if origin == "helpshift" {
                 if let rootVC = application.keyWindow?.rootViewController {
-                    HelpshiftCore.handleRemoteNotification(userInfo, withController: rootVC)
+                    HelpshiftCore.handleRemoteNotification(userInfo, with: rootVC)
                 }
             }
         }
@@ -25,28 +25,28 @@ class NotificationHandler: NSObject, AppLifeCycleProtocol {
     }
 
     func configPush() {
-        let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Alert, .Sound], categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-        UIApplication.sharedApplication().registerForRemoteNotifications()
+        let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: [.badge, .alert, .sound], categories: nil)
+        UIApplication.shared.registerUserNotificationSettings(settings)
+        UIApplication.shared.registerForRemoteNotifications()
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
 
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         DDLogInfo("didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken.hexString())")
         HelpshiftCore.registerDeviceToken(deviceToken)
     }
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         if let origin = userInfo["origin"] as? String {
             if origin == "helpshift" {
                 DDLogInfo("received a helpshift notification")
                 if let rootVC = application.keyWindow?.rootViewController {
-                    HelpshiftCore.handleRemoteNotification(userInfo, withController: rootVC)
+                    HelpshiftCore.handleRemoteNotification(userInfo, with: rootVC)
                 }
-                completionHandler(.NewData)
+                completionHandler(.newData)
                 return
             }
         }
@@ -57,18 +57,18 @@ class NotificationHandler: NSObject, AppLifeCycleProtocol {
                 SyncManager.shared.sync()
             }
         }
-        completionHandler(.NoData)
+        completionHandler(.noData)
     }
 
 }
 
-extension NSData {
+extension Data {
     func hexString() -> String {
         // "Array" of all bytes:
-        let bytes = UnsafeBufferPointer<UInt8>(start: UnsafePointer(self.bytes), count:self.length)
+        let bytes = UnsafeBufferPointer<UInt8>(start: (self as NSData).bytes.bindMemory(to: UInt8.self, capacity: self.count), count:self.count)
         // Array of hex strings, one for each byte:
         let hexBytes = bytes.map { String(format: "%02hhx", $0) }
         // Concatenate all hex strings:
-        return hexBytes.joinWithSeparator("")
+        return hexBytes.joined(separator: "")
     }
 }

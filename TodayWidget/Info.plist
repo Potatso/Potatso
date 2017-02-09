@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Potatso</string>
+	<string>todaywidget</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -18,8 +18,6 @@
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.4.6</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>121</string>
 	<key>NSExtension</key>
@@ -29,5 +27,9 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>TodayWidget.TodayViewController</string>
 	</dict>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>gamekit</string>
+	</array>
 </dict>
 </plist>

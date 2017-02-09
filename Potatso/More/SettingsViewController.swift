@@ -34,7 +34,7 @@ class SettingsViewController: FormViewController, MFMailComposeViewControllerDel
         navigationItem.title = "More".localized()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         generateForm()
     }
@@ -136,33 +136,33 @@ class SettingsViewController: FormViewController, MFMailComposeViewControllerDel
 
     func showUserManual() {
         let url = "https://manual.potatso.com/"
-        let vc = BaseSafariViewController(URL: NSURL(string: url)!, entersReaderIfAvailable: false)
+        let vc = BaseSafariViewController(url: URL(string: url)!, entersReaderIfAvailable: false)
         vc.delegate = self
-        presentViewController(vc, animated: true, completion: nil)
+        present(vc, animated: true, completion: nil)
     }
 
     func followTwitter() {
-        UIApplication.sharedApplication().openURL(NSURL(string: "https://twitter.com/intent/user?screen_name=potatsoapp")!)
+        UIApplication.shared.openURL(URL(string: "https://twitter.com/intent/user?screen_name=potatsoapp")!)
     }
 
     func followWeibo() {
-        UIApplication.sharedApplication().openURL(NSURL(string: "http://weibo.com/potatso")!)
+        UIApplication.shared.openURL(URL(string: "http://weibo.com/potatso")!)
     }
 
     func joinTelegramGroup() {
-        UIApplication.sharedApplication().openURL(NSURL(string: "https://telegram.me/joinchat/BT0c4z49OGNZXwl9VsO0uQ")!)
+        UIApplication.shared.openURL(URL(string: "https://telegram.me/joinchat/BT0c4z49OGNZXwl9VsO0uQ")!)
     }
 
     func shareWithFriends() {
         var shareItems: [AnyObject] = []
-        shareItems.append("Potatso [https://itunes.apple.com/us/app/id1070901416]")
+        shareItems.append("Potatso [https://itunes.apple.com/us/app/id1070901416]" as AnyObject)
         shareItems.append(UIImage(named: "AppIcon60x60")!)
         let shareVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)
-        self.presentViewController(shareVC, animated: true, completion: nil)
+        self.present(shareVC, animated: true, completion: nil)
     }
 
-    @objc func safariViewControllerDidFinish(controller: SFSafariViewController) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
+    @objc func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        controller.dismiss(animated: true, completion: nil)
     }
     
 }

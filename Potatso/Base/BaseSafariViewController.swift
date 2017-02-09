@@ -13,12 +13,12 @@ class BaseSafariViewController: SFSafariViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action:nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action:nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.barStyle = .Default
+        navigationController?.navigationBar.barStyle = .default
     }
     
 }

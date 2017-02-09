@@ -4,26 +4,40 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : 0,
     "3C6F92914DC600539B41847959CED54915F302B0" : 0,
     "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : 0,
+    "83BADBC5501CE21C43EFAD0B4239602133296C18" : 9223372036854775807,
     "CAC6E1011EE7E5B3F791C48870F55187391185DB" : 0,
-    "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : 0
+    "1EC1056DCAEA450CA5B3B3D30A2658917DFAA192" : 9223372036854775807
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "357ADE20-F4A3-4BE0-875B-8B12FC4B6C73",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "3C6F92914DC600539B41847959CED54915F302B0" : "iOS\/",
-    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : "iOS\/Library\/ShadowPath\/ShadowPath\/shadowsocks-libev\/",
-    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : "iOS\/Library\/ShadowPath\/ShadowPath\/libmaxminddb\/",
-    "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : "..\/..\/iOS\/Library\/plcrashreporter"
+    "C7C6F7063BDDA3DE8369DA328451FE1D0A969DD5" : "..\/..\/iOS\/Library\/plcrashreporter",
+    "3C6F92914DC600539B41847959CED54915F302B0" : "Potatso\/",
+    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : "Potatso\/Library\/ShadowPath\/ShadowPath\/shadowsocks-libev\/",
+    "83BADBC5501CE21C43EFAD0B4239602133296C18" : "Potatso\/Library\/Eureka\/",
+    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : "Potatso\/Library\/ShadowPath\/ShadowPath\/libmaxminddb\/",
+    "1EC1056DCAEA450CA5B3B3D30A2658917DFAA192" : "Potatso\/Library\/CallbackURLKit\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Potatso",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Potatso.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:haxpor\/CallbackURLKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1EC1056DCAEA450CA5B3B3D30A2658917DFAA192"
+    },
+    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:iCodesign\/Potatso.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3C6F92914DC600539B41847959CED54915F302B0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:haxpor\/Eureka.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "83BADBC5501CE21C43EFAD0B4239602133296C18"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:shadowsocks\/shadowsocks-libev.git",

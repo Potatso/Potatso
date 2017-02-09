@@ -16,7 +16,7 @@ class User {
         if let id = keychain["userId"] {
             return id
         } else {
-            let random = NSUUID().UUIDString
+            let random = UUID().uuidString
             keychain["userId"] = random
             return random
         }

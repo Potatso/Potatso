@@ -12,12 +12,12 @@ struct FetchResults {
     }
 }
 
-class FetchCloudChangesOperation: Operation {
+class FetchCloudChangesOperation: PSOperations.Operation {
     
     let zoneID: CKRecordZoneID
     var changeToken: CKServerChangeToken?
     
-    let delayOperationQueue = OperationQueue()
+    let delayOperationQueue = PSOperations.OperationQueue()
     let maximumRetryAttempts: Int
     var retryAttempts: Int = 0
 
@@ -37,8 +37,8 @@ class FetchCloudChangesOperation: Operation {
         }
     }
     
-    func fetchCloudChanges(changeToken: CKServerChangeToken?,
-                           completionHandler: (NSError!) -> ()) {
+    func fetchCloudChanges(_ changeToken: CKServerChangeToken?,
+                           completionHandler: @escaping (NSError!) -> ()) {
         
         let fetchOperation = CKFetchRecordChangesOperation(recordZoneID: zoneID, previousServerChangeToken: changeToken)
         fetchOperation.resultsLimit = CKQueryOperationMaximumResults
@@ -64,7 +64,7 @@ class FetchCloudChangesOperation: Operation {
             (serverChangeToken, clientChangeToken, nsError) in
             
             if let error = nsError {
-                self.handleCloudKitFetchError(error, completionHandler: completionHandler)
+                self.handleCloudKitFetchError(error as NSError, completionHandler: completionHandler)
                 
             } else {
                 
@@ -83,7 +83,7 @@ class FetchCloudChangesOperation: Operation {
                         self.fetchCloudChanges(self.changeToken,
                                                completionHandler: completionHandler)
                     } else {
-                        completionHandler(nsError)
+                        completionHandler(nsError as NSError!)
                     }
                 }
             }
@@ -91,7 +91,7 @@ class FetchCloudChangesOperation: Operation {
         fetchOperation.start()
     }
     
-    func processFetchResults(results: FetchResults) -> NSError? {
+    func processFetchResults(_ results: FetchResults) -> NSError? {
         var error: NSError?
         
         do {
@@ -115,7 +115,7 @@ class FetchCloudChangesOperation: Operation {
     // MARK: - Retry
     
     // Wait a default of 3 seconds
-    func parseRetryTime(error: NSError) -> Double {
+    func parseRetryTime(_ error: NSError) -> Double {
         var retrySecondsDouble: Double = 3
         if let retrySecondsString = error.userInfo[CKErrorRetryAfterKey] as? String {
             retrySecondsDouble = Double(retrySecondsString)!
@@ -124,7 +124,7 @@ class FetchCloudChangesOperation: Operation {
     }
     
     // After `maximumRetryAttempts` this function will return an error
-    func retryFetch(error: NSError, retryAfter: Double, completionHandler: (NSError!) -> ()) {
+    func retryFetch(_ error: NSError, retryAfter: Double, completionHandler: @escaping (NSError!) -> ()) {
         if self.retryAttempts < self.maximumRetryAttempts {
             self.retryAttempts += 1
             
@@ -144,22 +144,22 @@ class FetchCloudChangesOperation: Operation {
     /**
      Implement custom logic here for handling CloudKit fetch errors.
      */
-    func handleCloudKitFetchError(error: NSError, completionHandler: (NSError!) -> ()) {
-        let ckErrorCode: CKErrorCode = CKErrorCode(rawValue: error.code)!
+    func handleCloudKitFetchError(_ error: NSError, completionHandler: @escaping (NSError!) -> ()) {
+        let ckErrorCode: CKError = CKError(_nsError: NSError(domain: Bundle.main.bundleIdentifier!, code: error.code))
         
-        switch ckErrorCode {
-        case .ZoneBusy, .RequestRateLimited, .ServiceUnavailable, .NetworkFailure, .NetworkUnavailable, .ResultsTruncated:
+        switch ckErrorCode.code {
+        case .zoneBusy, .requestRateLimited, .serviceUnavailable, .networkFailure, .networkUnavailable, .resultsTruncated:
             // Retry necessary
             retryFetch(error, retryAfter: parseRetryTime(error), completionHandler: completionHandler)
             
-        case .BadDatabase, .InternalError, .BadContainer, .MissingEntitlement,
-             .ConstraintViolation, .IncompatibleVersion, .AssetFileNotFound,
-             .AssetFileModified, .InvalidArguments,
-             .PermissionFailure, .ServerRejectedRequest:
+        case .badDatabase, .internalError, .badContainer, .missingEntitlement,
+             .constraintViolation, .incompatibleVersion, .assetFileNotFound,
+             .assetFileModified, .invalidArguments,
+             .permissionFailure, .serverRejectedRequest:
             // Developer issue
             completionHandler(error)
             
-        case .UnknownItem:
+        case .unknownItem:
             // Developer issue
             // - Never delete CloudKit Record Types.
             // - This issue will arise if you created some records of this type
@@ -173,27 +173,28 @@ class FetchCloudChangesOperation: Operation {
             //   record type which will lead to further errors.
             completionHandler(error)
             
-        case .QuotaExceeded, .OperationCancelled:
+        case .quotaExceeded, .operationCancelled:
             // User issue. Provide alert.
             completionHandler(error)
             
-        case .LimitExceeded, .PartialFailure, .ServerRecordChanged,
-             .BatchRequestFailed:
+        case .limitExceeded, .partialFailure, .serverRecordChanged,
+             .batchRequestFailed:
             // Not possible in a fetch operation (I think).
             completionHandler(error)
             
-        case .NotAuthenticated:
+        case .notAuthenticated:
             // Handled as condition of sync operation.
             completionHandler(error)
             
-        case .ZoneNotFound, .UserDeletedZone:
+        case .zoneNotFound, .userDeletedZone:
             // Handled in PrepareZoneOperation.
             completionHandler(error)
             
-        case .ChangeTokenExpired:
+        case .changeTokenExpired:
             // TODO: Determine correct handling
             // CK Docs: The previousServerChangeToken value is too old and the client must re-sync from scratch
             SyncManager.shared.sync(true)
+        default: break
         }
     }
 }

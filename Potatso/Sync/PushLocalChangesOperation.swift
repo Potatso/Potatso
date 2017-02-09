@@ -10,10 +10,10 @@ import Foundation
 import PSOperations
 import CloudKit
 
-class PushLocalChangesOperation: Operation {
+class PushLocalChangesOperation: PSOperations.Operation {
 
     let zoneID: CKRecordZoneID
-    private let internalQueue = OperationQueue()
+    fileprivate let internalQueue = PSOperations.OperationQueue()
     var toSaveRecords: [CKRecord] = []
     var toDeleteRecordIDs: [CKRecordID] = []
     var maxRecordsPerRequest = 400
@@ -39,7 +39,7 @@ class PushLocalChangesOperation: Operation {
             self.finish(errors)
             return
         }
-        let finishOp = BlockOperation {}
+        let finishOp = PSOperations.BlockOperation {}
         finishOp.addObserver(finishObserver)
         if toSaveRecords.count > maxRecordsPerRequest {
             let total = toSaveRecords.count/maxRecordsPerRequest + 1
@@ -74,12 +74,12 @@ class PushLocalChangesOperation: Operation {
         internalQueue.addOperation(finishOp)
     }
 
-    func addModifiedOperation(name: String, records: [CKRecord]) -> Operation {
+    func addModifiedOperation(_ name: String, records: [CKRecord]) -> PSOperations.Operation {
         let op = PushLocalModifiedChangesOperation(zoneID: potatsoZoneId, name: name, modifiedRecords: records)
         return op
     }
 
-    func addDeletedOperation(name: String, recordIDs: [CKRecordID]) -> Operation {
+    func addDeletedOperation(_ name: String, recordIDs: [CKRecordID]) -> PSOperations.Operation {
         let op = PushLocalDeletedChangesOperation(zoneID: potatsoZoneId, name: name, deletedRecordIDs: recordIDs)
         return op
     }

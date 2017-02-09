@@ -11,7 +11,7 @@
 @implementation NSError (Helper)
 
 + (NSError *)errorWithCode: (NSInteger)code description: (NSString *)description {
-    return [NSError errorWithDomain:@"com.touchingapp.potatso" code:code userInfo:@{NSLocalizedDescriptionKey: description}];
+    return [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier] code:code userInfo:@{NSLocalizedDescriptionKey: description}];
 }
 
 @end

@@ -47,7 +47,7 @@ class RuleCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setRule(rule: Rule) {
+    func setRule(_ rule: Rule) {
         titleLabel.text = "\(rule.type), \(rule.value)"
         actionLabel.text = rule.action.rawValue
         actionLabel.textColor = rule.action.color
@@ -56,14 +56,14 @@ class RuleCell: UITableViewCell {
     lazy var titleLabel: UILabel = {
         let v = UILabel()
         v.textColor = "404040".color
-        v.font = UIFont.systemFontOfSize(16)
+        v.font = UIFont.systemFont(ofSize: 16)
         v.numberOfLines = 2
         return v
     }()
 
     lazy var actionLabel: UILabel = {
         let v = UILabel()
-        v.font = UIFont.systemFontOfSize(13)
+        v.font = UIFont.systemFont(ofSize: 13)
         return v
     }()
 

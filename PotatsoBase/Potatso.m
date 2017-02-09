@@ -8,12 +8,15 @@
 
 #import "Potatso.h"
 
-NSString *sharedGroupIdentifier = @"group.com.touchingapp.potatso";
-
 @implementation Potatso
 
++ (NSString *) sharedGroupIdentifier {
+    // this will return the main application's bundle identifier, not the target that this source file lives under
+    return [NSString stringWithFormat:@"group.%@", [[NSBundle mainBundle] bundleIdentifier]];
+}
+
 + (NSURL *)sharedUrl {
-    return [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:sharedGroupIdentifier];
+    return [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:[self sharedGroupIdentifier]];
 }
 
 + (NSURL *)sharedDatabaseUrl {
@@ -21,7 +24,7 @@ NSString *sharedGroupIdentifier = @"group.com.touchingapp.potatso";
 }
 
 + (NSUserDefaults *)sharedUserDefaults {
-    return [[NSUserDefaults alloc] initWithSuiteName:sharedGroupIdentifier];
+    return [[NSUserDefaults alloc] initWithSuiteName:[self sharedGroupIdentifier]];
 }
 
 + (NSURL * _Nonnull)sharedGeneralConfUrl {

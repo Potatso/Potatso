@@ -17,8 +17,8 @@ public final class ActionRow: _LabelRow, RowType {
 
     public override func updateCell() {
         super.updateCell()
-        cell.selectionStyle = .Default
-        cell.accessoryType = .DisclosureIndicator
+        cell.selectionStyle = .default
+        cell.accessoryType = .disclosureIndicator
     }
 
     public override func didSelect() {

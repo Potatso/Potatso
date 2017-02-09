@@ -42,15 +42,15 @@ class BaseEmptyView: UIView {
     lazy var sadView: UIImageView = {
         let v = UIImageView()
         v.image = UIImage(named: "User")
-        v.contentMode = .ScaleAspectFit
+        v.contentMode = .scaleAspectFit
         return v
     }()
     
     lazy var titleLabel: UILabel = {
         let v = UILabel()
         v.textColor = "808080".color
-        v.font = UIFont.systemFontOfSize(15)
-        v.textAlignment = .Center
+        v.font = UIFont.systemFont(ofSize: 15)
+        v.textAlignment = .center
         v.numberOfLines = 0
         return v
     }()

@@ -17,33 +17,33 @@ class ConfigGroupCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         loadView()
         preservesSuperviewLayoutMargins = false
-        layoutMargins = UIEdgeInsetsZero
-        separatorInset = UIEdgeInsetsZero
+        layoutMargins = UIEdgeInsets.zero
+        separatorInset = UIEdgeInsets.zero
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(group: ConfigurationGroup, hintColor: UIColor) {
+    func config(_ group: ConfigurationGroup, hintColor: UIColor) {
         nameLabel.text = group.name
         proxyHintLabel.text = "Proxy".localized()
         proxyLabel.text = group.proxies.first?.name ?? "None".localized()
         ruleSetsHintLabel.text = "Rule Set".localized()
         let desc = group.ruleSets.map { (set) -> String in
             return set.name
-        }.joinWithSeparator(", ")
+        }.joined(separator: ", ")
         ruleSetsLabel.text = group.ruleSets.count > 0 ? "\(desc)" : "None".localized()
         leftColorHintView.backgroundColor = hintColor
-        statusLabel.hidden = true
-        if group.isDefault && Manager.sharedManager.vpnStatus == .On {
-            statusLabel.hidden = false
+        statusLabel.isHidden = true
+        if group.isDefault && Manager.sharedManager.vpnStatus == .on {
+            statusLabel.isHidden = false
         }
     }
     
     func loadView() {
-        selectionStyle = .None
-        backgroundColor = UIColor.clearColor()
+        selectionStyle = .none
+        backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
         contentView.addSubview(backgroundWrapper)
         backgroundWrapper.addSubview(leftColorHintView)
         backgroundWrapper.addSubview(statusLabel)
@@ -101,7 +101,7 @@ class ConfigGroupCell: UITableViewCell {
     lazy var nameLabel: UILabel = {
         let v = UILabel()
         v.textColor = Color.TextPrimary
-        v.font = UIFont.boldSystemFontOfSize(18)
+        v.font = UIFont.boldSystemFont(ofSize: 18)
         v.adjustsFontSizeToFitWidth = true
         v.minimumScaleFactor = 0.8
         return v
@@ -110,14 +110,14 @@ class ConfigGroupCell: UITableViewCell {
     lazy var proxyHintLabel: UILabel = {
         let v = UILabel()
         v.textColor = Color.TextHint
-        v.font = UIFont.systemFontOfSize(12)
+        v.font = UIFont.systemFont(ofSize: 12)
         return v
     }()
     
     lazy var proxyLabel: UILabel = {
         let v = UILabel()
         v.textColor = Color.TextSecond
-        v.font = UIFont.systemFontOfSize(15)
+        v.font = UIFont.systemFont(ofSize: 15)
         v.adjustsFontSizeToFitWidth = true
         v.minimumScaleFactor = 0.8
         return v
@@ -126,14 +126,14 @@ class ConfigGroupCell: UITableViewCell {
     lazy var ruleSetsHintLabel: UILabel = {
         let v = UILabel()
         v.textColor = Color.TextHint
-        v.font = UIFont.systemFontOfSize(12)
+        v.font = UIFont.systemFont(ofSize: 12)
         return v
     }()
     
     lazy var ruleSetsLabel: UILabel = {
         let v = UILabel()
         v.textColor = Color.TextSecond
-        v.font = UIFont.systemFontOfSize(15)
+        v.font = UIFont.systemFont(ofSize: 15)
         v.adjustsFontSizeToFitWidth = true
         v.minimumScaleFactor = 0.8
         return v
@@ -142,12 +142,12 @@ class ConfigGroupCell: UITableViewCell {
     lazy var statusLabel: UILabel = {
         let v = UILabel()
         v.text = "Connected".localized()
-        v.font = UIFont.systemFontOfSize(10)
-        v.textColor = UIColor.whiteColor()
+        v.font = UIFont.systemFont(ofSize: 10)
+        v.textColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         v.layer.cornerRadius = 10
         v.layer.masksToBounds = true
         v.backgroundColor = "1ABC9C".color
-        v.textAlignment = .Center
+        v.textAlignment = .center
         v.adjustsFontSizeToFitWidth = true
         v.minimumScaleFactor = 0.8
         return v
@@ -161,7 +161,7 @@ class ConfigGroupCell: UITableViewCell {
     
     lazy var backgroundWrapper: UIView = {
         let v = UIView()
-        v.backgroundColor = UIColor.whiteColor()
+        v.backgroundColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         return v
     }()
     

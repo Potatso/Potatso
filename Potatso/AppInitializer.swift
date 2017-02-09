@@ -16,7 +16,7 @@ let appID = "1070901416"
 
 class AppInitializer: NSObject, AppLifeCycleProtocol {
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         configLogging()
         configAppirater()
         #if !DEBUG
@@ -32,33 +32,33 @@ class AppInitializer: NSObject, AppLifeCycleProtocol {
 
     func configLogging() {
         let fileLogger = DDFileLogger() // File Logger
-        fileLogger.rollingFrequency = 60*60*24*3  // 24 hours
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        DDLog.addLogger(fileLogger)
+        fileLogger?.rollingFrequency = TimeInterval(60*60*24*3)  // 24 hours
+        fileLogger?.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(fileLogger)
 
         let logglyLogger = LogglyLogger() // Loggy Logger
-        logglyLogger.logglyKey = LOGGLY_KEY
+        logglyLogger.logglyKey = "io.wasin-secretkeyblabla"
         let fields = LogglyFields()
         fields.userid = User.currentUser.id
         fields.appversion = AppEnv.fullVersion
         let formatter = LogglyFormatter(logglyFieldsDelegate: fields)
-        formatter.alwaysIncludeRawMessage = false
+        formatter?.alwaysIncludeRawMessage = false
         logglyLogger.logFormatter = formatter
-        DDLog.addLogger(logglyLogger)
+        DDLog.add(logglyLogger)
 
         #if DEBUG
-            DDLog.addLogger(DDTTYLogger.sharedInstance()) // TTY = Xcode console
-            DDLog.addLogger(DDASLLogger.sharedInstance()) // ASL = Apple System Logs
-            DDLog.setLevel(DDLogLevel.All, forClass: DDTTYLogger.self)
-            DDLog.setLevel(DDLogLevel.All, forClass: DDASLLogger.self)
+            DDLog.add(DDTTYLogger.sharedInstance()) // TTY = Xcode console
+            DDLog.add(DDASLLogger.sharedInstance()) // ASL = Apple System Logs
+            DDLog.setLevel(DDLogLevel.all, for: DDTTYLogger.self)
+            DDLog.setLevel(DDLogLevel.all, for: DDASLLogger.self)
         #else
 
         #endif
     }
 
     func configHelpShift() {
-        HelpshiftCore.initializeWithProvider(HelpshiftAll.sharedInstance())
-        HelpshiftCore.installForApiKey(HELPSHIFT_KEY, domainName: HELPSHIFT_DOMAIN, appID: HELPSHIFT_ID)
+        HelpshiftCore.initialize(with: HelpshiftAll.sharedInstance())
+        HelpshiftCore.install(forApiKey: HELPSHIFT_KEY, domainName: HELPSHIFT_DOMAIN, appID: HELPSHIFT_ID)
     }
     
 }

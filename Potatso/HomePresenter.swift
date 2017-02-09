@@ -28,17 +28,17 @@ class HomePresenter: NSObject {
 
     override init() {
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onVPNStatusChanged), name: kProxyServiceVPNStatusNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onVPNStatusChanged), name: NSNotification.Name(rawValue: kProxyServiceVPNStatusNotification), object: nil)
         CurrentGroupManager.shared.onChange = { group in
             self.delegate?.handleRefreshUI()
         }
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
-    func bindToVC(vc: UIViewController) {
+    func bindToVC(_ vc: UIViewController) {
         self.vc = vc
     }
 
@@ -70,12 +70,12 @@ class HomePresenter: NSObject {
 
     func showAddConfigGroup() {
         var urlTextField: UITextField?
-        let alert = UIAlertController(title: "Add Config Group".localized(), message: nil, preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler { (textField) in
+        let alert = UIAlertController(title: "Add Config Group".localized(), message: nil, preferredStyle: .alert)
+        alert.addTextField { (textField) in
             textField.placeholder = "Name".localized()
             urlTextField = textField
         }
-        alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default, handler: { (action) in
             if let input = urlTextField?.text {
                 do {
                     try self.addEmptyConfigGroup(input)
@@ -84,12 +84,12 @@ class HomePresenter: NSObject {
                 }
             }
         }))
-        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel, handler: nil))
-        vc.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .cancel, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
     }
 
-    func addEmptyConfigGroup(name: String) throws {
-        let trimmedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+    func addEmptyConfigGroup(_ name: String) throws {
+        let trimmedName = name.trimmingCharacters(in: CharacterSet.whitespaces)
         if trimmedName.characters.count == 0 {
             throw "Name can't be empty".localized()
         }
@@ -113,8 +113,8 @@ class HomePresenter: NSObject {
         vc.navigationController?.pushViewController(destVC, animated: true)
     }
 
-    func appendRuleSet(ruleSet: RuleSet?) {
-        guard let ruleSet = ruleSet where !group.ruleSets.contains(ruleSet) else {
+    func appendRuleSet(_ ruleSet: RuleSet?) {
+        guard let ruleSet = ruleSet, !group.ruleSets.contains(ruleSet) else {
             return
         }
         do {
@@ -125,22 +125,22 @@ class HomePresenter: NSObject {
         }
     }
 
-    func updateDNS(dnsString: String) {
+    func updateDNS(_ dnsString: String) {
         var dns: String = ""
-        let trimmedDNSString = dnsString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        let trimmedDNSString = dnsString.trimmingCharacters(in: CharacterSet.whitespaces)
         if trimmedDNSString.characters.count > 0 {
-            let dnsArray = dnsString.componentsSeparatedByString(",").map({ $0.componentsSeparatedByString("，") }).flatMap({ $0 }).map({ $0.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())}).filter({ $0.characters.count > 0 })
+            let dnsArray = dnsString.components(separatedBy: ",").map({ $0.components(separatedBy: "，") }).flatMap({ $0 }).map({ $0.trimmingCharacters(in: CharacterSet.whitespaces)}).filter({ $0.characters.count > 0 })
             let ipRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
             guard let regex = try? Regex(ipRegex) else {
                 fatalError()
             }
             let valids = dnsArray.map({ regex.test($0) })
-            let valid = valids.reduce(true, combine: { $0 && $1 })
+            let valid = valids.reduce(true, { $0 && $1 })
             if !valid {
                 dns = ""
                 Alert.show(self.vc, title: "Invalid DNS".localized(), message: "DNS should be valid ip addresses (separated by commas if multiple). e.g.: 8.8.8.8,8.8.4.4".localized())
             }else {
-                dns = dnsArray.joinWithSeparator(",")
+                dns = dnsArray.joined(separator: ",")
             }
         }
         do {
@@ -156,12 +156,12 @@ class HomePresenter: NSObject {
 
     func changeGroupName() {
         var urlTextField: UITextField?
-        let alert = UIAlertController(title: "Change Name".localized(), message: nil, preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler { (textField) in
+        let alert = UIAlertController(title: "Change Name".localized(), message: nil, preferredStyle: .alert)
+        alert.addTextField { (textField) in
             textField.placeholder = "Input New Name".localized()
             urlTextField = textField
         }
-        alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default, handler: { [unowned self] (action) in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default, handler: { [unowned self] (action) in
             if let newName = urlTextField?.text {
                 do {
                     try ConfigurationGroup.changeName(forGroupId: self.group.uuid, name: newName)
@@ -171,8 +171,8 @@ class HomePresenter: NSObject {
                 self.delegate?.handleRefreshUI()
             }
         }))
-        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel, handler: nil))
-        vc.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .cancel, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
     }
 
 }
@@ -181,13 +181,13 @@ class CurrentGroupManager {
 
     static let shared = CurrentGroupManager()
 
-    private init() {
+    fileprivate init() {
         _groupUUID = Manager.sharedManager.defaultConfigGroup.uuid
     }
 
-    var onChange: (ConfigurationGroup? -> Void)?
+    var onChange: ((ConfigurationGroup?) -> Void)?
 
-    private var _groupUUID: String {
+    fileprivate var _groupUUID: String {
         didSet(o) {
             self.onChange?(group)
         }
@@ -203,7 +203,7 @@ class CurrentGroupManager {
         }
     }
 
-    func setConfigGroupId(id: String) {
+    func setConfigGroupId(_ id: String) {
         if let _ = DBUtils.get(id, type: ConfigurationGroup.self, filter: "deleted = false") {
             _groupUUID = id
         } else {

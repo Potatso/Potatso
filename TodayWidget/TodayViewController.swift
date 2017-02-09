@@ -23,7 +23,7 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
     
     let wormhole = Manager.sharedManager.wormhole
     
-    var timer: NSTimer?
+    var timer: Timer?
     
     var rowCount: Int {
         return 1
@@ -33,9 +33,9 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
 
     var socket: GCDAsyncSocket!
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
+        socket = GCDAsyncSocket(delegate: self, delegateQueue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.background))
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -44,40 +44,40 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let port = Potatso.sharedUserDefaults().integerForKey("tunnelStatusPort")
+        let port = Potatso.sharedUserDefaults().integer(forKey: "tunnelStatusPort")
         status = port > 0
-        tableView.registerClass(CurrentGroupCell.self, forCellReuseIdentifier: kCurrentGroupCellIndentifier)
+        tableView.register(CurrentGroupCell.self, forCellReuseIdentifier: kCurrentGroupCellIndentifier)
         view.addSubview(tableView)
         updateLayout()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         startTimer()
         tableView.reloadData()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         stopTimer()
     }
 
     func tryConnectStatusSocket() {
-        let port = Potatso.sharedUserDefaults().integerForKey("tunnelStatusPort")
+        let port = Potatso.sharedUserDefaults().integer(forKey: "tunnelStatusPort")
         guard port > 0 else {
             updateStatus(false)
             return
         }
         do {
             socket.delegate = self
-            try socket.connectToHost("127.0.0.1", onPort: UInt16(port))
+            try socket.connect(toHost: "127.0.0.1", onPort: UInt16(port))
         }catch {
             updateStatus(false)
         }
     }
 
     func startTimer() {
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(TodayViewController.tryConnectStatusSocket), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(TodayViewController.tryConnectStatusSocket), userInfo: nil, repeats: true)
         timer?.fire()
     }
 
@@ -89,74 +89,74 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
 
     // MARK: - Socket
 
-    func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    func socket(_ sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
         updateStatus(true)
         sock.delegate = nil
         sock.disconnect()
     }
 
-    func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
+    func socketDidDisconnect(_ sock: GCDAsyncSocket!, withError err: NSError!) {
         updateStatus(false)
     }
 
-    func updateStatus(current: Bool) {
+    func updateStatus(_ current: Bool) {
         if status != current {
             status = current
-            dispatch_async(dispatch_get_main_queue(), { 
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+            DispatchQueue.main.async(execute: { 
+                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             })
         }
     }
     
     func switchVPN() {
         if status {
-            wormhole.passMessageObject("", identifier: "stopTunnel")
+            wormhole.passMessageObject("" as NSCoding?, identifier: "stopTunnel")
         }else {
-            NSURLSession.sharedSession().dataTaskWithURL(NSURL(string: "https://on-demand.connect.potatso.com/start/")!).resume()
+            URLSession.shared.dataTask(with: URL(string: "https://on-demand.connect.potatso.com/start/")!).resume()
         }
     }
     
-    func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
+    func widgetMarginInsets(forProposedMarginInsets defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
         var inset = defaultMarginInsets
         inset.bottom = 0
         return inset
     }
 
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
+    func widgetPerformUpdate(_ completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
 
         // If an error is encountered, use NCUpdateResult.Failed
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
         
-        completionHandler(NCUpdateResult.NewData)
+        completionHandler(NCUpdateResult.newData)
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rowCount
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell: UITableViewCell!
         if indexPath.row == 0 {
-            cell = tableView.dequeueReusableCellWithIdentifier(kCurrentGroupCellIndentifier, forIndexPath: indexPath)
-            let name = Potatso.sharedUserDefaults().objectForKey(kDefaultGroupName) as? String
+            cell = tableView.dequeueReusableCell(withIdentifier: kCurrentGroupCellIndentifier, for: indexPath)
+            let name = Potatso.sharedUserDefaults().object(forKey: kDefaultGroupName) as? String
             (cell as? CurrentGroupCell)?.config(name ?? "Default".localized(), status: status, switchVPN: switchVPN)
         }
         cell.preservesSuperviewLayoutMargins = false
-        cell.layoutMargins = UIEdgeInsetsZero
-        cell.separatorInset = UIEdgeInsetsZero
-        cell.selectionStyle = .None
+        cell.layoutMargins = UIEdgeInsets.zero
+        cell.separatorInset = UIEdgeInsets.zero
+        cell.selectionStyle = .none
         if indexPath.row == rowCount - 1 {
             cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0)
         }else {
-            cell.separatorInset = UIEdgeInsetsZero
+            cell.separatorInset = UIEdgeInsets.zero
         }
         
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
     
@@ -171,7 +171,7 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDataS
     }
     
     lazy var tableView: UITableView = {
-        let v = UITableView(frame: CGRectZero, style: .Plain)
+        let v = UITableView(frame: CGRect.zero, style: .plain)
         v.tableFooterView = UIView()
         v.tableHeaderView = UIView()
         v.dataSource = self

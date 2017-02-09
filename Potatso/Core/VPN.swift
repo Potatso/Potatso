@@ -14,7 +14,7 @@ import PotatsoLibrary
 
 class VPN {
     
-    static func switchVPN(group: ConfigurationGroup, completion: ((ErrorType?) -> Void)? = nil) {
+    static func switchVPN(_ group: ConfigurationGroup, completion: ((Error?) -> Void)? = nil) {
         let defaultUUID = Manager.sharedManager.defaultConfigGroup.uuid
         let isDefault = defaultUUID == group.uuid
         if !isDefault {
@@ -27,11 +27,11 @@ class VPN {
         }
     }
 
-    private static func _switchDefaultVPN(group: ConfigurationGroup, completion: ((ErrorType?) -> Void)? = nil) {
+    fileprivate static func _switchDefaultVPN(_ group: ConfigurationGroup, completion: ((Error?) -> Void)? = nil) {
         Manager.sharedManager.setDefaultConfigGroup(group.uuid, name: group.name)
         Manager.sharedManager.switchVPN { (manager, error) in
             if let _ = manager {
-                Async.background(after: 2, block: { () -> Void in
+                Async.background(after: 2, { () -> Void in
                     Appirater.userDidSignificantEvent(false)
                 })
             }

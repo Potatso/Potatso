@@ -14,26 +14,26 @@ private var hudKey = "hud"
 
 extension UIViewController {
     
-    func showProgreeHUD(text: String? = nil) {
+    func showProgreeHUD(_ text: String? = nil) {
         hideHUD()
-        let hud = MBProgressHUD.showHUDAddedTo(view, animated: true)
-        hud.mode = .Indeterminate
+        let hud = MBProgressHUD.showAdded(to: view, animated: true)
+        hud.mode = .indeterminate
         hud.label.text = text
     }
     
-    func showTextHUD(text: String?, dismissAfterDelay: NSTimeInterval) {
+    func showTextHUD(_ text: String?, dismissAfterDelay: TimeInterval) {
         hideHUD()
-        let hud = MBProgressHUD.showHUDAddedTo(view, animated: true)
-        hud.mode = .Text
+        let hud = MBProgressHUD.showAdded(to: view, animated: true)
+        hud.mode = .text
         hud.detailsLabel.text = text
         hideHUD(dismissAfterDelay)
     }
     
     func hideHUD() {
-        MBProgressHUD.hideHUDForView(view, animated: true)
+        MBProgressHUD.hide(for: view, animated: true)
     }
     
-    func hideHUD(afterDelay: NSTimeInterval) {
+    func hideHUD(_ afterDelay: TimeInterval) {
         Async.main(after: afterDelay) { 
             self.hideHUD()
         }

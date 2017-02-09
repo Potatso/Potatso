@@ -36,44 +36,44 @@ extension HTTPMethod: CustomStringConvertible {
 }
 
 enum HTTPResponseCode: Int {
-    case CODE_200 = 200
-    case CODE_201 = 201
-    case CODE_202 = 202
-    case CODE_203 = 203
-    case CODE_204 = 204
-    case CODE_205 = 205
-    case CODE_206 = 206
-    case CODE_301 = 301
-    case CODE_302 = 302
-    case CODE_303 = 303
-    case CODE_304 = 304
-    case CODE_305 = 305
-    case CODE_306 = 306
-    case CODE_307 = 307
-    case CODE_400 = 400
-    case CODE_401 = 401
-    case CODE_402 = 402
-    case CODE_403 = 403
-    case CODE_404 = 404
-    case CODE_405 = 405
-    case CODE_406 = 406
-    case CODE_407 = 407
-    case CODE_408 = 408
-    case CODE_409 = 409
-    case CODE_410 = 410
-    case CODE_411 = 411
-    case CODE_412 = 412
-    case CODE_413 = 413
-    case CODE_414 = 414
-    case CODE_415 = 415
-    case CODE_416 = 416
-    case CODE_417 = 417
-    case CODE_500 = 500
-    case CODE_501 = 501
-    case CODE_502 = 502
-    case CODE_503 = 503
-    case CODE_504 = 504
-    case CODE_505 = 505
+    case code_200 = 200
+    case code_201 = 201
+    case code_202 = 202
+    case code_203 = 203
+    case code_204 = 204
+    case code_205 = 205
+    case code_206 = 206
+    case code_301 = 301
+    case code_302 = 302
+    case code_303 = 303
+    case code_304 = 304
+    case code_305 = 305
+    case code_306 = 306
+    case code_307 = 307
+    case code_400 = 400
+    case code_401 = 401
+    case code_402 = 402
+    case code_403 = 403
+    case code_404 = 404
+    case code_405 = 405
+    case code_406 = 406
+    case code_407 = 407
+    case code_408 = 408
+    case code_409 = 409
+    case code_410 = 410
+    case code_411 = 411
+    case code_412 = 412
+    case code_413 = 413
+    case code_414 = 414
+    case code_415 = 415
+    case code_416 = 416
+    case code_417 = 417
+    case code_500 = 500
+    case code_501 = 501
+    case code_502 = 502
+    case code_503 = 503
+    case code_504 = 504
+    case code_505 = 505
 
 }
 
@@ -90,7 +90,7 @@ extension HTTPResponseCode: CustomStringConvertible {
         case 500..<600:
             return "000000".color
         default:
-            return UIColor.blackColor()
+            return UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         }
     }
     
@@ -101,41 +101,41 @@ extension HTTPResponseCode: CustomStringConvertible {
 
 enum RequestEventType: Int {
     case Init = 0
-    case DNS
-    case Remote
-    case Open
-    case Closed
+    case dns
+    case remote
+    case open
+    case closed
 }
 
 enum RequestRouting: Int {
-    case None = 0
-    case Direct 
-    case Proxy
-    case Reject
+    case none = 0
+    case direct 
+    case proxy
+    case reject
 }
 
 enum RequestTimeStage: Int {
     case INIT = 0
-    case CLOSED
-    case URL_RULE_MATCH_START
-    case URL_RULE_MATCH_END
-    case IP_RULE_MATCH_START
-    case IP_RULE_MATCH_END
-    case DNS_IP_RULE_MATCH_START
-    case DNS_IP_RULE_MATCH_END
-    case DNS_START
-    case DNS_FAIL
-    case DNS_END
-    case REMOTE_START
-    case REMOTE_CONNECTED
-    case GLOBAL_MODE
-    case NON_GLOBAL_MODE
-    case PROXY_DNS_START
-    case PROXY_DNS_FAIL
-    case PROXY_DNS_END
-    case PROXY_START
-    case PROXY_CONNECTED
-    case Count
+    case closed
+    case url_RULE_MATCH_START
+    case url_RULE_MATCH_END
+    case ip_RULE_MATCH_START
+    case ip_RULE_MATCH_END
+    case dns_IP_RULE_MATCH_START
+    case dns_IP_RULE_MATCH_END
+    case dns_START
+    case dns_FAIL
+    case dns_END
+    case remote_START
+    case remote_CONNECTED
+    case global_MODE
+    case non_GLOBAL_MODE
+    case proxy_DNS_START
+    case proxy_DNS_FAIL
+    case proxy_DNS_END
+    case proxy_START
+    case proxy_CONNECTED
+    case count
 }
 
 extension RequestTimeStage: CustomStringConvertible {
@@ -144,43 +144,43 @@ extension RequestTimeStage: CustomStringConvertible {
         switch self {
         case .INIT:
             return "Request".localized()
-        case .CLOSED:
+        case .closed:
             return "Request".localized()
-        case .URL_RULE_MATCH_START:
+        case .url_RULE_MATCH_START:
             return "URL Rules Match".localized()
-        case .URL_RULE_MATCH_END:
+        case .url_RULE_MATCH_END:
             return "URL Rules Match".localized()
-        case .IP_RULE_MATCH_START:
+        case .ip_RULE_MATCH_START:
             return "IP Rules Match".localized()
-        case .IP_RULE_MATCH_END:
+        case .ip_RULE_MATCH_END:
             return "IP Rules Match".localized()
-        case .DNS_IP_RULE_MATCH_START:
+        case .dns_IP_RULE_MATCH_START:
             return "Check DNS Pollution".localized()
-        case .DNS_IP_RULE_MATCH_END:
+        case .dns_IP_RULE_MATCH_END:
             return "Check DNS Pollution".localized()
-        case .DNS_START:
+        case .dns_START:
             return "DNS Query".localized()
-        case .DNS_FAIL:
+        case .dns_FAIL:
             return "DNS Query".localized()
-        case .DNS_END:
+        case .dns_END:
             return "DNS Query".localized()
-        case .REMOTE_START:
+        case .remote_START:
             return "Remote Connection".localized()
-        case .REMOTE_CONNECTED:
+        case .remote_CONNECTED:
             return "Remote Connection".localized()
-        case .GLOBAL_MODE:
+        case .global_MODE:
             return "Default Route Match".localized()
-        case .NON_GLOBAL_MODE:
+        case .non_GLOBAL_MODE:
             return "Default Route Match".localized()
-        case .PROXY_DNS_START:
+        case .proxy_DNS_START:
             return "Proxy DNS Query".localized()
-        case .PROXY_DNS_FAIL:
+        case .proxy_DNS_FAIL:
             return "Proxy DNS Query".localized()
-        case .PROXY_DNS_END:
+        case .proxy_DNS_END:
             return "Proxy DNS Query".localized()
-        case .PROXY_START:
+        case .proxy_START:
             return "Proxy Connection".localized()
-        case .PROXY_CONNECTED:
+        case .proxy_CONNECTED:
             return "Proxy Connection".localized()
         default:
             return ""
@@ -190,20 +190,20 @@ extension RequestTimeStage: CustomStringConvertible {
 }
 
 enum ForwardStage: Int {
-    case NONE = 0
-    case URL
-    case IP
-    case DNS_POLLUTION
-    case DNS_FAILURE
+    case none = 0
+    case url
+    case ip
+    case dns_POLLUTION
+    case dns_FAILURE
 }
 
 struct RequestEvent {
     let request: Request
     let stage: RequestTimeStage
-    let timestamp: NSTimeInterval
-    var duration: NSTimeInterval = -1
+    let timestamp: TimeInterval
+    var duration: TimeInterval = -1
     
-    init(request: Request, stage: RequestTimeStage, timestamp: NSTimeInterval) {
+    init(request: Request, stage: RequestTimeStage, timestamp: TimeInterval) {
         self.request = request
         self.stage = stage
         self.timestamp = timestamp
@@ -213,43 +213,43 @@ struct RequestEvent {
         switch stage {
         case .INIT:
             return "\(request.method.description) \(request.url)"
-        case .CLOSED:
+        case .closed:
             return "Request Finished".localized()
-        case .URL_RULE_MATCH_START:
+        case .url_RULE_MATCH_START:
             return "Start URL Rule Match".localized()
-        case .URL_RULE_MATCH_END:
-            return request.forwardStage == .URL ? request.rule : "No Match".localized()
-        case .IP_RULE_MATCH_START:
+        case .url_RULE_MATCH_END:
+            return request.forwardStage == .url ? request.rule : "No Match".localized()
+        case .ip_RULE_MATCH_START:
             return "Start IP Rules Match".localized()
-        case .IP_RULE_MATCH_END:
-            return request.forwardStage == .IP ? request.rule : "No Match".localized()
-        case .DNS_IP_RULE_MATCH_START:
+        case .ip_RULE_MATCH_END:
+            return request.forwardStage == .ip ? request.rule : "No Match".localized()
+        case .dns_IP_RULE_MATCH_START:
             return "DNS Pollution".localized()
-        case .DNS_IP_RULE_MATCH_END:
-            return request.forwardStage == .DNS_POLLUTION ? request.rule : "No Match".localized()
-        case .DNS_START:
+        case .dns_IP_RULE_MATCH_END:
+            return request.forwardStage == .dns_POLLUTION ? request.rule : "No Match".localized()
+        case .dns_START:
             return "Start DNS Query".localized()
-        case .DNS_FAIL:
-            return request.forwardStage == .DNS_FAILURE ? "Fail. (Try Proxy DNS Resolution)".localized() : "Fail".localized()
-        case .DNS_END:
+        case .dns_FAIL:
+            return request.forwardStage == .dns_FAILURE ? "Fail. (Try Proxy DNS Resolution)".localized() : "Fail".localized()
+        case .dns_END:
             return request.ip
-        case .REMOTE_START:
+        case .remote_START:
             return "Start Remote Connection".localized()
-        case .REMOTE_CONNECTED:
+        case .remote_CONNECTED:
             return "Remote Connection Established".localized()
-        case .GLOBAL_MODE:
+        case .global_MODE:
             return "Fallback To PROXY".localized()
-        case .NON_GLOBAL_MODE:
+        case .non_GLOBAL_MODE:
             return "Fallback To DIRECT".localized()
-        case .PROXY_DNS_START:
+        case .proxy_DNS_START:
             return "Start Proxy DNS Query".localized()
-        case .PROXY_DNS_FAIL:
+        case .proxy_DNS_FAIL:
             return "Fail".localized()
-        case .PROXY_DNS_END:
+        case .proxy_DNS_END:
             return request.ip
-        case .PROXY_START:
+        case .proxy_START:
             return "Start Proxy Connection".localized()
-        case .PROXY_CONNECTED:
+        case .proxy_CONNECTED:
             return "Proxy Connection Established".localized()
         default:
             return ""
@@ -268,7 +268,7 @@ class Request {
     
     static let statusCount = 7
 
-    static let excluededStage: [RequestTimeStage] = [.PROXY_DNS_START, .PROXY_DNS_FAIL, .PROXY_DNS_END, .IP_RULE_MATCH_START, .URL_RULE_MATCH_START, .DNS_IP_RULE_MATCH_START]
+    static let excluededStage: [RequestTimeStage] = [.proxy_DNS_START, .proxy_DNS_FAIL, .proxy_DNS_END, .ip_RULE_MATCH_START, .url_RULE_MATCH_START, .dns_IP_RULE_MATCH_START]
     
     var events: [RequestEvent] = []
     var url: String
@@ -279,11 +279,11 @@ class Request {
     var responseCode: HTTPResponseCode?
     var headers: String?
     var globalMode: Bool = false
-    var routing: RequestRouting = .Direct
-    var forwardStage: ForwardStage = .NONE
+    var routing: RequestRouting = .direct
+    var forwardStage: ForwardStage = .none
     
     init?(dict: [String: AnyObject]) {
-        guard let url = dict["url"] as? String, m = dict["method"] as? String, method = HTTPMethod(rawValue: m) else {
+        guard let url = dict["url"] as? String, let m = dict["method"] as? String, let method = HTTPMethod(rawValue: m) else {
             return nil
         }
 
@@ -299,32 +299,32 @@ class Request {
         if let ip = dict["ip"] as? String {
             self.ip = ip
         }
-        if let c = dict["responseCode"] as? Int, code = HTTPResponseCode(rawValue: c) {
+        if let c = dict["responseCode"] as? Int, let code = HTTPResponseCode(rawValue: c) {
             self.responseCode = code
         }
         self.globalMode = dict["global"] as? Bool ?? false
-        if let c = dict["routing"] as? Int, r = RequestRouting(rawValue: c) {
+        if let c = dict["routing"] as? Int, let r = RequestRouting(rawValue: c) {
             self.routing = r
         }
-        if let c = dict["forward_stage"] as? Int, r = ForwardStage(rawValue: c) {
+        if let c = dict["forward_stage"] as? Int, let r = ForwardStage(rawValue: c) {
             self.forwardStage = r
         }
 
         // Events
         var unnormalizedEvents: [RequestEvent] = []
-        for i in 0..<RequestTimeStage.Count.rawValue {
-            if let ts = dict["time\(i)"] as? Double, stage = RequestTimeStage(rawValue: i) {
+        for i in 0..<RequestTimeStage.count.rawValue {
+            if let ts = dict["time\(i)"] as? Double, let stage = RequestTimeStage(rawValue: i) {
                 guard ts > 0 else {
                     continue
                 }
-                if let _ = Request.excluededStage.indexOf(stage) {
+                if let _ = Request.excluededStage.index(of: stage) {
                     continue
                 }
                 let event = RequestEvent(request: self, stage: stage, timestamp: ts)
                 unnormalizedEvents.append(event)
             }
         }
-        unnormalizedEvents.sortInPlace { (event1, event2) -> Bool in
+        unnormalizedEvents.sort { (event1, event2) -> Bool in
             return event1.timestamp < event2.timestamp
         }
         var lastEvent: RequestEvent?

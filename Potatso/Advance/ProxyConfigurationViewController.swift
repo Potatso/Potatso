@@ -28,7 +28,7 @@ class ProxyConfigurationViewController: FormViewController {
     var upstreamProxy: Proxy
     let isEdit: Bool
     
-    override convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.init()
     }
     
@@ -58,9 +58,9 @@ class ProxyConfigurationViewController: FormViewController {
         generateForm()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(save))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
     }
     
     func generateForm() {
@@ -83,17 +83,17 @@ class ProxyConfigurationViewController: FormViewController {
             }.cellSetup { cell, row in
                 cell.textField.placeholder = "Proxy Server Host".localized()
                 cell.textField.keyboardType = .URL
-                cell.textField.autocorrectionType = .No
-                cell.textField.autocapitalizationType = .None
+                cell.textField.autocorrectionType = .no
+                cell.textField.autocapitalizationType = .none
             }
             <<< IntRow(kProxyFormPort) {
                 $0.title = "Port".localized()
                 if self.upstreamProxy.port > 0 {
                     $0.value = self.upstreamProxy.port
                 }
-                let numberFormatter = NSNumberFormatter()
-                numberFormatter.locale = .currentLocale()
-                numberFormatter.numberStyle = .NoStyle
+                let numberFormatter = NumberFormatter()
+                numberFormatter.locale = .current
+                numberFormatter.numberStyle = .none
                 numberFormatter.minimumFractionDigits = 0
                 $0.formatter = numberFormatter
                 }.cellSetup { cell, row in
@@ -104,8 +104,8 @@ class ProxyConfigurationViewController: FormViewController {
                 $0.options = Proxy.ssSupportedEncryption
                 $0.value = self.upstreamProxy.authscheme ?? $0.options[2]
                 $0.selectorTitle = "Choose encryption method".localized()
-                $0.hidden = Condition.Function([kProxyFormType]) { form in
-                    if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType), isSS = r1.value?.isShadowsocks {
+                $0.hidden = Condition.function([kProxyFormType]) { form in
+                    if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType), let isSS = r1.value?.isShadowsocks {
                         return !isSS
                     }
                     return false
@@ -120,7 +120,7 @@ class ProxyConfigurationViewController: FormViewController {
             <<< SwitchRow(kProxyFormOta) {
                 $0.title = "One Time Auth".localized()
                 $0.value = self.upstreamProxy.ota
-                $0.hidden = Condition.Function([kProxyFormType]) { form in
+                $0.hidden = Condition.function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
                         return r1.value != ProxyType.Shadowsocks
                     }
@@ -132,7 +132,7 @@ class ProxyConfigurationViewController: FormViewController {
                 $0.value = self.upstreamProxy.ssrProtocol
                 $0.options = Proxy.ssrSupportedProtocol
                 $0.selectorTitle = "Choose SSR protocol".localized()
-                $0.hidden = Condition.Function([kProxyFormType]) { form in
+                $0.hidden = Condition.function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
                         return r1.value != ProxyType.ShadowsocksR
                     }
@@ -144,7 +144,7 @@ class ProxyConfigurationViewController: FormViewController {
                 $0.value = self.upstreamProxy.ssrObfs
                 $0.options = Proxy.ssrSupportedObfs
                 $0.selectorTitle = "Choose SSR obfs".localized()
-                $0.hidden = Condition.Function([kProxyFormType]) { form in
+                $0.hidden = Condition.function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
                         return r1.value != ProxyType.ShadowsocksR
                     }
@@ -154,7 +154,7 @@ class ProxyConfigurationViewController: FormViewController {
             <<< TextRow(kProxyFormObfsParam) {
                 $0.title = "Obfs Param".localized()
                 $0.value = self.upstreamProxy.ssrObfsParam
-                $0.hidden = Condition.Function([kProxyFormType]) { form in
+                $0.hidden = Condition.function([kProxyFormType]) { form in
                     if let r1 : PushRow<ProxyType> = form.rowByTag(kProxyFormType) {
                         return r1.value != ProxyType.ShadowsocksR
                     }
@@ -162,8 +162,8 @@ class ProxyConfigurationViewController: FormViewController {
                 }
             }.cellSetup { cell, row in
                 cell.textField.placeholder = "SSR Obfs Param".localized()
-                cell.textField.autocorrectionType = .No
-                cell.textField.autocapitalizationType = .None
+                cell.textField.autocorrectionType = .no
+                cell.textField.autocapitalizationType = .none
             }
 
     }
@@ -174,7 +174,7 @@ class ProxyConfigurationViewController: FormViewController {
             guard let type = values[kProxyFormType] as? ProxyType else {
                 throw "You must choose a proxy type".localized()
             }
-            guard let name = (values[kProxyFormName] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) where name.characters.count > 0 else {
+            guard let name = (values[kProxyFormName] as? String)?.trimmingCharacters(in: CharacterSet.whitespaces), name.characters.count > 0 else {
                 throw "Name can't be empty".localized()
             }
             if !self.isEdit {
@@ -182,7 +182,7 @@ class ProxyConfigurationViewController: FormViewController {
                     throw "Name already exists".localized()
                 }
             }
-            guard let host = (values[kProxyFormHost] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) where host.characters.count > 0 else {
+            guard let host = (values[kProxyFormHost] as? String)?.trimmingCharacters(in: CharacterSet.whitespaces), host.characters.count > 0 else {
                 throw "Host can't be empty".localized()
             }
             guard let port = values[kProxyFormPort] as? Int else {
@@ -196,10 +196,10 @@ class ProxyConfigurationViewController: FormViewController {
             var password: String?
             switch type {
             case .Shadowsocks, .ShadowsocksR:
-                guard let encryption = values[kProxyFormEncryption] as? String where encryption.characters.count > 0 else {
+                guard let encryption = values[kProxyFormEncryption] as? String, encryption.characters.count > 0 else {
                     throw "You must choose a encryption method".localized()
                 }
-                guard let pass = values[kProxyFormPassword] as? String where pass.characters.count > 0 else {
+                guard let pass = values[kProxyFormPassword] as? String, pass.characters.count > 0 else {
                     throw "Password can't be empty".localized()
                 }
                 authscheme = encryption

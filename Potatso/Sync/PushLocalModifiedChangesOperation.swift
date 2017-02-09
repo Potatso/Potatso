@@ -20,7 +20,7 @@ class PushLocalModifiedChangesOperation: PushLocalChangesBaseOperation {
         self.name = name ?? "Push Local Modified Changes"
     }
 
-    override func pushRecords(completionHandler: (NSError?) -> ()) {
+    override func pushRecords(_ completionHandler: @escaping (NSError?) -> ()) {
         pushLocalRecords(recordsToSave, recordIDsToDelete: nil, completionHandler: completionHandler)
     }
 

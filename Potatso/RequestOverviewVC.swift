@@ -25,7 +25,7 @@ class RequestOverviewVC: FormViewController {
         super.viewDidLoad()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         handleRefreshUI()
     }
@@ -52,21 +52,21 @@ class RequestOverviewVC: FormViewController {
         return section
     }
 
-    func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: IndexPath) -> Bool {
         return true
     }
 
-    func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return action == #selector(NSObject.copy(_:))
+    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: IndexPath, withSender sender: AnyObject?) -> Bool {
+        return action == #selector(copy(_:))
     }
 
-    func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: IndexPath, withSender sender: AnyObject?) {
         switch action {
-        case #selector(NSObject.copy(_:)):
-            guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? RequestEventRowCell else {
+        case #selector(copy(_:)):
+            guard let cell = tableView.cellForRow(at: indexPath) as? RequestEventRowCell else {
                 return
             }
-            UIPasteboard.generalPasteboard().string = cell.copyContent
+            UIPasteboard.general.string = cell.copyContent
             // implement copy here
         default:
             assertionFailure()

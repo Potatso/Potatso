@@ -12,25 +12,25 @@ import NetworkExtension
 
 class DashboardVC: FormViewController {
 
-    var timer: NSTimer?
+    var timer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Statistics".localized()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         startTimer()
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         stopTimer()
     }
 
     func startTimer() {
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(DashboardVC.onTime), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(DashboardVC.onTime), userInfo: nil, repeats: true)
         timer?.fire()
     }
 
@@ -45,13 +45,13 @@ class DashboardVC: FormViewController {
 
     func handleRefreshUI() {
         Manager.sharedManager.loadProviderManager({ (manager) in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 self.updateForm(manager)
             })
         })
     }
 
-    func updateForm(manager: NETunnelProviderManager?) {
+    func updateForm(_ manager: NETunnelProviderManager?) {
         form.delegate = nil
         form.removeAll()
         form +++ generateTimeSection(manager)
@@ -60,13 +60,13 @@ class DashboardVC: FormViewController {
         tableView?.reloadData()
     }
 
-    func generateTimeSection(manager: NETunnelProviderManager?) -> Section {
+    func generateTimeSection(_ manager: NETunnelProviderManager?) -> Section {
         let section = Section("Connection".localized())
         section <<< LabelRow() {
             $0.title = "Start".localized()
-            if Manager.sharedManager.vpnStatus == .On {
+            if Manager.sharedManager.vpnStatus == .on {
                 if let time = Settings.shared().startTime {
-                    $0.value = startTimeFormatter.stringFromDate(time)
+                    $0.value = startTimeFormatter.string(from: time)
                     return
                 }
             }
@@ -74,11 +74,12 @@ class DashboardVC: FormViewController {
         }
         <<< LabelRow() {
             $0.title = "Up Time".localized()
-            if Manager.sharedManager.vpnStatus == .On {
+            if Manager.sharedManager.vpnStatus == .on {
                 if let time = Settings.shared().startTime {
-                    let flags = NSCalendarUnit(rawValue: UInt.max)
-                    let difference = NSCalendar.currentCalendar().components(flags, fromDate: time, toDate: NSDate(), options: NSCalendarOptions.MatchFirst)
-                    $0.value = durationFormatter.stringFromDateComponents(difference)
+                    //let flags = NSCalendar.Unit(rawValue: UInt.max)
+                    //let difference = Calendar.current.components(flags, fromDate: time, toDate: Date(), options: NSCalendar.Options.MatchFirst)
+                    let difference = Calendar.current.dateComponents([.day], from: time, to: Date())
+                    $0.value = durationFormatter.string(from: difference)
                     return
                 }
             }
@@ -92,8 +93,8 @@ class DashboardVC: FormViewController {
         section <<< LabelRow() {
             $0.title = "Recent Requests".localized()
         }.cellSetup({ (cell, row) -> () in
-            cell.accessoryType = .DisclosureIndicator
-            cell.selectionStyle = .Default
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
         }).onCellSelection({ [unowned self](cell, row) -> () in
             cell.setSelected(false, animated: true)
             self.showRecentRequests()
@@ -101,8 +102,8 @@ class DashboardVC: FormViewController {
         <<< LabelRow() {
             $0.title = "Logs".localized()
         }.cellSetup({ (cell, row) -> () in
-            cell.accessoryType = .DisclosureIndicator
-            cell.selectionStyle = .Default
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
         }).onCellSelection({ [unowned self](cell, row) -> () in
             cell.setSelected(false, animated: true)
             self.showLogs()
@@ -119,16 +120,16 @@ class DashboardVC: FormViewController {
         navigationController?.pushViewController(LogDetailViewController(), animated: true)
     }
 
-    lazy var startTimeFormatter: NSDateFormatter = {
-        let f = NSDateFormatter()
-        f.dateStyle = .MediumStyle
-        f.timeStyle = .MediumStyle
+    lazy var startTimeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .medium
         return f
     }()
 
-    lazy var durationFormatter: NSDateComponentsFormatter = {
-        let f = NSDateComponentsFormatter()
-        f.unitsStyle = .Abbreviated
+    lazy var durationFormatter: DateComponentsFormatter = {
+        let f = DateComponentsFormatter()
+        f.unitsStyle = .abbreviated
         return f
     }()
 

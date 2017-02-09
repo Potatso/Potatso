@@ -14,11 +14,11 @@ extension RequestRouting {
     
     var image: UIImage? {
         switch self {
-        case .Proxy:
+        case .proxy:
             return "Proxy".image
-        case .Reject:
+        case .reject:
             return "Reject".image
-        case .Direct, .None:
+        case .direct, .none:
             return "Direct".image
         }
     }
@@ -27,8 +27,8 @@ extension RequestRouting {
 
 class RecentRequestsCell: UITableViewCell {
     
-    static let dateformatter: NSDateFormatter = {
-        let f = NSDateFormatter()
+    static let dateformatter: DateFormatter = {
+        let f = DateFormatter()
         f.dateFormat = "hh:mm:ss"
         return f
     }()
@@ -48,35 +48,35 @@ class RecentRequestsCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(request: Request) {
+    func config(_ request: Request) {
         methodLabel.text = request.method.description
         urlLabel.text = request.url
         urlLabel.numberOfLines = 2
         if let e = request.events.first {
-            timeLabel.text = RecentRequestsCell.dateformatter.stringFromDate(NSDate(timeIntervalSince1970: e.timestamp))
+            timeLabel.text = RecentRequestsCell.dateformatter.string(from: Date(timeIntervalSince1970: e.timestamp))
         }else {
             timeLabel.text = nil
         }
         actionImageView.image = request.routing.image
         if let version = request.version {
             httpVersionLabel.text = version
-            httpVersionLabel.hidden = false
+            httpVersionLabel.isHidden = false
         }else {
-            httpVersionLabel.hidden = true
+            httpVersionLabel.isHidden = true
         }
         if let code = request.responseCode {
             statusLabel.text = "\(code.rawValue)"
             statusLabel.textColor = code.color
-            statusLabel.layer.borderColor = code.color.CGColor
-            statusLabel.hidden = false
+            statusLabel.layer.borderColor = code.color.cgColor
+            statusLabel.isHidden = false
         }else {
-            statusLabel.hidden = true
+            statusLabel.isHidden = true
         }
     }
     
     func setupLayout() {
-        timeLabel.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-        timeLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+        timeLabel.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
+        timeLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
         constrain(contentView, self) { contentView, superview in
             contentView.edges == superview.edges
         }
@@ -114,36 +114,36 @@ class RecentRequestsCell: UITableViewCell {
     lazy var methodLabel: UILabel = {
         let v = UILabel()
         v.textColor = "3498DB".color
-        v.font = UIFont.systemFontOfSize(12)
+        v.font = UIFont.systemFont(ofSize: 12)
         v.adjustsFontSizeToFitWidth = true
         v.minimumScaleFactor = 0.5
-        v.textAlignment = .Center
+        v.textAlignment = .center
         return v
     }()
     
     lazy var urlLabel: UILabel = {
         let v = UILabel(frame: CGRect.zero)
         v.textColor = "404040".color
-        v.font = UIFont.systemFontOfSize(14)
+        v.font = UIFont.systemFont(ofSize: 14)
         v.numberOfLines = 2
-        v.lineBreakMode = .ByTruncatingTail
+        v.lineBreakMode = .byTruncatingTail
         return v
     }()
     
     lazy var timeLabel: UILabel = {
         let v = UILabel()
         v.textColor = "808080".color
-        v.font = UIFont.systemFontOfSize(10)
+        v.font = UIFont.systemFont(ofSize: 10)
         return v
     }()
     
     lazy var httpVersionLabel: PaddingLabel = {
         let v = PaddingLabel()
         v.textColor = "34495E".color
-        v.font = UIFont.systemFontOfSize(10)
+        v.font = UIFont.systemFont(ofSize: 10)
         v.layer.cornerRadius = 2
         v.layer.borderWidth = 0.5
-        v.layer.borderColor = "34495E".color.CGColor
+        v.layer.borderColor = "34495E".color.cgColor
         v.padding = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
         return v
     }()
@@ -151,17 +151,17 @@ class RecentRequestsCell: UITableViewCell {
     lazy var statusLabel: PaddingLabel = {
         let v = PaddingLabel()
         v.textColor = "34495E".color
-        v.font = UIFont.systemFontOfSize(10)
+        v.font = UIFont.systemFont(ofSize: 10)
         v.layer.cornerRadius = 2
         v.layer.borderWidth = 0.5
-        v.layer.borderColor = "34495E".color.CGColor
+        v.layer.borderColor = "34495E".color.cgColor
         v.padding = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
         return v
     }()
     
     lazy var actionImageView: UIImageView = {
         let v = UIImageView()
-        v.contentMode = .ScaleAspectFit
+        v.contentMode = .scaleAspectFit
         return v
     }()
     

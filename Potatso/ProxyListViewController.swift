@@ -18,22 +18,22 @@ class ProxyListViewController: FormViewController {
 
     var proxies: [Proxy?] = []
     let allowNone: Bool
-    let chooseCallback: (Proxy? -> Void)?
+    let chooseCallback: ((Proxy?) -> Void)?
 
-    init(allowNone: Bool = false, chooseCallback: (Proxy? -> Void)? = nil) {
+    init(allowNone: Bool = false, chooseCallback: ((Proxy?) -> Void)? = nil) {
         self.chooseCallback = chooseCallback
         self.allowNone = allowNone
-        super.init(style: .Plain)
+        super.init(style: .plain)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.title = "Proxy".localized()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(add))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(add))
         reloadData()
     }
 
@@ -45,7 +45,7 @@ class ProxyListViewController: FormViewController {
     func reloadData() {
         proxies = DBUtils.allNotDeleted(Proxy.self, sorted: "createAt").map({ $0 })
         if allowNone {
-            proxies.insert(nil, atIndex: 0)
+            proxies.insert(nil, at: 0)
         }
         form.delegate = nil
         form.removeAll()
@@ -55,7 +55,7 @@ class ProxyListViewController: FormViewController {
                 <<< ProxyRow () {
                     $0.value = proxy
                 }.cellSetup({ (cell, row) -> () in
-                    cell.selectionStyle = .None
+                    cell.selectionStyle = .none
                 }).onCellSelection({ [unowned self] (cell, row) in
                     cell.setSelected(false, animated: true)
                     let proxy = row.value
@@ -63,7 +63,7 @@ class ProxyListViewController: FormViewController {
                         cb(proxy)
                         self.close()
                     }else {
-                        if proxy?.type != .None {
+                        if proxy?.type != .none {
                             self.showProxyConfiguration(proxy)
                         }
                     }
@@ -74,30 +74,30 @@ class ProxyListViewController: FormViewController {
         tableView?.reloadData()
     }
 
-    func showProxyConfiguration(proxy: Proxy?) {
+    func showProxyConfiguration(_ proxy: Proxy?) {
         let vc = ProxyConfigurationViewController(upstreamProxy: proxy)
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAtIndexPath indexPath: IndexPath) -> Bool {
         if allowNone && indexPath.row == 0 {
             return false
         }
         return true
     }
 
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .Delete
+    func tableView(_ tableView: UITableView, editingStyleForRowAtIndexPath indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
     }
 
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    func tableView(_ tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: IndexPath) {
+        if editingStyle == .delete {
             guard indexPath.row < proxies.count, let item = (form[indexPath] as? ProxyRow)?.value else {
                 return
             }
             do {
                 try DBUtils.softDelete(item.uuid, type: Proxy.self)
-                proxies.removeAtIndex(indexPath.row)
+                proxies.remove(at: indexPath.row)
                 form[indexPath].hidden = true
                 form[indexPath].evaluateHidden()
             }catch {

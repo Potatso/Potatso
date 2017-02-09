@@ -8,21 +8,21 @@
 
 import RealmSwift
 
-public enum RuleSetError: ErrorType {
-    case InvalidRuleSet
-    case EmptyName
-    case NameAlreadyExists
+public enum RuleSetError: Error {
+    case invalidRuleSet
+    case emptyName
+    case nameAlreadyExists
 }
 
 extension RuleSetError: CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .InvalidRuleSet:
+        case .invalidRuleSet:
             return "Invalid rule set"
-        case .EmptyName:
+        case .emptyName:
             return "Empty name"
-        case .NameAlreadyExists:
+        case .nameAlreadyExists:
             return "Name already exists"
         }
     }
@@ -32,14 +32,14 @@ extension RuleSetError: CustomStringConvertible {
 public final class RuleSet: BaseModel {
     public dynamic var editable = true
     public dynamic var name = ""
-    public dynamic var remoteUpdatedAt: NSTimeInterval = NSDate().timeIntervalSince1970
+    public dynamic var remoteUpdatedAt: TimeInterval = Date().timeIntervalSince1970
     public dynamic var desc = ""
     public dynamic var ruleCount = 0
     public dynamic var rulesJSON = ""
     public dynamic var isSubscribe = false
     public dynamic var isOfficial = false
 
-    private var cachedRules: [Rule]? = nil
+    fileprivate var cachedRules: [Rule]? = nil
 
     public var rules: [Rule] {
         get {
@@ -59,11 +59,11 @@ public final class RuleSet: BaseModel {
 
     public override func validate(inRealm realm: Realm) throws {
         guard name.characters.count > 0 else {
-            throw RuleSetError.EmptyName
+            throw RuleSetError.emptyName
         }
     }
 
-    private func updateCahcedRules() {
+    fileprivate func updateCahcedRules() {
         guard let jsonArray = rulesJSON.jsonArray() as? [[String: AnyObject]] else {
             cachedRules = []
             return
@@ -71,28 +71,28 @@ public final class RuleSet: BaseModel {
         cachedRules = jsonArray.flatMap({ Rule(json: $0) })
     }
 
-    public func addRule(rule: Rule) {
+    public func addRule(_ rule: Rule) {
         var newRules = rules
         newRules.append(rule)
         rules = newRules
     }
 
-    public func insertRule(rule: Rule, atIndex index: Int) {
+    public func insertRule(_ rule: Rule, atIndex index: Int) {
         var newRules = rules
-        newRules.insert(rule, atIndex: index)
+        newRules.insert(rule, at: index)
         rules = newRules
     }
 
     public func removeRule(atIndex index: Int) {
         var newRules = rules
-        newRules.removeAtIndex(index)
+        newRules.remove(at: index)
         rules = newRules
     }
 
-    public func move(fromIndex: Int, toIndex: Int) {
+    public func move(_ fromIndex: Int, toIndex: Int) {
         var newRules = rules
         let rule = newRules[fromIndex]
-        newRules.removeAtIndex(fromIndex)
+        newRules.remove(at: fromIndex)
         insertRule(rule, atIndex: toIndex)
         rules = newRules
     }
@@ -111,14 +111,14 @@ extension RuleSet {
     public convenience init(dictionary: [String: AnyObject], inRealm realm: Realm) throws {
         self.init()
         guard let name = dictionary["name"] as? String else {
-            throw RuleSetError.InvalidRuleSet
+            throw RuleSetError.invalidRuleSet
         }
         self.name = name
         if realm.objects(RuleSet).filter("name = '\(name)'").first != nil {
-            self.name = "\(name) \(RuleSet.dateFormatter.stringFromDate(NSDate()))"
+            self.name = "\(name) \(RuleSet.dateFormatter.string(from: Date()))"
         }
         guard let rulesStr = dictionary["rules"] as? [String] else {
-            throw RuleSetError.InvalidRuleSet
+            throw RuleSetError.invalidRuleSet
         }
         rules = try rulesStr.map({ try Rule(str: $0) })
     }

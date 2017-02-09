@@ -25,15 +25,15 @@ class SegmentPageVC: UIViewController {
         fatalError()
     }
 
-    func onSegmentedChanged(seg: UISegmentedControl) {
+    func onSegmentedChanged(_ seg: UISegmentedControl) {
         showPage(seg.selectedSegmentIndex)
     }
 
-    func showPage(index: Int) {
+    func showPage(_ index: Int) {
         segmentedControl.selectedSegmentIndex = index
         let pageViewControllers = pageViewControllersForSegmentPageVC()
         if index < pageViewControllers.count {
-            pageVC.setViewControllers([pageViewControllers[index]], direction: .Forward, animated: false, completion: nil)
+            pageVC.setViewControllers([pageViewControllers[index]], direction: .forward, animated: false, completion: nil)
         }
     }
 
@@ -51,13 +51,13 @@ class SegmentPageVC: UIViewController {
     }
 
     lazy var pageVC: UIPageViewController = {
-        let p = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let p = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         return p
     }()
 
     lazy var segmentedControl: UISegmentedControl = {
         let v = UISegmentedControl(items: self.segmentsForSegmentPageVC())
-        v.addTarget(self, action: #selector(CollectionViewController.onSegmentedChanged(_:)), forControlEvents: .ValueChanged)
+        v.addTarget(self, action: #selector(CollectionViewController.onSegmentedChanged(_:)), for: .valueChanged)
         return v
     }()
     

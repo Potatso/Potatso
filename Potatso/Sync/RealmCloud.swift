@@ -8,26 +8,26 @@ import RealmSwift
 /**
  Set the `changeToken` for this `zoneID`.
  */
-public func setZoneChangeToken(zoneID: CKRecordZoneID, changeToken: CKServerChangeToken?) {
+public func setZoneChangeToken(_ zoneID: CKRecordZoneID, changeToken: CKServerChangeToken?) {
     let key = "\(zoneID.zoneName)_serverChangeToken"
     if let changeToken = changeToken {
-        NSUserDefaults.standardUserDefaults().setObject(
-            NSKeyedArchiver.archivedDataWithRootObject(changeToken),
+        UserDefaults.standard.set(
+            NSKeyedArchiver.archivedData(withRootObject: changeToken),
             forKey: key)
     } else {
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
+        UserDefaults.standard.removeObject(forKey: key)
     }
-    NSUserDefaults.standardUserDefaults().synchronize()
+    UserDefaults.standard.synchronize()
 }
 
 /**
  Get the local change token for this `zoneID` if one exists.
  */
-public func getZoneChangeToken(zoneID: CKRecordZoneID) -> CKServerChangeToken? {
-    let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("\(zoneID.zoneName)_serverChangeToken") as? NSData
+public func getZoneChangeToken(_ zoneID: CKRecordZoneID) -> CKServerChangeToken? {
+    let encodedObjectData = UserDefaults.standard.object(forKey: "\(zoneID.zoneName)_serverChangeToken") as? Data
     var decodedData: CKServerChangeToken? = nil
     if encodedObjectData != nil {
-        decodedData = NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
+        decodedData = NSKeyedUnarchiver.unarchiveObject(with: encodedObjectData!) as? CKServerChangeToken
     }
     return decodedData
 }
@@ -36,14 +36,14 @@ public func getZoneChangeToken(zoneID: CKRecordZoneID) -> CKServerChangeToken? {
  Archive the CKRecord to the local database. This data will be used next time
  the updated record is send to CloudKit.
  */
-public func recordToLocalData(record: CKRecord) -> NSData {
+public func recordToLocalData(_ record: CKRecord) -> Data {
     // Archive CKRecord into NSMutableData
     let archivedData = NSMutableData()
-    let archiver = NSKeyedArchiver(forWritingWithMutableData: archivedData)
+    let archiver = NSKeyedArchiver(forWritingWith: archivedData)
     archiver.requiresSecureCoding = true
-    record.encodeSystemFieldsWithCoder(archiver)
+    record.encodeSystemFields(with: archiver)
     archiver.finishEncoding()
-    return archivedData
+    return archivedData as Data
 }
 
 // MARK: - Local database modification
@@ -56,9 +56,9 @@ public func recordToLocalData(record: CKRecord) -> NSData {
     
     Best practice is to perform desired changes on server record and then resend.
  */
-public func resolveConflicts(error: NSError,
+public func resolveConflicts(_ error: NSError,
                              completionHandler: (NSError!) -> (),
-                             resolver: (CKRecord, serverRecord: CKRecord) -> CKRecord) -> [CKRecord]? {
+                             resolver: (CKRecord, _ serverRecord: CKRecord) -> CKRecord) -> [CKRecord]? {
     
     var adjustedRecords = [CKRecord]()
     
@@ -66,13 +66,13 @@ public func resolveConflicts(error: NSError,
         as? [CKRecordID : NSError] {
         
         for (_, partialError) in errorDict {
-            let errorCode = CKErrorCode(rawValue: partialError.code)
-            if errorCode == .ServerRecordChanged {
+            let errorCode = CKError(_nsError: NSError(domain: Bundle.main.bundleIdentifier!, code: partialError.code))
+            if errorCode.code == CKError.Code.serverRecordChanged {
                 let userInfo = partialError.userInfo
                 
                 guard let serverRecord = userInfo[CKRecordChangedErrorServerRecordKey] as? CKRecord,
-                    ancestorRecord = userInfo[CKRecordChangedErrorAncestorRecordKey] as? CKRecord,
-                    clientRecord = userInfo[CKRecordChangedErrorClientRecordKey] as? CKRecord else {
+                    let ancestorRecord = userInfo[CKRecordChangedErrorAncestorRecordKey] as? CKRecord,
+                    let clientRecord = userInfo[CKRecordChangedErrorClientRecordKey] as? CKRecord else {
                         
                         completionHandler(error)
                         // TODO: correctly handle error here
@@ -90,7 +90,7 @@ public func resolveConflicts(error: NSError,
                     
                     let adjustedRecord = resolver(
                         clientRecord,
-                        serverRecord: serverRecord)
+                        serverRecord)
                     
                     print("Adjusted text: \(adjustedRecord["text"])")
                     
@@ -105,7 +105,7 @@ public func resolveConflicts(error: NSError,
     return adjustedRecords
 }
 
-public func overwriteFromClient(clientRecord: CKRecord, serverRecord: CKRecord) -> CKRecord {
+public func overwriteFromClient(_ clientRecord: CKRecord, serverRecord: CKRecord) -> CKRecord {
     let adjustedRecord = serverRecord
     for key in clientRecord.allKeys() {
         adjustedRecord[key] = clientRecord[key]
@@ -124,18 +124,18 @@ public func overwriteFromClient(clientRecord: CKRecord, serverRecord: CKRecord) 
 
 // I can't figure out how to extend realm errors so I'm creating a custom swift error code.
 public enum CustomRealmErrorCode: Int {
-    case Fail
-    case FileAccess
-    case FilePermissionDenied
-    case FileExists
-    case FileNotFound
-    case FileFormatUpgradeRequired
-    case IncompatibleLockFile
-    case AddressSpaceExhausted
-    case SchemaMismatch
+    case fail
+    case fileAccess
+    case filePermissionDenied
+    case fileExists
+    case fileNotFound
+    case fileFormatUpgradeRequired
+    case incompatibleLockFile
+    case addressSpaceExhausted
+    case schemaMismatch
 }
 
-public func createAlertOperation(error: NSError) -> AlertOperation {
+public func createAlertOperation(_ error: NSError) -> AlertOperation {
     let alert = AlertOperation()
     
     switch error.domain {
@@ -143,7 +143,7 @@ public func createAlertOperation(error: NSError) -> AlertOperation {
         var errorString = "Unknown"
         
         if let rlmErrorCode = CustomRealmErrorCode(rawValue: error.code) {
-            errorString = String(rlmErrorCode)
+            errorString = String(describing: rlmErrorCode)
         }
         
         alert.title = "Write Error"
@@ -153,13 +153,13 @@ public func createAlertOperation(error: NSError) -> AlertOperation {
             "Error Code: RLMError.\(errorString) (\(error.localizedDescription))"
         
     case CKErrorDomain:
-        let ckErrorCode: CKErrorCode = CKErrorCode(rawValue: error.code)!
+        let ckErrorCode: CKError = CKError(_nsError: NSError(domain: Bundle.main.bundleIdentifier!, code: error.code))
         
         alert.title = "Cloud Error"
         alert.message =
             "Cannot complete sync operation. Try again later." +
             "\n\n" +
-            "Error Code: CKError.\(String(ckErrorCode)) (\(error.localizedDescription))"
+            "Error Code: CKError.\(String(describing: ckErrorCode)) (\(error.localizedDescription))"
         
     default:
         alert.title = "Error"
@@ -170,37 +170,38 @@ public func createAlertOperation(error: NSError) -> AlertOperation {
 }
 
 // Extend `CKErrorCode` to provide more descriptive errors to user.
-extension CKErrorCode: CustomStringConvertible {
+extension CKError: CustomStringConvertible {
     public var description: String {
-        switch self {
-        case InternalError: return "InternalError"
-        case PartialFailure: return "PartialFailure"
-        case NetworkUnavailable: return "NetworkUnavailable"
-        case NetworkFailure: return "NetworkFailure"
-        case BadContainer: return "BadContainer"
-        case ServiceUnavailable: return "ServiceUnavailable"
-        case RequestRateLimited: return "RequestRateLimited"
-        case MissingEntitlement: return "MissingEntitlement"
-        case NotAuthenticated: return "NotAuthenticated"
-        case PermissionFailure: return "PermissionFailure"
-        case UnknownItem: return "UnknownItem"
-        case InvalidArguments: return "InvalidArguments"
-        case ResultsTruncated: return "ResultsTruncated"
-        case ServerRecordChanged: return "ServerRecordChanged"
-        case ServerRejectedRequest: return "ServerRejectedRequest"
-        case AssetFileNotFound: return "AssetFileNotFound"
-        case AssetFileModified: return "AssetFileModified"
-        case IncompatibleVersion: return "IncompatibleVersion"
-        case ConstraintViolation: return "ConstraintViolation"
-        case OperationCancelled: return "OperationCancelled"
-        case ChangeTokenExpired: return "ChangeTokenExpired"
-        case BatchRequestFailed: return "BatchRequestFailed"
-        case ZoneBusy: return "ZoneBusy"
-        case BadDatabase: return "BadDatabase"
-        case QuotaExceeded: return "QuotaExceeded"
-        case ZoneNotFound: return "ZoneNotFound"
-        case LimitExceeded: return "LimitExceeded"
-        case UserDeletedZone: return "UserDeletedZone"
+        switch self.code {
+        case .internalError: return "InternalError"
+        case .partialFailure: return "PartialFailure"
+        case .networkUnavailable: return "NetworkUnavailable"
+        case .networkFailure: return "NetworkFailure"
+        case .badContainer: return "BadContainer"
+        case .serviceUnavailable: return "ServiceUnavailable"
+        case .requestRateLimited: return "RequestRateLimited"
+        case .missingEntitlement: return "MissingEntitlement"
+        case .notAuthenticated: return "NotAuthenticated"
+        case .permissionFailure: return "PermissionFailure"
+        case .unknownItem: return "UnknownItem"
+        case .invalidArguments: return "InvalidArguments"
+        case .resultsTruncated: return "ResultsTruncated"
+        case .serverRecordChanged: return "ServerRecordChanged"
+        case .serverRejectedRequest: return "ServerRejectedRequest"
+        case .assetFileNotFound: return "AssetFileNotFound"
+        case .assetFileModified: return "AssetFileModified"
+        case .incompatibleVersion: return "IncompatibleVersion"
+        case .constraintViolation: return "ConstraintViolation"
+        case .operationCancelled: return "OperationCancelled"
+        case .changeTokenExpired: return "ChangeTokenExpired"
+        case .batchRequestFailed: return "BatchRequestFailed"
+        case .zoneBusy: return "ZoneBusy"
+        case .badDatabase: return "BadDatabase"
+        case .quotaExceeded: return "QuotaExceeded"
+        case .zoneNotFound: return "ZoneNotFound"
+        case .limitExceeded: return "LimitExceeded"
+        case .userDeletedZone: return "UserDeletedZone"
+        default: return "Un-recognized value"
         }
     }
 }

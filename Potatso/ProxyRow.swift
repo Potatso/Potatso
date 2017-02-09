@@ -11,7 +11,7 @@ import PotatsoModel
 import Eureka
 import Cartography
 
-class ProxyRow: Row<Proxy, ProxyRowCell>, RowType {
+final class ProxyRow: Row<Proxy, ProxyRowCell>, RowType {
 
     required init(tag: String?) {
         super.init(tag: tag)
@@ -28,12 +28,16 @@ class ProxyRowCell: Cell<Proxy>, CellType {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func setup() {
         super.setup()
         preservesSuperviewLayoutMargins = false
-        layoutMargins = UIEdgeInsetsZero
-        separatorInset = UIEdgeInsetsZero
+        layoutMargins = UIEdgeInsets.zero
+        separatorInset = UIEdgeInsets.zero
         contentView.addSubview(titleLabel)
         contentView.addSubview(iconImageView)
     }
@@ -42,11 +46,11 @@ class ProxyRowCell: Cell<Proxy>, CellType {
         super.update()
         if let proxy = row.value {
             titleLabel.text = proxy.name
-            iconImageView.hidden = false
+            iconImageView.isHidden = false
             iconImageView.image = UIImage(named: "Shadowsocks")
         }else {
             titleLabel.text = "None".localized()
-            iconImageView.hidden = true
+            iconImageView.isHidden = true
         }
         if row.isDisabled {
             titleLabel.textColor = "5F5F5F".color
@@ -67,13 +71,13 @@ class ProxyRowCell: Cell<Proxy>, CellType {
 
     lazy var titleLabel: UILabel = {
         let v = UILabel()
-        v.font = UIFont.systemFontOfSize(17)
+        v.font = UIFont.systemFont(ofSize: 17)
         return v
     }()
 
     lazy var iconImageView: UIImageView = {
         let v = UIImageView()
-        v.contentMode = .ScaleAspectFill
+        v.contentMode = .scaleAspectFill
         return v
     }()
 

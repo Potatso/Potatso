@@ -24,7 +24,7 @@ public enum RuleType: String {
 
 extension RuleType {
     
-    public static func fromInt(intValue: Int) -> RuleType? {
+    public static func fromInt(_ intValue: Int) -> RuleType? {
         switch intValue {
         case 1:
             return .Domain
@@ -63,7 +63,7 @@ public enum RuleAction: String {
 
 extension RuleAction {
     
-    public static func fromInt(intValue: Int) -> RuleAction? {
+    public static func fromInt(_ intValue: Int) -> RuleAction? {
         switch intValue {
         case 1:
             return .Direct
@@ -86,8 +86,8 @@ extension RuleAction: CustomStringConvertible {
     
 }
 
-public enum RuleError: ErrorType {
-    case InvalidRule(String)
+public enum RuleError: Error {
+    case invalidRule(String)
 }
 
 //extension RuleError: CustomStringConvertible {
@@ -143,17 +143,17 @@ public final class Rule {
     public var action: RuleAction
     
     public convenience init(str: String) throws {
-        var ruleStr = str.stringByReplacingOccurrencesOfString("\t", withString: "")
-        ruleStr = ruleStr.stringByReplacingOccurrencesOfString(" ", withString: "")
-        let parts = ruleStr.componentsSeparatedByString(",")
+        var ruleStr = str.replacingOccurrences(of: "\t", with: "")
+        ruleStr = ruleStr.replacingOccurrences(of: " ", with: "")
+        let parts = ruleStr.components(separatedBy: ",")
         guard parts.count >= 3 else {
-            throw RuleError.InvalidRule(str)
+            throw RuleError.invalidRule(str)
         }
-        let actionStr = parts[2].uppercaseString
-        let typeStr = parts[0].uppercaseString
+        let actionStr = parts[2].uppercased()
+        let typeStr = parts[0].uppercased()
         let value = parts[1]
-        guard let type = RuleType(rawValue: typeStr), action = RuleAction(rawValue: actionStr) where value.characters.count > 0 else {
-            throw RuleError.InvalidRule(str)
+        guard let type = RuleType(rawValue: typeStr), let action = RuleAction(rawValue: actionStr), value.characters.count > 0 else {
+            throw RuleError.invalidRule(str)
         }
         self.init(type: type, action: action, value: value)
     }
@@ -165,10 +165,10 @@ public final class Rule {
     }
 
     public convenience init?(json: [String: AnyObject]) {
-        guard let typeRaw = json["type"] as? String, type = RuleType(rawValue: typeRaw) else {
+        guard let typeRaw = json["type"] as? String, let type = RuleType(rawValue: typeRaw) else {
             return nil
         }
-        guard let actionRaw = json["action"] as? String, action = RuleAction(rawValue: actionRaw) else {
+        guard let actionRaw = json["action"] as? String, let action = RuleAction(rawValue: actionRaw) else {
             return nil
         }
         guard let value = json["value"] as? String else {
@@ -182,7 +182,7 @@ public final class Rule {
     }
 
     public var json: [String: AnyObject] {
-        return ["type": type.rawValue, "value": value, "action": action.rawValue]
+        return ["type": type.rawValue as AnyObject, "value": value as AnyObject, "action": action.rawValue as AnyObject]
     }
 }
 //

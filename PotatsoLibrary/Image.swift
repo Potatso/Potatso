@@ -15,11 +15,11 @@ public extension String {
     }
     
     public var templateImage: UIImage? {
-        return UIImage(named: self)?.imageWithRenderingMode(.AlwaysTemplate)
+        return UIImage(named: self)?.withRenderingMode(.alwaysTemplate)
     }
     
     public var originalImage: UIImage? {
-        return UIImage(named: self)?.imageWithRenderingMode(.AlwaysOriginal)
+        return UIImage(named: self)?.withRenderingMode(.alwaysOriginal)
     }
 
 }

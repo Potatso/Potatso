@@ -3,4 +3,10 @@
 	url = git@github.com:icodesign/shadowsocks-libev.git
 [submodule "Library/ShadowPath/ShadowPath/libmaxminddb"]
 	path = Library/ShadowPath/ShadowPath/libmaxminddb
-	url = git@github.com:icodesign/libmaxminddb.git
+	url = git@github.com:haxpor/libmaxminddb.git
+[submodule "Library/Eureka"]
+	path = Library/Eureka
+	url = git@github.com:haxpor/Eureka.git
+[submodule "Library/CallbackURLKit"]
+	path = Library/CallbackURLKit
+	url = git@github.com:phimage/CallbackURLKit.git

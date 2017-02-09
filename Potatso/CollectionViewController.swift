@@ -27,9 +27,9 @@ class CollectionViewController: SegmentPageVC {
         return ["Rule Set".localized(), "Proxy".localized(), "Cloud Set".localized()]
     }
 
-    override func showPage(index: Int) {
+    override func showPage(_ index: Int) {
         if index < 2 {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(add))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(add))
         }else {
             navigationItem.rightBarButtonItem = nil
         }
@@ -39,10 +39,10 @@ class CollectionViewController: SegmentPageVC {
     func add() {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            let vc = RuleSetConfigurationViewController(ruleSet: nil)
+            let vc = RuleSetConfigurationViewController()
             navigationController?.pushViewController(vc, animated: true)
         case 1:
-            let vc = ProxyConfigurationViewController(upstreamProxy: nil)
+            let vc = ProxyConfigurationViewController()
             navigationController?.pushViewController(vc, animated: true)
         default:
             break

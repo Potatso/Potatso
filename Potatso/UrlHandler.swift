@@ -11,21 +11,21 @@ import ICSMainFramework
 import PotatsoLibrary
 import Async
 import CallbackURLKit
-
+typealias callbackURLKit_Manager = CallbackURLKit.Manager
 
 class UrlHandler: NSObject, AppLifeCycleProtocol {
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        let manager = Manager.sharedInstance
-        manager.callbackURLScheme = Manager.URLSchemes?.first
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let manager = callbackURLKit_Manager.shared
+        manager.callbackURLScheme = callbackURLKit_Manager.urlSchemes?.first
         for action in [URLAction.ON, URLAction.OFF, URLAction.SWITCH] {
             manager[action.rawValue] = { parameters, success, failure, cancel in
                 action.perform(nil, parameters: parameters) { error in
-                    Async.main(after: 1, block: {
+                    Async.main(after: 1, {
                         if let error = error {
-                            failure(error as NSError)
+                            _ = failure(error as NSError)
                         }else {
-                            success(nil)
+                            _ = success(nil)
                         }
                     })
                     return
@@ -35,8 +35,8 @@ class UrlHandler: NSObject, AppLifeCycleProtocol {
         return true
     }
     
-    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
-        let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any]) -> Bool {
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         var parameters: Parameters = [:]
         components?.queryItems?.forEach {
             guard let _ = $0.value else {
@@ -50,7 +50,7 @@ class UrlHandler: NSObject, AppLifeCycleProtocol {
         return false
     }
     
-    func dispatchAction(url: NSURL?, actionString: String, parameters: Parameters) -> Bool {
+    func dispatchAction(_ url: URL?, actionString: String, parameters: Parameters) -> Bool {
         guard let action = URLAction(rawValue: actionString) else {
             return false
         }
@@ -66,7 +66,7 @@ enum URLAction: String {
     case SWITCH = "switch"
     case XCALLBACK = "x-callback-url"
 
-    func perform(url: NSURL?, parameters: Parameters, completion: (ErrorType? -> Void)? = nil) -> Bool {
+    func perform(_ url: URL?, parameters: Parameters, completion: ((Error?) -> Void)? = nil) -> Bool {
         switch self {
         case .ON:
             Manager.sharedManager.startVPN({ (manager, error) in
@@ -88,20 +88,20 @@ enum URLAction: String {
             })
         case .XCALLBACK:
             if let url = url {
-                return Manager.sharedInstance.handleOpenURL(url)
+                return callbackURLKit_Manager.shared.handleOpen(url: url)
             }
         }
         return true
     }
 
-    func autoClose(parameters: Parameters) {
+    func autoClose(_ parameters: Parameters) {
         var autoclose = false
-        if let value = parameters["autoclose"] where value.lowercaseString == "true" || value.lowercaseString == "1" {
+        if let value = parameters["autoclose"], value.lowercased() == "true" || value.lowercased() == "1" {
             autoclose = true
         }
         if autoclose {
-            Async.main(after: 1, block: {
-                UIControl().sendAction("suspend", to: UIApplication.sharedApplication(), forEvent: nil)
+            Async.main(after: 1, {
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
             })
         }
     }

@@ -14,13 +14,13 @@ import Async
 
 class ICloudSyncService: SyncServiceProtocol {
 
-    let operationQueue = OperationQueue()
+    let operationQueue = PSOperations.OperationQueue()
 
     init() {
 
     }
 
-    func setup(completion: (ErrorType? -> Void)?) {
+    func setup(_ completion: ((Error?) -> Void)?) {
         DDLogInfo(">>>>>> Setuping iCloud sync service")
         let setupOp = ICloudSetupOperation { [weak self] (error) in
             if let e = error {
@@ -34,7 +34,7 @@ class ICloudSyncService: SyncServiceProtocol {
         operationQueue.addOperation(setupOp)
     }
 
-    func sync(manually: Bool = false, completion: (ErrorType? -> Void)?) {
+    func sync(_ manually: Bool = false, completion: ((Error?) -> Void)?) {
         DDLogInfo(">>>>>>>>>> iCloud sync start")
         if manually {
             DDLogWarn("Manually sync: clear token and mark all as not synced")
@@ -76,7 +76,7 @@ class ICloudSyncService: SyncServiceProtocol {
         }
     }
 
-    func finishSync(error: ErrorType?, completion: (ErrorType? -> Void)?) {
+    func finishSync(_ error: Error?, completion: ((Error?) -> Void)?) {
         if let error = error {
             DDLogInfo("<<<<<<<<<< iCloud sync finished with error: \(error)")
         } else {
@@ -93,18 +93,18 @@ class ICloudSyncService: SyncServiceProtocol {
         let info = CKNotificationInfo()
         info.shouldSendContentAvailable = true
         subscription.notificationInfo = info
-        potatsoDB.saveSubscription(subscription) { (sub, error) in
+        potatsoDB.save(subscription, completionHandler: { (sub, error) in
             if let error = error {
                 DDLogError("subscribe cloudkit database changes error: \(error.localizedDescription)")
             } else {
                 DDLogInfo("subscribe cloudkit database changes success")
             }
-        }
+        }) 
     }
 
     func unsubscribeNotification() {
         DDLogInfo("unsubscribing cloudkit database changes...")
-        potatsoDB.deleteSubscriptionWithID(potatsoSubscriptionId) { (id, error) in
+        potatsoDB.delete(withSubscriptionID: potatsoSubscriptionId) { (id, error) in
             if let error = error {
                 DDLogError("unsubscribe cloudkit database changes error: \(error.localizedDescription)")
             } else {

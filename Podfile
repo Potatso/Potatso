@@ -32,21 +32,21 @@ target "Potatso" do
     pod 'Aspects', :path => "./Library/Aspects/"
     pod 'Cartography'
     pod 'AsyncSwift'
-    pod 'SwiftColor', '~> 0.3.7'
+    pod 'SwiftColor'
     pod 'Appirater'
-    pod 'Eureka', '~> 1.6.0'
+    pod 'Eureka', :path => "./Library/Eureka/"
     pod 'MBProgressHUD'
-    pod 'CallbackURLKit'
+    pod 'CallbackURLKit', :path => "./Library/CallbackURLKit"
     pod 'ICDMaterialActivityIndicatorView', '~> 0.1.0'
     pod 'Reveal-iOS-SDK', '~> 1.6.2', :configurations => ['Debug']
-    pod 'ICSPullToRefresh', '~> 0.4'
+    pod 'ICSPullToRefresh', '~> 0.6'
     pod 'ISO8601DateFormatter', '~> 0.8'
     pod 'Alamofire'
     pod 'ObjectMapper'
-    pod 'CocoaLumberjack/Swift'
+    pod 'CocoaLumberjack/Swift', '~> 3.0.0'
     pod 'Helpshift', '5.6.1'
-    pod 'PSOperations', '~> 2.3'
-    pod 'LogglyLogger-CocoaLumberjack', '~> 2.0'
+    pod 'PSOperations', '~> 3.0.0'
+    pod 'LogglyLogger-CocoaLumberjack', '~> 3.0'
     tunnel
     library
     fabric

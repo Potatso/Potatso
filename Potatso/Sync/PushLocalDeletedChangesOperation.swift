@@ -20,7 +20,7 @@ class PushLocalDeletedChangesOperation: PushLocalChangesBaseOperation {
         self.name = name ?? "Push Local Deleted Changes"
     }
 
-    override func pushRecords(completionHandler: (NSError?) -> ()) {
+    override func pushRecords(_ completionHandler: @escaping (NSError?) -> ()) {
         pushLocalRecords(nil, recordIDsToDelete: deletedRecordIDs, completionHandler: completionHandler)
     }
     

@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3C6F92914DC600539B41847959CED54915F302B0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : 9223372036854775807,
+    "3C6F92914DC600539B41847959CED54915F302B0" : 9223372036854775807,
+    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "CFBE088D-9DDA-498D-B923-50CBC4C30E67",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "88EA2772244A30DC9C9F9C8CF4484193B457DACA" : "Potatso\/Library\/ShadowPath\/ShadowPath\/shadowsocks-libev\/",
+    "3C6F92914DC600539B41847959CED54915F302B0" : "Potatso\/",
+    "CAC6E1011EE7E5B3F791C48870F55187391185DB" : "Potatso\/Library\/ShadowPath\/ShadowPath\/libmaxminddb\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Potatso",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Potatso.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:haxpor\/Potatso.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3C6F92914DC600539B41847959CED54915F302B0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:icodesign\/shadowsocks-libev.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "88EA2772244A30DC9C9F9C8CF4484193B457DACA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:icodesign\/libmaxminddb.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CAC6E1011EE7E5B3F791C48870F55187391185DB"
+    }
+  ]
+}

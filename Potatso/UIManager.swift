@@ -14,19 +14,19 @@ import Aspects
 class UIManager: NSObject, AppLifeCycleProtocol {
     
     var keyWindow: UIWindow? {
-        return UIApplication.sharedApplication().keyWindow
+        return UIApplication.shared.keyWindow
     }
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         UIView.appearance().tintColor = Color.Brand
 
         UITableView.appearance().backgroundColor = Color.Background
         UITableView.appearance().separatorColor = Color.Separator
 
-        UINavigationBar.appearance().translucent = false
+        UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = Color.NavigationBackground
 
-        UITabBar.appearance().translucent = false
+        UITabBar.appearance().isTranslucent = false
         UITabBar.appearance().backgroundColor = Color.TabBackground
         UITabBar.appearance().tintColor = Color.TabItemSelected
 

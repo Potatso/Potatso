@@ -13,7 +13,7 @@ import Realm
 import RealmSwift
 
 let potatsoZoneId = CKRecordZoneID(zoneName: "PotatsoCloud", ownerName: CKOwnerDefaultName)
-let potatsoDB = CKContainer.defaultContainer().privateCloudDatabase
+let potatsoDB = CKContainer.default().privateCloudDatabase
 let potatsoSubscriptionId = "allSubscription"
 
 public protocol CloudKitRecord {
@@ -21,7 +21,7 @@ public protocol CloudKitRecord {
     static var keys: [String] { get }
     var recordId: CKRecordID { get }
     func toCloudKitRecord() -> CKRecord
-    static func fromCloudKitRecord(record: CKRecord) -> Self
+    static func fromCloudKitRecord(_ record: CKRecord) -> Self
 }
 
 extension BaseModel {
@@ -49,15 +49,15 @@ extension Proxy: CloudKitRecord {
     public func toCloudKitRecord() -> CKRecord {
         let record = CKRecord(recordType: Proxy.recordType, recordID: recordId)
         for key in Proxy.keys {
-            record.setValue(self.valueForKey(key), forKey: key)
+            record.setValue(self.value(forKey: key), forKey: key)
         }
         return record
     }
 
-    public static func fromCloudKitRecord(record: CKRecord) -> Self {
+    public static func fromCloudKitRecord(_ record: CKRecord) -> Self {
         let proxy = self.init()
         for key in Proxy.keys {
-            if let v = record.valueForKey(key) {
+            if let v = record.value(forKey: key) {
                 proxy.setValue(v, forKey: key)
             }
         }
@@ -82,15 +82,15 @@ extension RuleSet: CloudKitRecord {
     public func toCloudKitRecord() -> CKRecord {
         let record = CKRecord(recordType: RuleSet.recordType, recordID: recordId)
         for key in RuleSet.keys {
-            record.setValue(self.valueForKey(key), forKey: key)
+            record.setValue(self.value(forKey: key), forKey: key)
         }
         return record
     }
 
-    public static func fromCloudKitRecord(record: CKRecord) -> Self {
+    public static func fromCloudKitRecord(_ record: CKRecord) -> Self {
         let ruleset = self.init()
         for key in RuleSet.keys {
-            if let v = record.valueForKey(key) {
+            if let v = record.value(forKey: key) {
                 ruleset.setValue(v, forKey: key)
             }
         }
@@ -115,30 +115,36 @@ extension ConfigurationGroup: CloudKitRecord {
     public func toCloudKitRecord() -> CKRecord {
         let record = CKRecord(recordType: ConfigurationGroup.recordType, recordID: recordId)
         for key in ConfigurationGroup.keys {
-            record.setValue(self.valueForKey(key), forKey: key)
+            record.setValue(self.value(forKey: key), forKey: key)
         }
-        record["proxies"] = proxies.map({ $0.uuid }).joinWithSeparator(",")
-        record["ruleSets"] = ruleSets.map({ $0.uuid }).joinWithSeparator(",")
+        record["proxies"] = proxies.map({ $0.uuid }).joined(separator: ",") as CKRecordValue?
+        record["ruleSets"] = ruleSets.map({ $0.uuid }).joined(separator: ",") as CKRecordValue?
         return record
     }
 
-    public static func fromCloudKitRecord(record: CKRecord) -> Self {
+    public static func fromCloudKitRecord(_ record: CKRecord) -> Self {
         let group = self.init()
         for key in ConfigurationGroup.keys {
-            if let v = record.valueForKey(key) {
+            if let v = record.value(forKey: key) {
                 group.setValue(v, forKey: key)
             }
         }
         let realm = try! Realm()
         if let rulesUUIDs = record["proxies"] as? String {
-            let uuids = rulesUUIDs.componentsSeparatedByString(",")
-            let rules = uuids.flatMap({ realm.objects(Proxy).filter("uuid = '\($0)'").first })
-            group.proxies.appendContentsOf(rules)
+            let uuids = rulesUUIDs.components(separatedBy: ",")
+            let rules = uuids.flatMap({ realm.objects(Proxy.self).filter("uuid = '\($0)'").first })
+            
+            for r in rules {
+                group.proxies.append(r)
+            }
         }
         if let rulesUUIDs = record["ruleSets"] as? String {
-            let uuids = rulesUUIDs.componentsSeparatedByString(",")
-            let rules = uuids.flatMap({ realm.objects(RuleSet).filter("uuid = '\($0)'").first })
-            group.ruleSets.appendContentsOf(rules)
+            let uuids = rulesUUIDs.components(separatedBy: ",")
+            let rules = uuids.flatMap({ realm.objects(RuleSet.self).filter("uuid = '\($0)'").first })
+            
+            for r in rules {
+                group.ruleSets.append(r)
+            }
         }
         return group
     }
@@ -163,7 +169,7 @@ extension CKRecord {
 
 }
 
-func changeLocalRecord(record: CKRecord) throws {
+func changeLocalRecord(_ record: CKRecord) throws {
     let realmObject: BaseModel
     guard let type = record.realmClassType else {
         return
@@ -181,7 +187,7 @@ func changeLocalRecord(record: CKRecord) throws {
         return
     }
     realmObject.synced = true
-    if let local = local, type = record.realmClassType {
+    if let local = local, let type = record.realmClassType {
         if local.updatedAt > realmObject.updatedAt {
             try DBUtils.mark(local.uuid, type: type, synced: false)
             return
@@ -193,7 +199,7 @@ func changeLocalRecord(record: CKRecord) throws {
     try DBUtils.add(realmObject, setModified: false)
 }
 
-func deleteLocalRecord(recordID: CKRecordID) throws {
+func deleteLocalRecord(_ recordID: CKRecordID) throws {
     let id = recordID.recordName
     try DBUtils.hardDelete(id, type: Proxy.self)
     try DBUtils.hardDelete(id, type: RuleSet.self)

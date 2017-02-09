@@ -56,7 +56,7 @@ class CloudViewController: UIViewController, UITableViewDataSource, UITableViewD
                 }
                 let data = result.filter({ $0.name.characters.count > 0})
                 if loadMore {
-                    self.ruleSets.appendContentsOf(data)
+                    self.ruleSets.append(contentsOf: data)
                     if result.count < pageSize {
                         self.showTextHUD("No more data".localized(), dismissAfterDelay: 1.0)
                     }
@@ -68,23 +68,23 @@ class CloudViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
 
-    func showRuleSetConfiguration(ruleSet: RuleSet?) {
+    func showRuleSetConfiguration(_ ruleSet: RuleSet?) {
         let vc = RuleSetConfigurationViewController(ruleSet: ruleSet)
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return ruleSets.count
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(kRuleSetCellIdentifier, forIndexPath: indexPath) as! RuleSetCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: kRuleSetCellIdentifier, for: indexPath) as! RuleSetCell
         cell.setRuleSet(ruleSets[indexPath.row])
         return cell
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let vc = CloudDetailViewController(ruleSet: ruleSets[indexPath.row])
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -98,9 +98,9 @@ class CloudViewController: UIViewController, UITableViewDataSource, UITableViewD
 
     override func loadView() {
         super.loadView()
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
         view.addSubview(tableView)
-        tableView.registerClass(RuleSetCell.self, forCellReuseIdentifier: kRuleSetCellIdentifier)
+        tableView.register(RuleSetCell.self, forCellReuseIdentifier: kRuleSetCellIdentifier)
 
         constrain(tableView, view) { tableView, view in
             tableView.edges == view.edges
@@ -108,12 +108,12 @@ class CloudViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     lazy var tableView: UITableView = {
-        let v = UITableView(frame: CGRect.zero, style: .Plain)
+        let v = UITableView(frame: CGRect.zero, style: .plain)
         v.dataSource = self
         v.delegate = self
         v.tableFooterView = UIView()
         v.tableHeaderView = UIView()
-        v.separatorStyle = .SingleLine
+        v.separatorStyle = .singleLine
         v.rowHeight = UITableViewAutomaticDimension
         v.estimatedRowHeight = rowHeight
         return v

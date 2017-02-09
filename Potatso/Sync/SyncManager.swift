@@ -15,24 +15,24 @@ public enum SyncServiceType: String {
 }
 
 public protocol SyncServiceProtocol {
-    func setup(completion: (ErrorType? -> Void)?)
-    func sync(manually: Bool, completion: (ErrorType? -> Void)?)
+    func setup(_ completion: ((Error?) -> Void)?)
+    func sync(_ manually: Bool, completion: ((Error?) -> Void)?)
     func stop()
 }
 
-public class SyncManager {
+open class SyncManager {
 
     static let shared = SyncManager()
 
-    public static let syncServiceChangedNotification = "syncServiceChangedNotification"
-    private var services: [SyncServiceType: SyncServiceProtocol] = [:]
-    private static let serviceTypeKey = "serviceTypeKey"
+    open static let syncServiceChangedNotification = "syncServiceChangedNotification"
+    fileprivate var services: [SyncServiceType: SyncServiceProtocol] = [:]
+    fileprivate static let serviceTypeKey = "serviceTypeKey"
 
-    private(set) var syncing = false
+    fileprivate(set) var syncing = false
 
     var currentSyncServiceType: SyncServiceType {
         get {
-            if let raw = NSUserDefaults.standardUserDefaults().objectForKey(SyncManager.serviceTypeKey) as? String, type = SyncServiceType(rawValue: raw) {
+            if let raw = UserDefaults.standard.object(forKey: SyncManager.serviceTypeKey) as? String, let type = SyncServiceType(rawValue: raw) {
                 return type
             }
             return .None
@@ -42,9 +42,9 @@ public class SyncManager {
                 return
             }
             getCurrentSyncService()?.stop()
-            NSUserDefaults.standardUserDefaults().setObject(new.rawValue, forKey: SyncManager.serviceTypeKey)
-            NSUserDefaults.standardUserDefaults().synchronize()
-            NSNotificationCenter.defaultCenter().postNotificationName(SyncManager.syncServiceChangedNotification, object: nil)
+            UserDefaults.standard.set(new.rawValue, forKey: SyncManager.serviceTypeKey)
+            UserDefaults.standard.synchronize()
+            NotificationCenter.default.post(name: Notification.Name(rawValue: SyncManager.syncServiceChangedNotification), object: nil)
         }
     }
 
@@ -71,18 +71,18 @@ public class SyncManager {
     }
 
     func showSyncVC(inVC vc:UIViewController? = nil) {
-        guard let currentVC = vc ?? UIApplication.sharedApplication().keyWindow?.rootViewController else {
+        guard let currentVC = vc ?? UIApplication.shared.keyWindow?.rootViewController else {
             return
         }
         let syncVC = SyncVC()
-        currentVC.showViewController(syncVC, sender: self)
+        currentVC.show(syncVC, sender: self)
     }
 
 }
 
 extension SyncManager {
 
-    func setupNewService(type: SyncServiceType, completion: (ErrorType? -> Void)?) {
+    func setupNewService(_ type: SyncServiceType, completion: ((Error?) -> Void)?) {
         if let service = getSyncService(forType: type) {
             service.setup(completion)
         } else {
@@ -90,17 +90,17 @@ extension SyncManager {
         }
     }
 
-    func setup(completion: (ErrorType? -> Void)?) {
+    func setup(_ completion: ((Error?) -> Void)?) {
         getCurrentSyncService()?.setup(completion)
     }
 
-    func sync(manually: Bool = false, completion: (ErrorType? -> Void)? = nil) {
+    func sync(_ manually: Bool = false, completion: ((Error?) -> Void)? = nil) {
         if let service = getCurrentSyncService() {
             syncing = true
-            NSNotificationCenter.defaultCenter().postNotificationName(SyncManager.syncServiceChangedNotification, object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: SyncManager.syncServiceChangedNotification), object: nil)
             service.sync(manually) { [weak self] error in
                 self?.syncing = false
-                NSNotificationCenter.defaultCenter().postNotificationName(SyncManager.syncServiceChangedNotification, object: nil)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: SyncManager.syncServiceChangedNotification), object: nil)
                 completion?(error)
             }
         }

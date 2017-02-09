@@ -10,29 +10,29 @@ import RealmSwift
 import PotatsoModel
 import YAML
 
-public enum ConfigError: ErrorType {
-    case DownloadFail
-    case SyntaxError
+public enum ConfigError: Error {
+    case downloadFail
+    case syntaxError
 }
 
 extension ConfigError: CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .DownloadFail:
+        case .downloadFail:
             return "Download fail"
-        case .SyntaxError:
+        case .syntaxError:
             return "Syntax error"
         }
     }
     
 }
 
-public class Config {
+open class Config {
     
-    public var groups: [ConfigurationGroup] = []
-    public var proxies: [Proxy] = []
-    public var ruleSets: [RuleSet] = []
+    open var groups: [ConfigurationGroup] = []
+    open var proxies: [Proxy] = []
+    open var ruleSets: [RuleSet] = []
     
     let realm: Realm
     var configDict: [String: AnyObject] = [:]
@@ -41,22 +41,22 @@ public class Config {
         realm = try! Realm()
     }
     
-    public func setup(string configString: String) throws {
-        guard configString.characters.count > 0, let object = try? YAMLSerialization.objectWithYAMLString(configString, options: kYAMLReadOptionStringScalars), yaml = object as? [String: AnyObject] else {
-            throw ConfigError.SyntaxError
+    open func setup(string configString: String) throws {
+        guard configString.characters.count > 0, let object = try? YAMLSerialization.object(withYAMLString: configString, options: kYAMLReadOptionStringScalars), let yaml = object as? [String: AnyObject] else {
+            throw ConfigError.syntaxError
         }
         self.configDict = yaml
         try setupModels()
     }
     
-    public func setup(url url: NSURL) throws {
-        guard let string = try? String(contentsOfURL: url) else {
-            throw ConfigError.DownloadFail
+    open func setup(url: URL) throws {
+        guard let string = try? String(contentsOf: url) else {
+            throw ConfigError.downloadFail
         }
         try setup(string: string)
     }
     
-    public func save() throws {
+    open func save() throws {
         do {
             try realm.commitWrite()
         }catch {

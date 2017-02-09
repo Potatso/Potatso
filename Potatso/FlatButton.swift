@@ -20,7 +20,7 @@ class FlatButton: UIButton {
             }else {
                 indicator.stopAnimating()
             }
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.titleLabel?.alpha = self.animating ? 0 : 1
             })
         }
@@ -42,9 +42,9 @@ class FlatButton: UIButton {
 
     lazy var indicator: ICDMaterialActivityIndicatorView = {
         let v = ICDMaterialActivityIndicatorView(activityIndicatorStyle: ICDMaterialActivityIndicatorViewStyleSmall)
-        v.hidesWhenStopped = true
-        v.color = UIColor.whiteColor()
-        return v
+        v?.hidesWhenStopped = true
+        v?.color = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        return v!
     }()
     
 }

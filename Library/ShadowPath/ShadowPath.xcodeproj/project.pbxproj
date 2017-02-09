@@ -1885,7 +1885,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ShadowPathDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.ShadowPathDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = io.wasin.ShadowPathDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -1897,7 +1897,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ShadowPathDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.ShadowPathDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = io.wasin.ShadowPathDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -2023,7 +2023,7 @@
 					"-DUDPRELAY_LOCAL",
 					"-DMODULE_LOCAL",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.ShadowPath;
+				PRODUCT_BUNDLE_IDENTIFIER = io.wasin.ShadowPath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2059,7 +2059,7 @@
 					"-DUDPRELAY_LOCAL",
 					"-DMODULE_LOCAL",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.touchingapp.ShadowPath;
+				PRODUCT_BUNDLE_IDENTIFIER = io.wasin.ShadowPath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "";

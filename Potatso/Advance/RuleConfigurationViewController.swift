@@ -27,11 +27,11 @@ extension Rule {
 class RuleConfigurationViewController: FormViewController {
 
     var rule: Rule
-    var callback: (Rule -> Void)?
+    var callback: ((Rule) -> Void)?
     var editable: Bool = true
     let isEdit: Bool
     
-    init(rule: Rule?, callback: (Rule -> Void)?) {
+    init(rule: Rule?, callback: ((Rule) -> Void)?) {
         if let rule = rule {
             self.rule = rule
             isEdit = true
@@ -55,7 +55,7 @@ class RuleConfigurationViewController: FormViewController {
             }else {
                 self.navigationItem.title = "Add Rule".localized()
             }
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(save))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
         }else {
             navigationItem.title = "Rule".localized()
         }
@@ -71,7 +71,7 @@ class RuleConfigurationViewController: FormViewController {
                 $0.value = self.rule.type
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
-                    cell.accessoryType = .DisclosureIndicator
+                    cell.accessoryType = .disclosureIndicator
                 })
             <<< TextRow(kRuleFormValue) {
                 $0.title = "Value".localized()
@@ -79,8 +79,8 @@ class RuleConfigurationViewController: FormViewController {
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
                     cell.textField.keyboardType = .URL
-                    cell.textField.autocorrectionType = .No
-                    cell.textField.autocapitalizationType = .None
+                    cell.textField.autocorrectionType = .no
+                    cell.textField.autocapitalizationType = .none
                 })
             <<< PushRow<RuleAction>(kRuleFormAction) {
                 $0.title = "Action".localized()
@@ -89,7 +89,7 @@ class RuleConfigurationViewController: FormViewController {
                 $0.value = self.rule.action
                 $0.disabled = Condition(booleanLiteral: !editable)
                 }.cellSetup({ (cell, row) -> () in
-                    cell.accessoryType = .DisclosureIndicator
+                    cell.accessoryType = .disclosureIndicator
                 })
     }
     
@@ -99,7 +99,7 @@ class RuleConfigurationViewController: FormViewController {
             guard let type = values[kRuleFormType] as? RuleType else {
                 throw "You must choose a type".localized()
             }
-            guard let value = (values[kRuleFormValue] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) where value.characters.count > 0 else {
+            guard let value = (values[kRuleFormValue] as? String)?.trimmingCharacters(in: CharacterSet.whitespaces), value.characters.count > 0 else {
                 throw "Value can't be empty".localized()
             }
             guard let action = values[kRuleFormAction] as? RuleAction else {

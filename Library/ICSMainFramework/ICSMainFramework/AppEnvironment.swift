@@ -13,7 +13,7 @@ public struct AppEnv {
     // App Version
     // App Build
     public static var version: String {
-        return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
     
     public static var fullVersion: String {
@@ -21,19 +21,19 @@ public struct AppEnv {
     }
     
     public static var build: String {
-        return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     }
     
     public static var countryCode: String {
-        return NSLocale.currentLocale().objectForKey(NSLocaleCountryCode) as? String ?? "US"
+        return (Locale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String ?? "US"
     }
     
     public static var languageCode: String {
-        return NSLocale.currentLocale().objectForKey(NSLocaleLanguageCode) as? String ?? "en"
+        return (Locale.current as NSLocale).object(forKey: NSLocale.Key.languageCode) as? String ?? "en"
     }
     
     public static var appName: String {
-        return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleDisplayName") as! String
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
     }
 
     public static var isTestFlight: Bool {
@@ -47,14 +47,14 @@ public struct AppEnv {
         return true
     }
 
-    private static var isAppStoreReceiptSandbox: Bool {
-        let b = NSBundle.mainBundle().appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    fileprivate static var isAppStoreReceiptSandbox: Bool {
+        let b = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
         NSLog("isAppStoreReceiptSandbox: \(b)")
         return b
     }
 
-    private static var hasEmbeddedMobileProvision: Bool {
-        let b = NSBundle.mainBundle().pathForResource("embedded", ofType: "mobileprovision") != nil
+    fileprivate static var hasEmbeddedMobileProvision: Bool {
+        let b = Bundle.main.path(forResource: "embedded", ofType: "mobileprovision") != nil
         NSLog("hasEmbeddedMobileProvision: \(b)")
         return b
     }

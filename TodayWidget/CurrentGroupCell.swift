@@ -25,13 +25,13 @@ class CurrentGroupCell: UITableViewCell {
         switchVPN?()
     }
     
-    func config(name: String?, status: Bool, switchVPN: (() -> Void)?) {
+    func config(_ name: String?, status: Bool, switchVPN: (() -> Void)?) {
         nameLabel.text = name ?? "None".localized()
-        switchButton.setBackgroundImage("FF6959".color.alpha(0.76).toImage(), forState: .Normal)
+        switchButton.setBackgroundImage("FF6959".color.alpha(0.76).toImage(), for: UIControlState())
         
-        switchButton.addTarget(self, action: #selector(self.onSwitchValueChanged), forControlEvents: .TouchUpInside)
-        switchButton.setTitle((status ? "Disconnect" : "Connect").localized(), forState: .Normal)
-        switchButton.setBackgroundImage((status ? "FF6959" : "1ABC9C").color.alpha(0.76).toImage(), forState: .Normal)
+        switchButton.addTarget(self, action: #selector(self.onSwitchValueChanged), for: .touchUpInside)
+        switchButton.setTitle((status ? "Disconnect" : "Connect").localized(), for: UIControlState())
+        switchButton.setBackgroundImage((status ? "FF6959" : "1ABC9C").color.alpha(0.76).toImage(), for: UIControlState())
         
         self.switchVPN = switchVPN
     }
@@ -55,14 +55,14 @@ class CurrentGroupCell: UITableViewCell {
     
     lazy var nameLabel: UILabel = {
         let v = UILabel()
-        v.font = UIFont.boldSystemFontOfSize(17)
-        v.textColor = UIColor.whiteColor()
+        v.font = UIFont.boldSystemFont(ofSize: 17)
+        v.textColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         return v
     }()
     
     lazy var switchButton: UIButton = {
-        let v = UIButton(type: .Custom)
-        v.titleLabel?.font = UIFont.systemFontOfSize(11)
+        let v = UIButton(type: .custom)
+        v.titleLabel?.font = UIFont.systemFont(ofSize: 11)
         v.layer.cornerRadius = 4
         v.layer.masksToBounds = true
         v.clipsToBounds = true

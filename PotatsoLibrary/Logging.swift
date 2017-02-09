@@ -11,20 +11,20 @@ import Foundation
 private let kLoggingLevelIdentifier = "loggingLevel"
 
 public enum LoggingLevel: Int{
-    case OFF = 0
-    case DEBUG = 1
+    case off = 0
+    case debug = 1
     
     public static var currentLoggingLevel: LoggingLevel {
         get {
-            if let saved = NSUserDefaults.standardUserDefaults().objectForKey(kLoggingLevelIdentifier) as? Int {
-                return LoggingLevel(rawValue: saved) ?? .DEBUG
+            if let saved = UserDefaults.standard.object(forKey: kLoggingLevelIdentifier) as? Int {
+                return LoggingLevel(rawValue: saved) ?? .debug
             }else{
-                return .DEBUG
+                return .debug
             }
         }
         set(o) {
-            NSUserDefaults.standardUserDefaults().setObject(o.rawValue, forKey: kLoggingLevelIdentifier)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(o.rawValue, forKey: kLoggingLevelIdentifier)
+            UserDefaults.standard.synchronize()
         }
     }
 
@@ -34,9 +34,9 @@ extension LoggingLevel: CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .OFF:
+        case .off:
             return "Off"
-        case .DEBUG:
+        case .debug:
             return "Debug"
         }
     }

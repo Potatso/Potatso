@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension ErrorType {
+extension Error {
 
-    func log(message: String?) {
+    func log(_ message: String?) {
         if let message = message {
             DDLogError("\(message): \(self)")
         }else {

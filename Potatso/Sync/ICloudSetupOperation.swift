@@ -13,11 +13,11 @@ import Async
 
 class ICloudSetupOperation: GroupOperation {
 
-    init(completion: (ErrorType? -> Void)? = nil) {
-        let url = NSURL(string: "http://www.apple.com")!
+    init(completion: ((Error?) -> Void)? = nil) {
+        let url = URL(string: "http://www.apple.com")!
         let reachabilityCondition = ReachabilityCondition(host: url)
 
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         let iCloudCapability = Capability(iCloudContainer(container: container))
 
         let finishObserver = BlockObserver { operation, error in

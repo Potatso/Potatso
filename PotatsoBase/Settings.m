@@ -29,7 +29,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _userDefaults = [[NSUserDefaults alloc] initWithSuiteName:sharedGroupIdentifier];
+        _userDefaults = [[NSUserDefaults alloc] initWithSuiteName: [Potatso sharedGroupIdentifier]];
     }
     return self;
 }

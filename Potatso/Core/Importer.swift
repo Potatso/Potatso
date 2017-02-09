@@ -21,34 +21,34 @@ struct Importer {
     
     func importConfigFromUrl() {
         var urlTextField: UITextField?
-        let alert = UIAlertController(title: "Import Config From URL".localized(), message: nil, preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler { (textField) in
+        let alert = UIAlertController(title: "Import Config From URL".localized(), message: nil, preferredStyle: .alert)
+        alert.addTextField { (textField) in
             textField.placeholder = "Input URL".localized()
             urlTextField = textField
         }
-        alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default, handler: { (action) in
             if let input = urlTextField?.text {
                 self.onImportInput(input)
             }
         }))
-        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel, handler: nil))
-        viewController?.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .cancel, handler: nil))
+        viewController?.present(alert, animated: true, completion: nil)
     }
     
     func importConfigFromQRCode() {
         let vc = QRCodeScannerVC()
-        vc.resultBlock = { [weak vc] result in
-            vc?.navigationController?.popViewControllerAnimated(true)
-            self.onImportInput(result)
+        vc?.resultBlock = { [weak vc] result in
+            vc?.navigationController?.popViewController(animated: true)
+            self.onImportInput(result!)
         }
-        vc.errorBlock = { [weak vc] error in
-            vc?.navigationController?.popViewControllerAnimated(true)
+        vc?.errorBlock = { [weak vc] error in
+            vc?.navigationController?.popViewController(animated: true)
             self.viewController?.showTextHUD("\(error)", dismissAfterDelay: 1.5)
         }
-        viewController?.navigationController?.pushViewController(vc, animated: true)
+        viewController?.navigationController?.pushViewController(vc!, animated: true)
     }
     
-    func onImportInput(result: String) {
+    func onImportInput(_ result: String) {
         if Proxy.uriIsShadowsocks(result) {
             importSS(result)
         }else {
@@ -56,21 +56,21 @@ struct Importer {
         }
     }
     
-    func importSS(source: String) {
+    func importSS(_ source: String) {
         do {
             let defaultName = "___scanresult"
-            let proxy = try Proxy(dictionary: ["name": defaultName, "uri": source], inRealm: defaultRealm)
+            let proxy = try Proxy(dictionary: ["name": defaultName as AnyObject, "uri": source as AnyObject], inRealm: defaultRealm)
             var urlTextField: UITextField?
-            let alert = UIAlertController(title: "Add a new proxy".localized(), message: "Please set name for the new proxy".localized(), preferredStyle: .Alert)
-            alert.addTextFieldWithConfigurationHandler { (textField) in
+            let alert = UIAlertController(title: "Add a new proxy".localized(), message: "Please set name for the new proxy".localized(), preferredStyle: .alert)
+            alert.addTextField { (textField) in
                 textField.placeholder = "Input name".localized()
                 if proxy.name != defaultName {
                     textField.text = proxy.name
                 }
                 urlTextField = textField
             }
-            alert.addAction(UIAlertAction(title: "OK".localized(), style: .Default){ (action) in
-                guard let text = urlTextField?.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) else {
+            alert.addAction(UIAlertAction(title: "OK".localized(), style: .default){ (action) in
+                guard let text = urlTextField?.text?.trimmingCharacters(in: CharacterSet.whitespaces) else {
                     self.onConfigSaveCallback(false, error: "Name can't be empty".localized())
                     return
                 }
@@ -83,9 +83,9 @@ struct Importer {
                     self.onConfigSaveCallback(false, error: error)
                 }
                 })
-            alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .Cancel) { action in
+            alert.addAction(UIAlertAction(title: "CANCEL".localized(), style: .cancel) { action in
                 })
-            viewController?.presentViewController(alert, animated: true, completion: nil)
+            viewController?.present(alert, animated: true, completion: nil)
         }catch {
             self.onConfigSaveCallback(false, error: error)
         }
@@ -94,13 +94,13 @@ struct Importer {
         }
     }
     
-    func importConfig(source: String, isURL: Bool) {
+    func importConfig(_ source: String, isURL: Bool) {
         viewController?.showProgreeHUD("Importing Config...".localized())
         Async.background(after: 1) {
             let config = Config()
             do {
                 if isURL {
-                    if let url = NSURL(string: source) {
+                    if let url = URL(string: source) {
                         try config.setup(url: url)
                     }
                 }else {
@@ -114,7 +114,7 @@ struct Importer {
         }
     }
     
-    func onConfigSaveCallback(success: Bool, error: ErrorType?) {
+    func onConfigSaveCallback(_ success: Bool, error: Error?) {
         Async.main(after: 0.5) {
             self.viewController?.hideHUD()
             if !success {

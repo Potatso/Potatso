@@ -11,27 +11,24 @@ import Aspects
 
 extension UIViewController: UIGestureRecognizerDelegate  {
     
-    public override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
+    open override class func initialize() {
         
         // make sure this isn't a subclass
         if self !== UIViewController.self {
             return
         }
         
-        dispatch_once(&Static.token) {
+        {
             UIViewController.aspectHook(#selector(viewDidLoad), swizzledSelector: #selector(ics_viewDidLoad))
             UIViewController.aspectHook(#selector(viewWillAppear(_:)), swizzledSelector: #selector(ics_viewWillAppear(_:)))
             UIViewController.aspectHook(#selector(viewDidAppear(_:)), swizzledSelector: #selector(ics_viewDidAppear(_:)))
             UIViewController.aspectHook(#selector(viewWillDisappear(_:)), swizzledSelector: #selector(ics_viewWillDisappear(_:)))
-        }
+        }()
     }
     
     // MARK: - Method Swizzling
     
-    func ics_viewWillAppear(animated: Bool) {
+    func ics_viewWillAppear(_ animated: Bool) {
         self.ics_viewWillAppear(animated)
         if let navVC = self.navigationController {
             if !isModal() {
@@ -44,58 +41,58 @@ extension UIViewController: UIGestureRecognizerDelegate  {
         self.ics_viewDidLoad()
     }
     
-    func ics_viewDidAppear(animated: Bool) {
+    func ics_viewDidAppear(_ animated: Bool) {
         self.ics_viewDidAppear(animated)
         if let navVC = self.navigationController {
             enableSwipeGesture(navVC.viewControllers.count > 1)
         }
     }
     
-    func ics_viewWillDisappear(animated: Bool) {
+    func ics_viewWillDisappear(_ animated: Bool) {
         self.ics_viewWillDisappear(animated)
     }
     
-    func showLeftBackButton(shouldShow: Bool) {
+    func showLeftBackButton(_ shouldShow: Bool) {
         if shouldShow {
-            let backItem = UIBarButtonItem(image: "Back".templateImage, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(pop))
+            let backItem = UIBarButtonItem(image: "Back".templateImage, style: UIBarButtonItemStyle.plain, target: self, action: #selector(pop))
             navigationItem.leftBarButtonItem = backItem
         }else{
             navigationItem.leftBarButtonItem = nil
         }
     }
     
-    func enableSwipeGesture(shouldShow: Bool) {
+    func enableSwipeGesture(_ shouldShow: Bool) {
         if shouldShow {
             navigationController?.interactivePopGestureRecognizer?.delegate = self
-            navigationController?.interactivePopGestureRecognizer?.enabled = true
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         }else{
             navigationController?.interactivePopGestureRecognizer?.delegate = nil
-            navigationController?.interactivePopGestureRecognizer?.enabled = false
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         }
     }
 
-    func addChildVC(child: UIViewController) {
+    func addChildVC(_ child: UIViewController) {
         view.addSubview(child.view)
         addChildViewController(child)
-        child.didMoveToParentViewController(self)
+        child.didMove(toParentViewController: self)
     }
 
-    func removeChildVC(child: UIViewController) {
-        child.willMoveToParentViewController(nil)
+    func removeChildVC(_ child: UIViewController) {
+        child.willMove(toParentViewController: nil)
         child.view.removeFromSuperview()
         child.removeFromParentViewController()
     }
     
     func pop() {
-        navigationController?.popViewControllerAnimated(true)
+        navigationController?.popViewController(animated: true)
     }
     
     func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func close() {
-        if let navVC = self.navigationController where navVC.viewControllers.count > 1 {
+        if let navVC = self.navigationController, navVC.viewControllers.count > 1 {
             pop()
         }else {
             dismiss()

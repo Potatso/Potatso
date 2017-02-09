@@ -8,21 +8,21 @@
 
 import RealmSwift
 
-public enum ConfigurationGroupError: ErrorType {
-    case InvalidConfigurationGroup
-    case EmptyName
-    case NameAlreadyExists
+public enum ConfigurationGroupError: Error {
+    case invalidConfigurationGroup
+    case emptyName
+    case nameAlreadyExists
 }
 
 extension ConfigurationGroupError: CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .InvalidConfigurationGroup:
+        case .invalidConfigurationGroup:
             return "Invalid config group"
-        case .EmptyName:
+        case .emptyName:
             return "Empty name"
-        case .NameAlreadyExists:
+        case .nameAlreadyExists:
             return "Name already exists"
         }
     }
@@ -30,25 +30,25 @@ extension ConfigurationGroupError: CustomStringConvertible {
 }
 
 
-public class ConfigurationGroup: BaseModel {
-    public dynamic var editable = true
-    public dynamic var name = ""
-    public dynamic var defaultToProxy = true
-    public dynamic var dns = ""
-    public let proxies = List<Proxy>()
-    public let ruleSets = List<RuleSet>()
+open class ConfigurationGroup: BaseModel {
+    open dynamic var editable = true
+    open dynamic var name = ""
+    open dynamic var defaultToProxy = true
+    open dynamic var dns = ""
+    open var proxies = List<Proxy>()
+    open var ruleSets = List<RuleSet>()
     
-    public override static func indexedProperties() -> [String] {
+    open override static func indexedProperties() -> [String] {
         return ["name"]
     }
     
-    public override func validate(inRealm realm: Realm) throws {
+    open override func validate(inRealm realm: Realm) throws {
         guard name.characters.count > 0 else {
-            throw ConfigurationGroupError.EmptyName
+            throw ConfigurationGroupError.emptyName
         }
     }
 
-    public override var description: String {
+    open override var description: String {
         return name
     }
 }
@@ -58,13 +58,13 @@ extension ConfigurationGroup {
     public convenience init(dictionary: [String: AnyObject], inRealm realm: Realm) throws {
         self.init()
         guard let name = dictionary["name"] as? String else {
-            throw ConfigurationGroupError.InvalidConfigurationGroup
+            throw ConfigurationGroupError.invalidConfigurationGroup
         }
         self.name = name
         if realm.objects(RuleSet).filter("name = '\(name)'").first != nil {
-            self.name = "\(name) \(ConfigurationGroup.dateFormatter.stringFromDate(NSDate()))"
+            self.name = "\(name) \(ConfigurationGroup.dateFormatter.string(from: Date()))"
         }
-        if let proxyName = dictionary["proxy"] as? String, proxy = realm.objects(Proxy).filter("name = '\(proxyName)'").first {
+        if let proxyName = dictionary["proxy"] as? String, let proxy = realm.objects(Proxy).filter("name = '\(proxyName)'").first {
             self.proxies.removeAll()
             self.proxies.append(proxy)
         }
@@ -82,7 +82,7 @@ extension ConfigurationGroup {
             self.dns = dns
         }
         if let dns = dictionary["dns"] as? [String] {
-            self.dns = dns.joinWithSeparator(",")
+            self.dns = dns.joined(separator: ",")
         }
     }
 

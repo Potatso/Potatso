@@ -15,14 +15,14 @@ struct Aspect {
 }
 
 public enum AspectOptions {
-    case Before
-    case After
-    case Instead
+    case before
+    case after
+    case instead
 }
 
 public extension NSObject {
     
-   public class func aspectHook(originalSelector: Selector, swizzledSelector: Selector, options: AspectOptions = .Instead) {
+   public class func aspectHook(_ originalSelector: Selector, swizzledSelector: Selector, options: AspectOptions = .instead) {
         let originalMethod = class_getInstanceMethod(self, originalSelector)
         let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
         

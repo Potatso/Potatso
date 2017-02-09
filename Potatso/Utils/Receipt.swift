@@ -13,7 +13,7 @@ class Receipt: NSObject, SKRequestDelegate {
 
     static let shared = Receipt()
 
-    private override init() {}
+    fileprivate override init() {}
 
     func validate() {
         if AppEnv.isTestFlight {
@@ -35,11 +35,11 @@ class Receipt: NSObject, SKRequestDelegate {
         }
     }
 
-    private func markKeychainAppStore() {
+    fileprivate func markKeychainAppStore() {
         keychain["appstore"] = "true"
     }
 
-    private func validateKeychainAppStore() -> Bool {
+    fileprivate func validateKeychainAppStore() -> Bool {
         NSLog("validateKeychainAppStore")
         if let value = keychain["appstore"] {
             NSLog("keychain value: \(value)")
@@ -48,24 +48,24 @@ class Receipt: NSObject, SKRequestDelegate {
         return false
     }
 
-    private func isStoreReceiptValidate() -> Bool {
-        NSLog("appStoreReceiptURL: \(NSBundle.mainBundle().appStoreReceiptURL)")
-        guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
+    fileprivate func isStoreReceiptValidate() -> Bool {
+        NSLog("appStoreReceiptURL: \(Bundle.main.appStoreReceiptURL)")
+        guard let receiptPath = Bundle.main.appStoreReceiptURL?.path, FileManager.default.fileExists(atPath: receiptPath) else {
             NSLog("isStoreReceiptValidate can't find appStoreReceiptURL")
             return false
         }
-        return ReceiptUtils.verifyReceiptAtPath(receiptPath)
+        return ReceiptUtils.verifyReceipt(atPath: receiptPath)
     }
 
-    private func requestNewReceipt() {
+    fileprivate func requestNewReceipt() {
         let req = SKReceiptRefreshRequest()
         req.delegate = self
         req.start()
     }
 
-    private func validateReceipt(path: String, tryAgain: Bool) {
-        let valid = ReceiptUtils.verifyReceiptAtPath(path)
-        logEvent(.ReceiptValidationResult, attributes: ["valid": valid ? "true" : "false"])
+    fileprivate func validateReceipt(_ path: String, tryAgain: Bool) {
+        let valid = ReceiptUtils.verifyReceipt(atPath: path)
+        logEvent(.ReceiptValidationResult, attributes: ["valid": valid ? "true" as AnyObject: "false" as AnyObject])
         if !valid {
             if tryAgain {
                 requestNewReceipt()
@@ -75,7 +75,7 @@ class Receipt: NSObject, SKRequestDelegate {
         }
     }
 
-    private func failAndTerminate() {
+    fileprivate func failAndTerminate() {
 //        dispatch_async(dispatch_get_main_queue()) { 
 //            guard let vc = UIApplication.sharedApplication().keyWindow?.rootViewController else {
 //                return
@@ -92,21 +92,21 @@ class Receipt: NSObject, SKRequestDelegate {
 //        }
     }
 
-    private func terminate() {
+    fileprivate func terminate() {
         exit(173)
     }
 
     // MARK: - SKRequestDelegate
 
-    @objc func requestDidFinish(request: SKRequest) {
-        guard let receiptPath = NSBundle.mainBundle().appStoreReceiptURL?.path where NSFileManager.defaultManager().fileExistsAtPath(receiptPath) else {
+    @objc func requestDidFinish(_ request: SKRequest) {
+        guard let receiptPath = Bundle.main.appStoreReceiptURL?.path, FileManager.default.fileExists(atPath: receiptPath) else {
             failAndTerminate()
             return
         }
         validateReceipt(receiptPath, tryAgain: false)
     }
 
-    @objc func request(request: SKRequest, didFailWithError error: NSError) {
+    @objc func request(_ request: SKRequest, didFailWithError error: NSError) {
         failAndTerminate()
     }
 

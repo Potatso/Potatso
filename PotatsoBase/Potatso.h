@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * _Nonnull sharedGroupIdentifier;
-
 @interface Potatso : NSObject
++ (NSString * _Nonnull)sharedGroupIdentifier;
 + (NSURL * _Nonnull)sharedUrl;
 + (NSURL * _Nonnull)sharedDatabaseUrl;
 + (NSUserDefaults * _Nonnull)sharedUserDefaults;
