@@ -1,7 +1,8 @@
 # Potatso ![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-This project is no longer being maintained. In a near future, all Potatso 1 users will be migrated to Potasto 2 which is GPL free and closed-source.
+The app is no longer open-source, please download at [offical website](https://potatso.com/) or search for "Potatso" in App Store.
 
-A lot of people copied the project to App Store without following the license. What worse is that they've brought bad reputation to Potatso itself. 
+Meanwhile, we'll still open source some libraries to salute the great community who has been working on the Shadowsocks(R) project.
 
-The open source of Potatso didn't go as I thought it should be. I love open source and I will find other ways to contribute to open source community. 
+## Open-source libraries
+* [ss-uri](https://github.com/Potatso/ss-uri) - a utility that Poatso used to generate or parse Shadowsocks(R) uri written in Typescript
